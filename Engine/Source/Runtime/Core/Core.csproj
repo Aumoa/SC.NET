@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+	<PlatformTarget>x64</PlatformTarget>
+	<IntermediateOutputPath>$(SolutionDir)Intermediate\$(Configuration)\Core\</IntermediateOutputPath>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	<OutputPath>$(SolutionDir)Build\$(Configuration)\</OutputPath>
+	<DocumentationFile>$(SolutionDir)Intermediate\$(Configuration)\Core\Core.xml</DocumentationFile>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<RootNamespace>SC.Engine.Runtime.Core</RootNamespace>
+  </PropertyGroup>
+
+</Project>

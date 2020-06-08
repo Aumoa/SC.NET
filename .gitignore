@@ -1,0 +1,8 @@
+﻿# Visual Studio
+.vs/
+Engine/Source/Runtime/Core/obj/
+Engine/Source/Runtime/Engine/obj/
+
+# Solution Immediate
+Intermediate/
+Build/
