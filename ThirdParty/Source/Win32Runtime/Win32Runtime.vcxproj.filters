@@ -6,10 +6,31 @@
     <ClCompile Include="Private\HandleBase.cpp">
       <Filter>Private</Filter>
     </ClCompile>
+    <ClCompile Include="Private\Window.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\CoreWindow.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Application.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="Public\HandleBase.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\IPlatformHandle.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Window.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\CoreWindow.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Application.h">
       <Filter>Public</Filter>
     </ClInclude>
   </ItemGroup>

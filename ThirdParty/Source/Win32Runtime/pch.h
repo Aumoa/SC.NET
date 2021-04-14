@@ -3,3 +3,6 @@
 #pragma once
 
 #include <Windows.h>
+#include <msclr/marshal.h>
+#include <msclr/marshal_cppstd.h>
+#include <string>

@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SampleGame": {
+      "commandName": "Executable",
+      "executablePath": "$(OutDir)Launch.exe",
+      "commandLineArgs": "SampleGame.dll"
+    }
+  }
+}

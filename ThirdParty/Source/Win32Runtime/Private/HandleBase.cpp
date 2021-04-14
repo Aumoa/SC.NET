@@ -8,49 +8,46 @@ using namespace System;
 using namespace SC::ThirdParty::Win32Runtime;
 
 HandleBase::HandleBase() : Super()
-	, handle(nullptr)
-	, bDisposed(false)
 {
 	
 }
 
 HandleBase::~HandleBase()
 {
-	NativeDispose(true);
-	GC::SuppressFinalize(this);
-}
-
-HandleBase::!HandleBase()
-{
-	NativeDispose(false);
+	if (_disposed)
+	{
+		Close();
+		_disposed = true;
+	}
 }
 
 void HandleBase::Close()
 {
-	CloseHandle((HANDLE)handle);
-}
+	CheckDisposed();
 
-IntPtr HandleBase::Handle::get()
-{
-	return IntPtr(handle);
-}
-
-void HandleBase::Handle::set(IntPtr value)
-{
-	handle = value.ToPointer();
-}
-
-void HandleBase::NativeDispose(bool bDisposing)
-{
-	if (bDisposing)
+	if (_handle != nullptr)
 	{
-		// 관리되는 멤버를 제거합니다.
+		CloseHandle((HANDLE)_handle);
+		_handle = nullptr;
 	}
+}
 
-	// 관리되지 않는 멤버를 제거합니다.
-	if (!bDisposed)
+IntPtr HandleBase::GetHandle()
+{
+	CheckDisposed();
+	return IntPtr(_handle);
+}
+
+void HandleBase::SetHandle(IntPtr value)
+{
+	CheckDisposed();
+	_handle = value.ToPointer();
+}
+
+void HandleBase::CheckDisposed()
+{
+	if (_disposed)
 	{
-		Close();
-		bDisposed = true;
+		throw gcnew AccessViolationException("개체가 이미 종료되었습니다.");
 	}
 }
