@@ -12,17 +12,6 @@
 	<RootNamespace>SC.Engine.Runtime.Launch</RootNamespace>
 	<Platforms>x64</Platforms>
 	<Nullable>disable</Nullable>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-	<OutputType>Exe</OutputType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugGame|x64'">
-	<OutputType>Exe</OutputType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
 	<OutputType>WinExe</OutputType>
   </PropertyGroup>
 
