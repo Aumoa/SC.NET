@@ -1,6 +1,5 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using System;
 using System.IO;
 using System.Reflection;
 
