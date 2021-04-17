@@ -2,7 +2,7 @@
 
 using System;
 
-using SC.ThirdParty.Win32Runtime;
+using SC.ThirdParty.WinAPI;
 
 namespace SC.Engine.Runtime.Launch
 {

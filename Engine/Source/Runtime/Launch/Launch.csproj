@@ -16,13 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\ThirdParty\Source\WinAPI\WinAPI.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Win32Runtime">
-      <HintPath>Win32Runtime.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

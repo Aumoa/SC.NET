@@ -1,6 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using SC.ThirdParty.Win32Runtime;
+using SC.ThirdParty.WinAPI;
 
 namespace SC.Engine.Runtime.Launch
 {
