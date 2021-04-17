@@ -36,8 +36,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <OutDir>$(SolutionDir)\Build\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)\Intermediate\Build\$(Platform)\$(ProjectName)\</IntDir>
+    <OutDir>$(SolutionDir)\Build\</OutDir>
+    <IntDir>$(SolutionDir)\Intermediate\Build\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>

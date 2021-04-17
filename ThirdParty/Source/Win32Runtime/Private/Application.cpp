@@ -3,6 +3,8 @@
 #include "pch.h"
 #include "Application.h"
 
+#include "CoreWindow.h"
+
 using namespace System;
 using namespace SC::ThirdParty::Win32Runtime;
 
@@ -27,6 +29,40 @@ void Application::Close()
 IntPtr Application::GetHandle()
 {
 	return IntPtr(_handle);
+}
+
+void Application::Run(CoreWindow^ dialog)
+{
+	Initialize();
+
+	// 창이 보이지 않는 상태라면 보이게 합니다.
+	if (!dialog->IsVisible)
+	{
+		dialog->IsVisible = true;
+	}
+
+	MSG msg = { };
+	while (true)
+	{
+		if (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE))
+		{
+			if (msg.message == WM_QUIT)
+			{
+				break;
+			}
+			else
+			{
+				TranslateMessage(&msg);
+				DispatchMessageW(&msg);
+			}
+		}
+		else
+		{
+			Idle();
+		}
+	}
+
+	Shutdown();
 }
 
 void Application::CheckDisposed()

@@ -16,6 +16,7 @@ CoreWindow::CoreWindow(Application^ app, String^ title) : Super()
 		throw gcnew AccessViolationException("CoreWindow 개체가 중복되었습니다.");
 	}
 
+	_globalItem = this;
 	_app = app;
 	_handle = CreateCoreWindow();
 	Title = title;
@@ -56,6 +57,7 @@ void CoreWindow::BroadcastDestroy()
 {
 	CheckDisposed();
 	Destroy();
+	PostQuitMessage(0);
 }
 
 void* CoreWindow::CreateCoreWindow()
