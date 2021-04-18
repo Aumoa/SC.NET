@@ -2,7 +2,7 @@
   "profiles": {
     "SampleGame": {
       "commandName": "Executable",
-      "executablePath": "$(OutDir)Launch.exe",
+      "executablePath": "$(OutDir)EditorLaunch.exe",
       "commandLineArgs": "SampleGame.dll"
     }
   }

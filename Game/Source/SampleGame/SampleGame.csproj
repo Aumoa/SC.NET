@@ -14,7 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Engine\Source\Runtime\Launch\Launch.csproj" />
+    <ProjectReference Include="..\..\..\Engine\Source\Editor\EditorLaunch\EditorLaunch.csproj" />
+    <ProjectReference Include="..\..\..\Engine\Source\Runtime\Core\Core.csproj" />
   </ItemGroup>
 
 </Project>
