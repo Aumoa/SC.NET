@@ -4,12 +4,12 @@
 
 namespace SC::ThirdParty::DirectX
 {
-	ref class CD3D12Device : CD3D12Object, ID3D12Device
+	ref class CD3D12Device : CD3D12Object, ID3D12Device1
 	{
-		::ID3D12Device* pDevice;
+		::ID3D12Device1* pDevice;
 
 	public:
-		CD3D12Device( ::ID3D12Device* pDevice );
+		CD3D12Device( ::ID3D12Device1* pDevice );
 		static void RegisterClass();
 
 		virtual unsigned int GetNodeCount();
@@ -88,6 +88,10 @@ namespace SC::ThirdParty::DirectX
 			uint_ firstSubresourceTilingToGet
 		);
 		virtual Luid GetAdapterLuid();
+
+		virtual void CreatePipelineLibrary(cli::array<unsigned char>^ libraryBlob, System::Guid riid, IUnknown^% ppResource);
+		virtual void SetEventOnMultipleFenceCompletion(cli::array<ID3D12Fence^>^ ppFences, cli::array<unsigned __int64>^ fenceValues, D3D12MultipleFenceWaitFlags flags, WinAPI::IPlatformHandle^ hEvent);
+		virtual void SetResidencyPriority(cli::array<ID3D12Pageable^>^ ppObjects, cli::array<D3D12ResidencyPriority>^ priorities);
 
 	private:
 		static IUnknown^ CoCreateInstance( System::IntPtr pUnknown );

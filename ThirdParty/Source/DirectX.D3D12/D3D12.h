@@ -26,7 +26,7 @@ namespace SC::ThirdParty::DirectX
 		/// <param name="pAdapter"> 장치가 사용할 물리 어댑터를 전달합니다. null을 전달할 경우 기본 어댑터를 사용합니다. </param>
 		/// <param name="minimumFeatureLevel"> 필요한 최소 기능 레벨을 전달합니다. 가능한 가장 높은 레벨이 사용되며, 필요한 기능을 지원하지 않을 경우 장치 생성에 실패합니다. </param>
 		/// <returns> 생성된 장치 개체가 반환됩니다. </returns>
-		static ID3D12Device^ D3D12CreateDevice( IUnknown^ pAdapter, D3DFeatureLevel minimumFeatureLevel );
+		static ID3D12Device1^ D3D12CreateDevice( IUnknown^ pAdapter, D3DFeatureLevel minimumFeatureLevel );
 
 		/// <summary>
 		/// 루트 서명 개체를 직렬화합니다.

@@ -46,10 +46,10 @@ void D3D12::CoUninitialize()
 	ComObject::UnregisterCLSID( ID3D12Debug::typeid->GUID );
 }
 
-auto D3D12::D3D12CreateDevice( IUnknown^ pAdapter, D3DFeatureLevel minimumFeatureLevel ) -> ID3D12Device^
+auto D3D12::D3D12CreateDevice( IUnknown^ pAdapter, D3DFeatureLevel minimumFeatureLevel ) -> ID3D12Device1^
 {
 	auto p = Take<::IUnknown>( pAdapter );
-	ComPtr<::ID3D12Device> pDevice;
+	ComPtr<::ID3D12Device1> pDevice;
 	ComObject::HR( ::D3D12CreateDevice( p, ( D3D_FEATURE_LEVEL )minimumFeatureLevel, IID_PPV_ARGS( &pDevice ) ) );
 	return gcnew CD3D12Device( pDevice.Detach() );
 }
