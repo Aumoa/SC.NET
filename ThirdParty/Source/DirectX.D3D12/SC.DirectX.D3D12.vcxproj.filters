@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="CComObject.cpp" />
+    <ClCompile Include="HandleBase.cpp" />
+    <ClCompile Include="CD3D12Object.cpp" />
+    <ClCompile Include="CD3D12Pageable.cpp" />
+    <ClCompile Include="CD3D12DeviceChild.cpp" />
+    <ClCompile Include="CD3D12PipelineState.cpp" />
+    <ClCompile Include="CD3D12Heap.cpp" />
+    <ClCompile Include="CD3D12Resource.cpp" />
+    <ClCompile Include="CD3D12RootSignature.cpp" />
+    <ClCompile Include="CD3D12QueryHeap.cpp" />
+    <ClCompile Include="CD3D12Fence.cpp" />
+    <ClCompile Include="CD3D12CommandAllocator.cpp" />
+    <ClCompile Include="CD3D12CommandList.cpp" />
+    <ClCompile Include="CD3D12CommandQueue.cpp" />
+    <ClCompile Include="CD3D12CommandSignature.cpp" />
+    <ClCompile Include="CD3D12DescriptorHeap.cpp" />
+    <ClCompile Include="CD3D12Device.cpp" />
+    <ClCompile Include="CD3D12GraphicsCommandList.cpp" />
+    <ClCompile Include="CD3D12Debug.cpp" />
+    <ClCompile Include="D3D12RootSignatureDescExtensions.cpp" />
+    <ClCompile Include="D3D12.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="CComObject.h" />
+    <ClInclude Include="HandleBase.h" />
+    <ClInclude Include="CD3D12Object.h" />
+    <ClInclude Include="CD3D12Pageable.h" />
+    <ClInclude Include="CD3D12DeviceChild.h" />
+    <ClInclude Include="CD3D12PipelineState.h" />
+    <ClInclude Include="CD3D12Heap.h" />
+    <ClInclude Include="CD3D12Resource.h" />
+    <ClInclude Include="CD3D12RootSignature.h" />
+    <ClInclude Include="CD3D12QueryHeap.h" />
+    <ClInclude Include="CD3D12Fence.h" />
+    <ClInclude Include="CD3D12CommandAllocator.h" />
+    <ClInclude Include="CD3D12CommandList.h" />
+    <ClInclude Include="CD3D12CommandQueue.h" />
+    <ClInclude Include="CD3D12CommandSignature.h" />
+    <ClInclude Include="CD3D12DescriptorHeap.h" />
+    <ClInclude Include="CD3D12Device.h" />
+    <ClInclude Include="CD3D12GraphicsCommandList.h" />
+    <ClInclude Include="CD3D12Debug.h" />
+    <ClInclude Include="D3D12RootSignatureDescExtensions.h" />
+    <ClInclude Include="D3D12.h" />
+  </ItemGroup>
+</Project>
