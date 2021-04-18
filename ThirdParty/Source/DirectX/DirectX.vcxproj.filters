@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Private\DeviceBundle.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\DeviceChild.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\CommandQueue.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\SwapChain.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Public\DeviceBundle.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Private\TComPtr.h">
+      <Filter>Private</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\SwapChain.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\CommandQueue.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\DeviceChild.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Public">
+      <UniqueIdentifier>{547aaafb-dcf3-45e1-b18b-d5d121b4cd4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private">
+      <UniqueIdentifier>{67bfad8d-ac58-4c92-a020-9908a3bd4c5d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
