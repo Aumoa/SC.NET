@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CDXGISwapChain1.cpp" />
+    <ClCompile Include="CDXGISwapChain2.cpp" />
+    <ClCompile Include="CDXGISwapChain3.cpp" />
+    <ClCompile Include="DXGI.cpp" />
+    <ClCompile Include="OutputEnumerator.cpp" />
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="AdapterEnumerator.cpp" />
+    <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="CComObject.cpp" />
+    <ClCompile Include="CDXGIAdapter.cpp" />
+    <ClCompile Include="CDXGIAdapter1.cpp" />
+    <ClCompile Include="CDXGIDevice.cpp" />
+    <ClCompile Include="CDXGIDeviceSubObject.cpp" />
+    <ClCompile Include="CDXGIFactory.cpp" />
+    <ClCompile Include="CDXGIFactory1.cpp" />
+    <ClCompile Include="CDXGIObject.cpp" />
+    <ClCompile Include="CDXGIOutput.cpp" />
+    <ClCompile Include="CDXGISurface.cpp" />
+    <ClCompile Include="CDXGISwapChain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CDXGISwapChain1.h" />
+    <ClInclude Include="CDXGISwapChain2.h" />
+    <ClInclude Include="CDXGISwapChain3.h" />
+    <ClInclude Include="DXGI.h" />
+    <ClInclude Include="OutputEnumerator.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="AdapterEnumerator.h" />
+    <ClInclude Include="CComObject.h" />
+    <ClInclude Include="CDXGIAdapter.h" />
+    <ClInclude Include="CDXGIAdapter1.h" />
+    <ClInclude Include="CDXGIDevice.h" />
+    <ClInclude Include="CDXGIDeviceSubObject.h" />
+    <ClInclude Include="CDXGIFactory.h" />
+    <ClInclude Include="CDXGIFactory1.h" />
+    <ClInclude Include="CDXGIObject.h" />
+    <ClInclude Include="CDXGIOutput.h" />
+    <ClInclude Include="CDXGISurface.h" />
+    <ClInclude Include="CDXGISwapChain.h" />
+  </ItemGroup>
+</Project>
