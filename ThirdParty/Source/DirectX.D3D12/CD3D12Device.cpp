@@ -9,7 +9,7 @@ using namespace std;
 
 using SC::ThirdParty::DirectX::CD3D12Device;
 
-CD3D12Device::CD3D12Device( ::ID3D12Device* pDevice ) : CD3D12Object( pDevice )
+CD3D12Device::CD3D12Device( ::ID3D12Device1* pDevice ) : CD3D12Object( pDevice )
 {
 	this->pDevice = pDevice;
 }
@@ -465,7 +465,41 @@ auto CD3D12Device::GetAdapterLuid() -> Luid
 	return luid;
 }
 
+void CD3D12Device::CreatePipelineLibrary(cli::array<unsigned char>^ libraryBlob, Guid riid, IUnknown^% ppResource)
+{
+	pin_ptr<unsigned char> pLibraryBlob = &libraryBlob[0];
+	ComPtr<::IUnknown> pUnknown;
+	HR(pDevice->CreatePipelineLibrary(pLibraryBlob, libraryBlob->Length, ToGUID(riid), &pUnknown));
+
+	ppResource = CoCreateInstance(riid, IntPtr(pUnknown.Detach()));
+}
+
+void CD3D12Device::SetEventOnMultipleFenceCompletion(cli::array<ID3D12Fence^>^ ppFences, cli::array<unsigned __int64>^ fenceValues, D3D12MultipleFenceWaitFlags flags, IPlatformHandle^ hEvent)
+{
+	vector<::ID3D12Fence*> fences(ppFences->Length);
+	pin_ptr<unsigned __int64> values = &fenceValues[0];
+	for (int i = 0; i < ppFences->Length; ++i)
+	{
+		fences[i] = (::ID3D12Fence*)((ComObject^)ppFences[i])->Handle.ToPointer();
+	}
+
+	HANDLE h = (HANDLE)hEvent->GetHandle().ToPointer();
+	HR(pDevice->SetEventOnMultipleFenceCompletion(fences.data(), values, (UINT)ppFences->Length, (D3D12_MULTIPLE_FENCE_WAIT_FLAGS)flags, h));
+}
+
+void CD3D12Device::SetResidencyPriority(cli::array<ID3D12Pageable^>^ ppObjects, cli::array<D3D12ResidencyPriority>^ priorities)
+{
+	vector<::ID3D12Pageable*> pageables(ppObjects->Length);
+	pin_ptr<D3D12ResidencyPriority> prio = &priorities[0];
+	for (int i = 0; i < ppObjects->Length; ++i)
+	{
+		pageables[i] = (::ID3D12Pageable*)((ComObject^)ppObjects[i])->Handle.ToPointer();
+	}
+
+	HR(pDevice->SetResidencyPriority(ppObjects->Length, pageables.data(), (const D3D12_RESIDENCY_PRIORITY*)prio));
+}
+
 auto CD3D12Device::CoCreateInstance( IntPtr pUnknown ) -> IUnknown^
 {
-	return gcnew CD3D12Device( ( ::ID3D12Device* )pUnknown.ToPointer() );
+	return gcnew CD3D12Device( ( ::ID3D12Device1* )pUnknown.ToPointer() );
 }
