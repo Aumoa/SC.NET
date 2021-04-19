@@ -34,6 +34,6 @@ auto CDXGIFactory1::CoCreateInstance( IntPtr pUnknown ) -> IUnknown^
 ::IDXGIFactory1* CDXGIFactory1::CreateDXGIFactory()
 {
 	ComPtr<::IDXGIFactory1> pFactory;
-	HR( ::CreateDXGIFactory( IID_PPV_ARGS( &pFactory ) ) );
+	HR( ::CreateDXGIFactory2( 0, IID_PPV_ARGS( &pFactory ) ) );
 	return pFactory.Detach();
 }

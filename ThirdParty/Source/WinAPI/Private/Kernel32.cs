@@ -45,5 +45,26 @@ namespace SC.ThirdParty.WinAPI
         /// </returns>
         [DllImport("Kernel32.dll")]
         public static extern bool CloseHandle(IntPtr hObject);
+
+        /// <summary>
+        /// Creates or opens a named or unnamed event object and returns a handle to the object.
+        /// </summary>
+        /// <param name="lpEventAttributes"> A pointer to a SECURITY_ATTRIBUTES structure. If lpEventAttributes is NULL, the event handle cannot be inherited by child processes. </param>
+        /// <param name="lpName"> The name of the event object. The name is limited to MAX_PATH characters. Name comparison is case sensitive. </param>
+        /// <param name="dwFlags"></param>
+        /// <param name="dwDesiredAccess"> The access mask for the event object. For a list of access rights, see Synchronization Object Security and Access Rights. </param>
+        /// <returns> If the function succeeds, the return value is a handle to the event object. If the named event object existed before the function call, the function returns a handle to the existing object and <see cref="GetLastError"/> returns ERROR_ALREADY_EXISTS. </returns>
+        [DllImport("Kernel32.dll")]
+        public static extern IntPtr CreateEventEx(IntPtr lpEventAttributes, string lpName, uint dwFlags, uint dwDesiredAccess);
+
+        /// <summary>
+        /// <para> Waits until the specified object is in the signaled state or the time-out interval elapses. </para>
+        /// <para> To enter an alertable wait state, use the WaitForSingleObjectEx function. To wait for multiple objects, use WaitForMultipleObjects. </para>
+        /// </summary>
+        /// <param name="hHandle"> A handle to the object. For a list of the object types whose handles can be specified, see the following Remarks section. </param>
+        /// <param name="dwMilliseconds"> The time-out interval, in milliseconds. If a nonzero value is specified, the function waits until the object is signaled or the interval elapses. If dwMilliseconds is zero, the function does not enter a wait state if the object is not signaled; it always returns immediately. If dwMilliseconds is INFINITE, the function will return only when the object is signaled. </param>
+        /// <returns> If the function succeeds, the return value indicates the event that caused the function to return. </returns>
+        [DllImport("Kernel32.dll")]
+        public static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
     }
 }

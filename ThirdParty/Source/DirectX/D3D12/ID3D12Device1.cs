@@ -12,7 +12,7 @@ namespace SC.ThirdParty.DirectX
     /// </summary>
     [Guid("77acce80-638e-4e65-8895-c1f23386863e")]
     [ComVisible(true)]
-    public interface ID3D12Device1 : ID3D12Object
+    public interface ID3D12Device1 : ID3D12Device
     {
         /// <summary>
         /// Creates a cached pipeline library. For pipeline state objects (PSOs) that are expected to share data together, grouping them into a library before serializing them means that there's less overhead due to metadata, as well as the opportunity to avoid redundant or duplicated data from being written to disk.
