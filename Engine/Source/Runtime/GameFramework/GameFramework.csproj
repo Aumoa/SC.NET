@@ -14,8 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\ThirdParty\Source\DirectX\DirectX.vcxproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\RenderCore\RenderCore.csproj" />
   </ItemGroup>
 
 </Project>

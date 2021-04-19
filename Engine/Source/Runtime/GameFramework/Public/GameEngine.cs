@@ -3,6 +3,7 @@
 using System;
 
 using SC.Engine.Runtime.Core.Diagnostics;
+using SC.Engine.Runtime.RenderCore;
 using SC.ThirdParty.DirectX;
 using SC.ThirdParty.WinAPI;
 
@@ -45,8 +46,8 @@ namespace SC.Engine.Runtime.GameFramework
             debugFlag = true;
 #endif
             _device = new DeviceBundle(debugFlag);
-            _queue = _device.CreateCommandQueue();
-            _chain = _device.CreateSwapChain(target, _queue);
+            _queue = _device.GetPrimaryQueue();
+            _chain = new SwapChain(_device, target);
         }
 
         /// <summary>
