@@ -298,6 +298,46 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
+        /// 사원수를 회전 행렬로 변환합니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        public Matrix4x4 ToMatrix()
+        {
+            float x2 = X * X;
+            float y2 = Y * Y;
+            float z2 = Z * Z;
+            float xy = X * Y;
+            float xz = X * Z;
+            float yz = Y * Z;
+            float wx = W * X;
+            float wy = W * Y;
+            float wz = W * Z;
+
+            Matrix4x4 M;
+            M._11 = 1.0f - 2.0f * (y2 + z2);
+            M._12 = 2.0f * (xy - wz);
+            M._13 = 2.0f * (xz + wy);
+            M._14 = 0.0f;
+
+            M._21 = 2.0f * (xy + wz);
+            M._22 = 1.0f - 2.0f * (x2 + z2);
+            M._23 = 2.0f * (yz - wx);
+            M._24 = 0.0f;
+
+            M._31 = 2.0f * (xz - wy);
+            M._32 = 2.0f * (yz + wx);
+            M._33 = 1.0f - 2.0f * (x2 + y2);
+            M._34 = 0.0f;
+
+            M._41 = 2.0f * (xz - wy);
+            M._42 = 2.0f * (yz + wx);
+            M._43 = 1.0f - 2.0f * (x2 + y2);
+            M._44 = 0.0f;
+
+            return M;
+        }
+
+        /// <summary>
         /// 두 사원수가 나타내는 회전을 더한 회전을 나타내는 사원수를 계산합니다.
         /// </summary>
         /// <param name="InLeft"> 첫 번째 사원수를 전달합니다. </param>

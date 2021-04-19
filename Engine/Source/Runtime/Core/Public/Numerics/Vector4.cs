@@ -47,6 +47,19 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
+        /// 벡터의 모든 값을 지정하여 <see cref="Vector4"/> 구조체의 새 인스턴스를 초기화합니다.
+        /// </summary>
+        /// <param name="xyz"> XYZ 값을 전달합니다. </param>
+        /// <param name="w"> W 값을 전달합니다. </param>
+        public Vector4(Vector3 xyz, float w)
+        {
+            X = xyz.X;
+            Y = xyz.Y;
+            Z = xyz.Z;
+            W = w;
+        }
+
+        /// <summary>
         /// 벡터의 모든 값을 스칼라 값으로 지정하여 <see cref="Vector4"/> 구조체의 새 인스턴스를 초기화합니다.
         /// </summary>
         /// <param name="splat"> 단일 값으로 지정할 스칼라 값을 전달합니다. </param>
