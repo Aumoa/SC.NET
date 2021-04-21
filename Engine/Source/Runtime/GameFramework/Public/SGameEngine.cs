@@ -3,8 +3,8 @@
 using System;
 
 using SC.Engine.Runtime.Core.Diagnostics;
+using SC.Engine.Runtime.GameCore;
 using SC.Engine.Runtime.RenderCore;
-using SC.ThirdParty.DirectX;
 using SC.ThirdParty.WinAPI;
 
 namespace SC.Engine.Runtime.GameFramework
@@ -12,7 +12,7 @@ namespace SC.Engine.Runtime.GameFramework
     /// <summary>
     /// 게임 엔진을 나타냅니다.
     /// </summary>
-    public class GameEngine : IDisposable
+    public class SGameEngine : SGameObject, IDisposable
     {
         DeviceBundle _device;
         CommandQueue _queue;
@@ -23,7 +23,7 @@ namespace SC.Engine.Runtime.GameFramework
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
-        public GameEngine()
+        public SGameEngine()
         {
 
         }
