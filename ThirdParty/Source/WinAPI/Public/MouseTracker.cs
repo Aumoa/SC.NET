@@ -36,21 +36,25 @@ namespace SC.ThirdParty.WinAPI
         const int XBUTTON1      = 0x0001;
         const int XBUTTON2      = 0x0002;
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         short LOWORD(int l)
         {
             return (short)(l & 0xffff);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         short HIWORD(int l)
         {
             return (short)((l >> 16) & 0xffff);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         short GET_WHEEL_DELTA_WPARAM(ulong wParam)
         {
             return HIWORD((int)wParam);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         short GET_XBUTTON_WPARAM(ulong wParam)
         {
             return HIWORD((int)wParam);
@@ -247,9 +251,92 @@ namespace SC.ThirdParty.WinAPI
             }
         }
 
+        /// <summary>
+        /// 마우스가 이동되었을 때 발생하는 이벤트의 대리자입니다.
+        /// </summary>
+        /// <param name="mode"> 좌표 지정 모드가 전달됩니다. </param>
+        /// <param name="x"> X 좌표가 전달됩니다. <see cref="PositionMode.Relative"/>일 경우 이동량이 전달됩니다. </param>
+        /// <param name="y"> Y 좌표가 전달됩니다. <see cref="PositionMode.Relative"/>일 경우 이동량이 전달됩니다. </param>
+        public delegate void MouseMovedDelegate(PositionMode mode, int x, int y);
+
+        /// <summary>
+        /// 마우스 버튼이 클릭되었을 때 발생하는 이벤트의 대리자입니다.
+        /// </summary>
+        public delegate void MouseKeyPressedDelegate();
+
+        /// <summary>
+        /// 마우스 버튼이 놓였을 때 발생되는 이벤트의 대리자입니다.
+        /// </summary>
+        public delegate void MouseKeyReleasedDelegate();
+
+        /// <summary>
+        /// 마우스 휠이 이동되었을 때 발생하는 이벤트의 대리자입니다.
+        /// </summary>
+        /// <param name="dy"> 이동량이 전달됩니다. </param>
+        public delegate void MouseWheelMovedDelegate(int dy);
+
+        /// <summary>
+        /// 마우스가 이동되었을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseMovedDelegate MouseMoved;
+
+        /// <summary>
+        /// 마우스 왼쪽 버튼이 클릭되었을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyPressedDelegate LeftButtonPressed;
+
+        /// <summary>
+        /// 마우스 왼쪽 버튼이 놓였을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyReleasedDelegate LeftButtonReleased;
+
+        /// <summary>
+        /// 마우스 가운데 버튼이 클릭되었을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyPressedDelegate MiddleButtonPressed;
+
+        /// <summary>
+        /// 마우스 가운데 버튼이 놓였을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyReleasedDelegate MiddleButtonReleased;
+
+        /// <summary>
+        /// 마우스 오른쪽 버튼이 클릭되었을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyPressedDelegate RightButtonPressed;
+
+        /// <summary>
+        /// 마우스 오른쪽 버튼이 놓였을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyReleasedDelegate RightButtonReleased;
+
+        /// <summary>
+        /// 마우스 X1 버튼이 클릭되었을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyPressedDelegate X1ButtonPressed;
+
+        /// <summary>
+        /// 마우스 X1 버튼이 놓였을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyReleasedDelegate X1ButtonReleased;
+
+        /// <summary>
+        /// 마우스 X2 버튼이 클릭되었을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyPressedDelegate X2ButtonPressed;
+
+        /// <summary>
+        /// 마우스 X2 버튼이 놓였을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseKeyReleasedDelegate X2ButtonReleased;
+
+        /// <summary>
+        /// 마우스 휠이 이동되었을 때 발생하는 이벤트입니다.
+        /// </summary>
+        public event MouseWheelMovedDelegate MouseWheelMoved;
+
         MouseTracker()
         {
-
         }
 
         static MouseTracker _instance;
@@ -361,7 +448,10 @@ namespace SC.ThirdParty.WinAPI
             }
         }
 
-        void ResetScrollWheelValue()
+        /// <summary>
+        /// 마우스 휠 값을 초기화합니다.
+        /// </summary>
+        public void ResetScrollWheelValue()
         {
             mScrollWheelValue.Set();
         }
@@ -477,7 +567,7 @@ namespace SC.ThirdParty.WinAPI
                     ResetEvent(events[0]);
                     break;
 
-                case (WAIT_OBJECT_0 + 1):
+                case WAIT_OBJECT_0 + 1:
                     RECT rc = new();
                     mMode = PositionMode.Absolute;
                     ClipCursor(ref rc);
@@ -528,9 +618,7 @@ namespace SC.ThirdParty.WinAPI
                         if (mMode == PositionMode.Relative)
                         {
                             mState.X = mState.Y = 0;
-
                             ShowCursor(false);
-
                             ClipToWindow();
                         }
                     }
@@ -586,6 +674,7 @@ namespace SC.ThirdParty.WinAPI
 
                                 mRelativeX = x;
                                 mRelativeY = y;
+                                MouseMoved?.Invoke(mMode, x, y);
 
                                 mRelativeRead.Reset();
                             }
@@ -594,34 +683,46 @@ namespace SC.ThirdParty.WinAPI
                     return;
 
                 case WM_MOUSEMOVE:
+                    if (mMode == PositionMode.Absolute)
+                    {
+                        MouseMoved?.Invoke(mMode, LOWORD((int)lParam), HIWORD((int)lParam));
+                    }
                     break;
 
                 case WM_LBUTTONDOWN:
                     mState.LeftButton = true;
+                    LeftButtonPressed?.Invoke();
                     break;
 
                 case WM_LBUTTONUP:
                     mState.LeftButton = false;
+                    LeftButtonReleased?.Invoke();
                     break;
 
                 case WM_RBUTTONDOWN:
                     mState.RightButton = true;
+                    RightButtonPressed?.Invoke();
                     break;
 
                 case WM_RBUTTONUP:
                     mState.RightButton = false;
+                    RightButtonReleased?.Invoke();
                     break;
 
                 case WM_MBUTTONDOWN:
                     mState.MiddleButton = true;
+                    MiddleButtonPressed?.Invoke();
                     break;
 
                 case WM_MBUTTONUP:
                     mState.MiddleButton = false;
+                    MiddleButtonReleased?.Invoke();
                     break;
 
                 case WM_MOUSEWHEEL:
-                    mState.ScrollWheelValue += GET_WHEEL_DELTA_WPARAM(wParam);
+                    short delta = GET_WHEEL_DELTA_WPARAM(wParam);
+                    mState.ScrollWheelValue += delta;
+                    MouseWheelMoved?.Invoke(delta);
                     return;
 
                 case WM_XBUTTONDOWN:
@@ -629,10 +730,12 @@ namespace SC.ThirdParty.WinAPI
                     {
                         case XBUTTON1:
                             mState.XButton1 = true;
+                            X1ButtonPressed?.Invoke();
                             break;
 
                         case XBUTTON2:
                             mState.XButton2 = true;
+                            X2ButtonPressed?.Invoke();
                             break;
                     }
                     break;
@@ -642,10 +745,12 @@ namespace SC.ThirdParty.WinAPI
                     {
                         case XBUTTON1:
                             mState.XButton1 = false;
+                            X1ButtonReleased?.Invoke();
                             break;
 
                         case XBUTTON2:
                             mState.XButton2 = false;
+                            X2ButtonReleased?.Invoke();
                             break;
                     }
                     break;
