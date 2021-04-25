@@ -10,7 +10,7 @@ namespace SC.Engine.Runtime.RenderCore
     /// <summary>
     /// 명령 대기열 개체를 표현합니다.
     /// </summary>
-    public class CommandQueue : DeviceResource
+    public class RHICommandQueue : RHIDeviceResource
     {
         ID3D12CommandQueue _queue;
         ID3D12Fence _fence;
@@ -20,7 +20,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// 개체를 초기화합니다.
         /// </summary>
         /// <param name="deviceBundle"> 디바이스 개체를 전달합니다. </param>
-        public CommandQueue(DeviceBundle deviceBundle) : base(deviceBundle)
+        public RHICommandQueue(RHIDeviceBundle deviceBundle) : base(deviceBundle)
         {
             ID3D12Device device = deviceBundle.GetDevice();
             _queue = device.CreateCommandQueue(D3D12CommandListType.Direct);
@@ -42,7 +42,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// 명령을 실행합니다.
         /// </summary>
         /// <param name="deviceContexts"> 디바이스 컨텍스트 목록을 전달합니다. </param>
-        public void ExecuteCommandLists(params DeviceContext[] deviceContexts)
+        public void ExecuteCommandLists(params RHIDeviceContext[] deviceContexts)
         {
             List<ID3D12CommandList> commandLists = new();
 

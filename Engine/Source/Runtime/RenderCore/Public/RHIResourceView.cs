@@ -7,7 +7,7 @@ namespace SC.Engine.Runtime.RenderCore
     /// <summary>
     /// GPU 리소스 뷰를 표현합니다.
     /// </summary>
-    public class ResourceView : DeviceResource
+    public class RHIResourceView : RHIDeviceResource
     {
         ID3D12DescriptorHeap _descriptorHeap;
 
@@ -15,13 +15,14 @@ namespace SC.Engine.Runtime.RenderCore
         uint _incrementSize;
         D3D12CPUDescriptorHandle _handle;
 
-        internal ResourceView(DeviceBundle deviceBundle, D3D12DescriptorHeapType heapType, uint descriptorsCount) : base(deviceBundle)
+        internal RHIResourceView(RHIDeviceBundle deviceBundle, D3D12DescriptorHeapType heapType, uint descriptorsCount) : base(deviceBundle)
         {
             ID3D12Device device = deviceBundle.GetDevice();
 
             _descriptorHeap = device.CreateDescriptorHeap(heapType, descriptorsCount, D3D12DescriptorHeapFlags.None);
             _incrementSize = device.GetDescriptorHandleIncrementSize(heapType);
             _handle = _descriptorHeap.GetCPUDescriptorHandleForHeapStart();
+            _descriptorsCount = descriptorsCount;
         }
 
         /// <inheritdoc/>

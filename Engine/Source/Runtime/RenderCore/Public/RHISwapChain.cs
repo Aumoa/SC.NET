@@ -8,7 +8,7 @@ namespace SC.Engine.Runtime.RenderCore
     /// <summary>
     /// 스왑 체인을 표현합니다.
     /// </summary>
-    public class SwapChain : DeviceResource
+    public class RHISwapChain : RHIDeviceResource
     {
         IDXGISwapChain3 _swapChain;
 
@@ -17,9 +17,9 @@ namespace SC.Engine.Runtime.RenderCore
         /// </summary>
         /// <param name="deviceBundle"> 디바이스 개체를 전달합니다. </param>
         /// <param name="target"> 렌더 타겟을 전달합니다. </param>
-        public SwapChain(DeviceBundle deviceBundle, CoreWindow target) : base(deviceBundle)
+        public RHISwapChain(RHIDeviceBundle deviceBundle, CoreWindow target) : base(deviceBundle)
         {
-            CommandQueue queue = deviceBundle.GetPrimaryQueue();
+            RHICommandQueue queue = deviceBundle.GetPrimaryQueue();
             IDXGIFactory1 factory = deviceBundle.GetFactory();
 
             DXGISwapChainDesc desc = new();
@@ -43,6 +43,21 @@ namespace SC.Engine.Runtime.RenderCore
         public void Present()
         {
             _swapChain.Present();
+        }
+
+        /// <summary>
+        /// 버퍼의 크기를 조절합니다.
+        /// </summary>
+        /// <param name="resolutionX"> X축 해상도를 전달합니다. </param>
+        /// <param name="resolutionY"> Y축 해상도를 전달합니다. </param>
+        public void ResizeBuffers(int resolutionX, int resolutionY)
+        {
+            _swapChain.ResizeBuffers(resolutionX, resolutionY);
+        }
+
+        internal ID3D12Resource GetBuffer(int index)
+        {
+            return _swapChain.GetBuffer<ID3D12Resource>(index);
         }
     }
 }

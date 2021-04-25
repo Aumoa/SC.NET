@@ -10,7 +10,7 @@ namespace SC.Engine.Runtime.RenderCore
     /// <summary>
     /// 디바이스 컨텍스트를 표현합니다.
     /// </summary>
-    public class DeviceContext : DeviceResource
+    public class RHIDeviceContext : RHIDeviceResource
     {
         ID3D12Device _device;
         ID3D12CommandAllocator _allocator;
@@ -23,7 +23,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// 개체를 초기화합니다.
         /// </summary>
         /// <param name="deviceBundle"> 디바이스 개체를 전달합니다. </param>
-        public DeviceContext(DeviceBundle deviceBundle) : base(deviceBundle)
+        public RHIDeviceContext(RHIDeviceBundle deviceBundle) : base(deviceBundle)
         {
             _device = deviceBundle.GetDevice();
             _allocator = deviceBundle.GetDevice().CreateCommandAllocator(D3D12CommandListType.Direct);

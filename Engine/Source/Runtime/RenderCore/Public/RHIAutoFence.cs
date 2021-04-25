@@ -8,7 +8,7 @@ namespace SC.Engine.Runtime.RenderCore
     /// <summary>
     /// 자동 관리 펜스 개체를 표현합니다.
     /// </summary>
-    public class AutoFence : DeviceResource
+    public class RHIAutoFence : RHIDeviceResource
     {
         ID3D12Fence _fence;
         ulong _fenceValue;
@@ -18,7 +18,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// 개체를 초기화합니다.
         /// </summary>
         /// <param name="deviceBundle"> 디바이스를 전달합니다. </param>
-        public AutoFence(DeviceBundle deviceBundle) : base(deviceBundle)
+        public RHIAutoFence(RHIDeviceBundle deviceBundle) : base(deviceBundle)
         {
             _fence = deviceBundle.GetDevice().CreateFence();
             _event = new EventHandle();
@@ -47,7 +47,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// </summary>
         /// <param name="queue"> 대기열 개체를 전달합니다. </param>
         /// <returns> 동기화 신호 값이 반환됩니다. </returns>
-        public ulong Signal(CommandQueue queue)
+        public ulong Signal(RHICommandQueue queue)
         {
             queue.GetQueue().Signal(_fence, ++_fenceValue);
             return _fenceValue;
@@ -58,7 +58,11 @@ namespace SC.Engine.Runtime.RenderCore
         /// </summary>
         public void Wait()
         {
-            _event.Wait();
+            if (_fence.GetCompletedValue() < _fenceValue)
+            {
+                _fence.SetEventOnCompletion(_fenceValue, _event);
+                _event.Wait();
+            }
         }
     }
 }

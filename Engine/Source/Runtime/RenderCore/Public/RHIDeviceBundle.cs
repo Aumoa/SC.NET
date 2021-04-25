@@ -11,7 +11,7 @@ namespace SC.Engine.Runtime.RenderCore
     /// <summary>
     /// DirectX 디바이스 집합을 표현합니다.
     /// </summary>
-    public unsafe class DeviceBundle : IDisposable
+    public unsafe class RHIDeviceBundle : IDisposable
     {
         IDXGIFactory1 _dxgiFactory;
         ID3D12Device _device;
@@ -20,13 +20,16 @@ namespace SC.Engine.Runtime.RenderCore
         ID3D11On12Device _device11On12;
         ID3D11DeviceContext _immCon11;
 
-        CommandQueue _primaryQueue;
+        ID2D1Device _device2d;
+        ID2D1DeviceContext _deviceContext2d;
+
+        RHICommandQueue _primaryQueue;
 
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
         /// <param name="debugEnabled"> 디버그 모드로 개체를 생성합니다. </param>
-        public DeviceBundle(bool debugEnabled)
+        public RHIDeviceBundle(bool debugEnabled)
         {
             DXGI.CoInitialize();
             D3D12.CoInitialize();
@@ -86,9 +89,20 @@ namespace SC.Engine.Runtime.RenderCore
                 d3d11Flags |= D3D11CreateDeviceFlags.Debug;
             }
 
-            _primaryQueue = new CommandQueue(this);
+            _primaryQueue = new RHICommandQueue(this);
             _device11 = D3D11.D3D11On12CreateDevice(_device, d3d11Flags, _primaryQueue.GetQueue(), out _immCon11);
             _device11On12 = _device11.QueryInterface<ID3D11On12Device>();
+
+            using (IDXGIDevice dxgiDevice = _device11On12.QueryInterface<IDXGIDevice>())
+            {
+                _device2d = D2D1.D2D1CreateDevice(dxgiDevice, new D2D1CreationProperties()
+                {
+                    ThreadingMode = D2D1ThreadingMode.SingleThreaded,
+                    DebugLevel = D2D1DebugLevel.None,
+                    Options = D2D1DeviceContextOptions.EnableMultithreadedOptimizations
+                });
+                _deviceContext2d = _device2d.CreateDeviceContext(D2D1DeviceContextOptions.EnableMultithreadedOptimizations);
+            }
         }
 
         /// <inheritdoc/>
@@ -100,26 +114,22 @@ namespace SC.Engine.Runtime.RenderCore
             _device11?.Release();
             _device11On12?.Release();
             _immCon11?.Release();
+
+            _device2d?.Release();
+            _deviceContext2d?.Release();
         }
 
         /// <summary>
         /// 디바이스의 주 명령 대기열 개체를 가져옵니다.
         /// </summary>
         /// <returns> 개체가 반환됩니다. </returns>
-        public CommandQueue GetPrimaryQueue()
-        {
-            return _primaryQueue;
-        }
+        public RHICommandQueue GetPrimaryQueue() => _primaryQueue;
 
-        internal IDXGIFactory1 GetFactory()
-        {
-            return _dxgiFactory;
-        }
-
-        internal ID3D12Device GetDevice()
-        {
-            return _device;
-        }
+        internal IDXGIFactory1 GetFactory() => _dxgiFactory;
+        internal ID3D12Device GetDevice() => _device;
+        internal ID3D11On12Device GetInteropDevice() => _device11On12;
+        internal ID2D1DeviceContext GetDeviceContext2D() => _deviceContext2d;
+        internal ID3D11DeviceContext GetDeviceContext() => _immCon11;
 
         bool IsAdapterSuitable(IDXGIAdapter adapter)
         {

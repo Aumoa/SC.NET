@@ -7,15 +7,15 @@ namespace SC.Engine.Runtime.RenderCore
     /// <summary>
     /// 디바이스를 참조하는 리소스 개체를 표현합니다.
     /// </summary>
-    public class DeviceResource : IDisposable
+    public class RHIDeviceResource : IDisposable
     {
-        DeviceBundle _device;
+        RHIDeviceBundle _device;
 
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
         /// <param name="deviceBundle"> 디바이스를 전달합니다. </param>
-        public DeviceResource(DeviceBundle deviceBundle)
+        public RHIDeviceResource(RHIDeviceBundle deviceBundle)
         {
             _device = deviceBundle;
         }
@@ -41,7 +41,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// 이 개체를 생성한 디바이스를 가져옵니다.
         /// </summary>
         /// <returns> 개체가 반환됩니다. </returns>
-        public DeviceBundle GetDevice()
+        public RHIDeviceBundle GetDevice()
         {
             return _device;
         }
