@@ -260,5 +260,8 @@ namespace SC.ThirdParty.WinAPI
 
         [DllImport("User32.dll")]
         public static extern uint GetRawInputData(IntPtr hRawInput, uint uiCommand, void* pData, uint* pcbSize, uint cbSizeHeader);
+
+        [DllImport("User32.dll")]
+        public static extern uint MapVirtualKey(uint uCode, uint uMapType);
     }
 }
