@@ -66,5 +66,33 @@ namespace SC.ThirdParty.WinAPI
         /// <returns> If the function succeeds, the return value indicates the event that caused the function to return. </returns>
         [DllImport("Kernel32.dll")]
         public static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
+
+        /// <summary>
+        /// Waits until the specified object is in the signaled state, an I/O completion routine or asynchronous procedure call (APC) is queued to the thread, or the time-out interval elapses.
+        /// </summary>
+        /// <param name="hHandle"> A handle to the object. For a list of the object types whose handles can be specified, see the following Remarks section. </param>
+        /// <param name="dwMilliseconds"> The time-out interval, in milliseconds. If a nonzero value is specified, the function waits until the object is signaled, an I/O completion routine or APC is queued, or the interval elapses. If dwMilliseconds is zero, the function does not enter a wait state if the criteria is not met; it always returns immediately. If dwMilliseconds is INFINITE, the function will return only when the object is signaled or an I/O completion routine or APC is queued. </param>
+        /// <param name="bAlertable"> If this parameter is <see langword="true"/> and the thread is in the waiting state, the function returns when the system queues an I/O completion routine or APC, and the thread runs the routine or function. Otherwise, the function does not return, and the completion routine or APC function is not executed. </param>
+        /// <returns> If the function succeeds, the return value indicates the event that caused the function to return. </returns>
+        [DllImport("Kernel32.dll")]
+        public static extern uint WaitForSingleObjectEx(IntPtr hHandle, uint dwMilliseconds, bool bAlertable);
+
+        [DllImport("Kernel32.dll")]
+        public static extern bool SetEvent(IntPtr hEvent);
+
+        [DllImport("Kernel32.dll")]
+        public static extern bool ResetEvent(IntPtr hEvent);
+
+        /// <summary>
+        /// Waits until one or all of the specified objects are in the signaled state, an I/O completion routine or asynchronous procedure call (APC) is queued to the thread, or the time-out interval elapses.
+        /// </summary>
+        /// <param name="nCount"> The number of object handles to wait for in the array pointed to by lpHandles. The maximum number of object handles is MAXIMUM_WAIT_OBJECTS. This parameter cannot be zero. </param>
+        /// <param name="lpHandles"> An array of object handles. For a list of the object types whose handles can be specified, see the following Remarks section. The array can contain handles of objects of different types. It may not contain multiple copies of the same handle. </param>
+        /// <param name="bWaitAll"> If this parameter is <see langword="true"/>, the function returns when the state of all objects in the lpHandles array is set to signaled. If <see langword="false"/>, the function returns when the state of any one of the objects is set to signaled. In the latter case, the return value indicates the object whose state caused the function to return. </param>
+        /// <param name="dwMilliseconds"> The time-out interval, in milliseconds. If a nonzero value is specified, the function waits until the specified objects are signaled, an I/O completion routine or APC is queued, or the interval elapses. If dwMilliseconds is zero, the function does not enter a wait state if the criteria is not met; it always returns immediately. If dwMilliseconds is INFINITE, the function will return only when the specified objects are signaled or an I/O completion routine or APC is queued. </param>
+        /// <param name="bAlertable"> If this parameter is <see langword="true"/> and the thread is in the waiting state, the function returns when the system queues an I/O completion routine or APC, and the thread runs the routine or function. Otherwise, the function does not return and the completion routine or APC function is not executed. </param>
+        /// <returns> If the function succeeds, the return value indicates the event that caused the function to return. </returns>
+        [DllImport("Kernel32.dll")]
+        public static extern uint WaitForMultipleObjectsEx(uint nCount, IntPtr[] lpHandles, bool bWaitAll, uint dwMilliseconds, bool bAlertable);
     }
 }

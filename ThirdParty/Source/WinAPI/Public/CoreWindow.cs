@@ -23,6 +23,13 @@ namespace SC.ThirdParty.WinAPI
         /// </summary>
         public delegate void DestroyDelegate();
 
+        /// <summary>
+        /// 창의 크기가 변경될 때 호출되는 이벤트의 대리자입니다.
+        /// </summary>
+        /// <param name="x"> X 크기가 전달됩니다. </param>
+        /// <param name="y"> Y 크기가 전달됩니다. </param>
+        public delegate void SizingDelegate(int x, int y);
+
         Application _app;
         IntPtr _handle;
         bool _disposed;
@@ -71,6 +78,11 @@ namespace SC.ThirdParty.WinAPI
         /// </summary>
         public event DestroyDelegate Destroy;
 
+        /// <summary>
+        /// 창의 크기가 변경될 때 호출되는 이벤트입니다.
+        /// </summary>
+        public event SizingDelegate Sizing;
+
         IntPtr CreateCoreWindow()
         {
             WNDCLASSEX wcex = new();
@@ -104,15 +116,45 @@ namespace SC.ThirdParty.WinAPI
 
         long WndProc(IntPtr hWnd, uint uMsg, ulong wParam, long lParam)
         {
-            switch (uMsg)
+            if (ProcessMessage(uMsg, wParam, lParam))
             {
-                case (int)WM_DESTROY:
+                return 0;
+            }
+
+            switch ((WindowMessage)uMsg)
+            {
+                case WM_DESTROY:
                     Destroy?.Invoke();
                     PostQuitMessage(0);
+                    break;
+                case WM_SIZE:
+                    Sizing?.Invoke(LOWORD((int)lParam), HIWORD((int)lParam));
                     break;
             }
 
             return DefWindowProc(hWnd, uMsg, wParam, lParam);
+        }
+
+        /// <summary>
+        /// 모든 메시지를 처리합니다.
+        /// </summary>
+        /// <param name="uMsg"> 메시지 ID가 전달됩니다. </param>
+        /// <param name="wParam"> 첫 번째 매개변수가 전달됩니다. </param>
+        /// <param name="lParam"> 두 번째 매개변수가 전달됩니다. </param>
+        /// <returns> <see langword="true"/>를 반환할 경우 이후 메시지를 처리하지 않습니다. </returns>
+        protected virtual bool ProcessMessage(uint uMsg, ulong wParam, long lParam)
+        {
+            return false;
+        }
+
+        short LOWORD(int l)
+        {
+            return (short)(l & 0xffff);
+        }
+
+        short HIWORD(int l)
+        {
+            return (short)((l >> 16) & 0xffff);
         }
     }
 }

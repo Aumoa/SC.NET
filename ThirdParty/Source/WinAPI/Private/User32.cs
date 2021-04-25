@@ -6,7 +6,7 @@ using System.Text;
 
 namespace SC.ThirdParty.WinAPI
 {
-    static class User32
+    static unsafe class User32
     {
         /// <summary>
         /// Copies the text of the specified window's title bar (if it has one) into a buffer. If the specified window is a control, the text of the control is copied. However, GetWindowText cannot retrieve the text of a control in another application.
@@ -154,5 +154,111 @@ namespace SC.ThirdParty.WinAPI
         /// <param name="nExitCode"> The application exit code. This value is used as the wParam parameter of the WM_QUIT message. </param>
         [DllImport("User32.dll")]
         public static extern void PostQuitMessage(int nExitCode);
+
+        /// <summary>
+        /// Retrieves the coordinates of a window's client area. The client coordinates specify the upper-left and lower-right corners of the client area. Because client coordinates are relative to the upper-left corner of a window's client area, the coordinates of the upper-left corner are (0,0).
+        /// </summary>
+        /// <param name="hWnd"> A handle to the window whose client coordinates are to be retrieved. </param>
+        /// <param name="lpRect"> A pointer to a RECT structure that receives the client coordinates. The left and top members are zero. The right and bottom members contain the width and height of the window. </param>
+        /// <returns>
+        /// <para> If the function succeeds, the return value is nonzero. </para>
+        /// <para> If the function fails, the return value is zero. To get extended error information, call <see cref="Kernel32.GetLastError"/>. </para>
+        /// </returns>
+        [DllImport("User32.dll")]
+        public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
+
+        /// <summary>
+        /// Retrieves information about the global cursor.
+        /// </summary>
+        /// <param name="pci"> A pointer to a <see cref="CURSORINFO"/> structure that receives the information. Note that you must set the <see cref="CURSORINFO.cbSize"/> member to <see langword="sizeof"/>(<see cref="CURSORINFO"/>) before calling this function. </param>
+        /// <returns> If the function succeeds, the return value is nonzero. </returns>
+        [DllImport("User32.dll")]
+        public static extern bool GetCursorInfo(ref CURSORINFO pci);
+
+        /// <summary>
+        /// Displays or hides the cursor.
+        /// </summary>
+        /// <param name="bShow"> If <paramref name="bShow"/> is <see langword="true"/>, the display count is incremented by one. If bShow is <see langword="false"/>, the display count is decremented by one. </param>
+        /// <returns> The return value specifies the new display counter. </returns>
+        [DllImport("User32.dll")]
+        public static extern int ShowCursor(bool bShow);
+
+        /// <summary>
+        /// Retrieves the specified system metric or system configuration setting.
+        /// </summary>
+        /// <param name="nIndex"> The system metric or configuration setting to be retrieved. </param>
+        /// <returns> If the function succeeds, the return value is the requested system metric or configuration setting. </returns>
+        [DllImport("User32.dll")]
+        public static extern int GetSystemMetrics(SystemMetricsCode nIndex);
+
+        /// <summary>
+        /// The MapWindowPoints function converts (maps) a set of points from a coordinate space relative to one window to a coordinate space relative to another window.
+        /// </summary>
+        /// <param name="hWndFrom"> A handle to the window from which points are converted. If this parameter is <see langword="null"/> or HWND_DESKTOP, the points are presumed to be in screen coordinates. </param>
+        /// <param name="hWndTo"> A handle to the window to which points are converted. If this parameter is <see langword="null"/> or HWND_DESKTOP, the points are converted to screen coordinates. </param>
+        /// <param name="lpPoints"> A pointer to an array of POINT structures that contain the set of points to be converted. The points are in device units. This parameter can also point to a RECT structure, in which case the cPoints parameter should be set to 2. </param>
+        /// <param name="cPoints"> The number of POINT structures in the array pointed to by the lpPoints parameter. </param>
+        /// <returns> If the function succeeds, the low-order word of the return value is the number of pixels added to the horizontal coordinate of each source point in order to compute the horizontal coordinate of each destination point. (In addition to that, if precisely one of hWndFrom and hWndTo is mirrored, then each resulting horizontal coordinate is multiplied by -1.) The high-order word is the number of pixels added to the vertical coordinate of each source point in order to compute the vertical coordinate of each destination point. </returns>
+        [DllImport("User32.dll")]
+        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, POINT[] lpPoints, uint cPoints);
+
+        /// <summary>
+        /// The MapWindowPoints function converts (maps) a set of points from a coordinate space relative to one window to a coordinate space relative to another window.
+        /// </summary>
+        /// <param name="hWndFrom"> A handle to the window from which points are converted. If this parameter is <see langword="null"/> or HWND_DESKTOP, the points are presumed to be in screen coordinates. </param>
+        /// <param name="hWndTo"> A handle to the window to which points are converted. If this parameter is <see langword="null"/> or HWND_DESKTOP, the points are converted to screen coordinates. </param>
+        /// <param name="lpPoints"> A pointer to an array of POINT structures that contain the set of points to be converted. The points are in device units. This parameter can also point to a RECT structure, in which case the cPoints parameter should be set to 2. </param>
+        /// <param name="cPoints"> The number of POINT structures in the array pointed to by the lpPoints parameter. </param>
+        /// <returns> If the function succeeds, the low-order word of the return value is the number of pixels added to the horizontal coordinate of each source point in order to compute the horizontal coordinate of each destination point. (In addition to that, if precisely one of hWndFrom and hWndTo is mirrored, then each resulting horizontal coordinate is multiplied by -1.) The high-order word is the number of pixels added to the vertical coordinate of each source point in order to compute the vertical coordinate of each destination point. </returns>
+        [DllImport("User32.dll")]
+        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref POINT lpPoints, uint cPoints);
+
+        /// <summary>
+        /// Confines the cursor to a rectangular area on the screen. If a subsequent cursor position (set by the SetCursorPos function or the mouse) lies outside the rectangle, the system automatically adjusts the position to keep the cursor inside the rectangular area.
+        /// </summary>
+        /// <param name="lpRect"> A pointer to the structure that contains the screen coordinates of the upper-left and lower-right corners of the confining rectangle. If this parameter is <see langword="null"/>, the cursor is free to move anywhere on the screen. </param>
+        /// <returns> If the function succeeds, the return value is nonzero. </returns>
+        [DllImport("User32.dll")]
+        public static extern bool ClipCursor(ref RECT lpRect);
+
+        /// <summary>
+        /// Posts messages when the mouse pointer leaves a window or hovers over a window for a specified amount of time.
+        /// </summary>
+        /// <param name="lpEventTrack"> A pointer to a TRACKMOUSEEVENT structure that contains tracking information. </param>
+        /// <returns> If the function succeeds, the return value is nonzero. </returns>
+        [DllImport("User32.dll")]
+        public static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT lpEventTrack);
+
+        /// <summary>
+        /// Registers the devices that supply the raw input data.
+        /// </summary>
+        /// <param name="pRawInputDevices"> An array of RAWINPUTDEVICE structures that represent the devices that supply the raw input. </param>
+        /// <param name="uiNumDevices"> The number of RAWINPUTDEVICE structures pointed to by pRawInputDevices. </param>
+        /// <param name="cbSize"> The size, in bytes, of a RAWINPUTDEVICE structure. </param>
+        /// <returns> <see langword="true"/> if the function succeeds; otherwise, <see langword="false"/>. If the function fails, call <see cref="Kernel32.GetLastError"/> for more information. </returns>
+        [DllImport("User32.dll")]
+        public static extern bool RegisterRawInputDevices(RAWINPUTDEVICE[] pRawInputDevices, uint uiNumDevices, uint cbSize);
+
+        /// <summary>
+        /// Registers the devices that supply the raw input data.
+        /// </summary>
+        /// <param name="pRawInputDevices"> An array of RAWINPUTDEVICE structures that represent the devices that supply the raw input. </param>
+        /// <param name="uiNumDevices"> The number of RAWINPUTDEVICE structures pointed to by pRawInputDevices. </param>
+        /// <param name="cbSize"> The size, in bytes, of a RAWINPUTDEVICE structure. </param>
+        /// <returns> <see langword="true"/> if the function succeeds; otherwise, <see langword="false"/>. If the function fails, call <see cref="Kernel32.GetLastError"/> for more information. </returns>
+        [DllImport("User32.dll")]
+        public static extern bool RegisterRawInputDevices(ref RAWINPUTDEVICE pRawInputDevices, uint uiNumDevices, uint cbSize);
+
+        /// <summary>
+        /// Moves the cursor to the specified screen coordinates. If the new coordinates are not within the screen rectangle set by the most recent ClipCursor function call, the system automatically adjusts the coordinates so that the cursor stays within the rectangle.
+        /// </summary>
+        /// <param name="X"> The new x-coordinate of the cursor, in screen coordinates. </param>
+        /// <param name="Y"> The new y-coordinate of the cursor, in screen coordinates. </param>
+        /// <returns> Returns nonzero if successful or zero otherwise. To get extended error information, call <see cref="Kernel32.GetLastError"/>. </returns>
+        [DllImport("User32.dll")]
+        public static extern bool SetCursorPos(int X, int Y);
+
+        [DllImport("User32.dll")]
+        public static extern uint GetRawInputData(IntPtr hRawInput, uint uiCommand, void* pData, uint* pcbSize, uint cbSizeHeader);
     }
 }

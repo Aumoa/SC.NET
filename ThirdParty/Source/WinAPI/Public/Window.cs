@@ -1,9 +1,11 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using System;
+using System.Drawing;
 using System.Text;
 
 using static SC.ThirdParty.WinAPI.ShowWindowFlags;
+using static SC.ThirdParty.WinAPI.User32;
 
 namespace SC.ThirdParty.WinAPI
 {
@@ -37,17 +39,17 @@ namespace SC.ThirdParty.WinAPI
             get
             {
                 var hWnd = GetHandle();
-                int length = User32.GetWindowText(hWnd, null, 0);
+                int length = GetWindowText(hWnd, null, 0);
 
                 var sb = new StringBuilder(length + 1);
-                User32.GetWindowText(hWnd, sb, length);
+                GetWindowText(hWnd, sb, length);
 
                 return sb.ToString();
             }
             set
             {
                 var hWnd = GetHandle();
-                User32.SetWindowText(hWnd, value);
+                SetWindowText(hWnd, value);
             }
         }
 
@@ -58,13 +60,24 @@ namespace SC.ThirdParty.WinAPI
         {
             get
             {
-                return User32.IsWindowVisible(GetHandle());
+                return IsWindowVisible(GetHandle());
             }
             set
             {
                 IntPtr hWnd = GetHandle();
-                User32.ShowWindow(hWnd, (int)(value ? SW_SHOW : SW_HIDE));
+                ShowWindow(hWnd, (int)(value ? SW_SHOW : SW_HIDE));
             }
+        }
+
+        /// <summary>
+        /// 창의 클라이언트 영역 크기를 가져옵니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        public Size GetClientSize()
+        {
+            IntPtr hWnd = GetHandle();
+            GetClientRect(hWnd, out RECT rc);
+            return new Size(rc.right - rc.left, rc.bottom - rc.top);
         }
     }
 }

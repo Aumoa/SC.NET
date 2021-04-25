@@ -54,5 +54,10 @@ namespace SC.ThirdParty.WinAPI
         /// 동기화 권한을 나타냅니다.
         /// </summary>
         Synchronize = 0x00100000,
+
+        /// <summary>
+        /// 이벤트 상태를 변경할 수 있습니다.
+        /// </summary>
+        EventModifyState = 0x0002,
     }
 }

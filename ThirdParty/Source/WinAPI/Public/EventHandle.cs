@@ -2,6 +2,8 @@
 
 using System;
 
+using static SC.ThirdParty.WinAPI.Kernel32;
+
 namespace SC.ThirdParty.WinAPI
 {
     /// <summary>
@@ -12,7 +14,7 @@ namespace SC.ThirdParty.WinAPI
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
-        public EventHandle() : base(Kernel32.CreateEventEx(IntPtr.Zero, null, 0, (uint)GenericAccess.All))
+        public EventHandle(EventFlags flags = 0, GenericAccess accessFlags = GenericAccess.All) : base(CreateEventEx(IntPtr.Zero, null, (uint)flags, (uint)accessFlags))
         {
 
         }
@@ -22,7 +24,23 @@ namespace SC.ThirdParty.WinAPI
         /// </summary>
         public void Wait()
         {
-            Kernel32.WaitForSingleObject(GetHandle(), 0xFFFFFFFF);
+            WaitForSingleObject(GetHandle(), 0xFFFFFFFF);
+        }
+
+        /// <summary>
+        /// 이벤트 상태를 활성화합니다.
+        /// </summary>
+        public void Set()
+        {
+            SetEvent(GetHandle());
+        }
+
+        /// <summary>
+        /// 이벤트 상태를 비활성화합니다.
+        /// </summary>
+        public void Reset()
+        {
+            ResetEvent(GetHandle());
         }
     }
 }
