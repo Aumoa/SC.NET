@@ -45,6 +45,12 @@ namespace SC.Engine.Runtime.GameCore
         HashSet<SActorComponent> _ownedComponents = new();
 
         /// <summary>
+        /// 컴포넌트가 추가되거나 제거될 때 호출되는 이벤트의 대리자입니다.
+        /// </summary>
+        /// <param name="component"> 추가되는 컴포넌트가 전달됩니다. </param>
+        public delegate void ComponentModifyDelegate(SActorComponent component);
+
+        /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
         public AActor()
@@ -52,6 +58,16 @@ namespace SC.Engine.Runtime.GameCore
             _primaryActorTick = new ActorTickFunction(this);
             TickEnabled = true;
         }
+
+        /// <summary>
+        /// 컴포넌트가 추가될 때 호출되는 이벤트입니다.
+        /// </summary>
+        public event ComponentModifyDelegate ComponentAdded;
+
+        /// <summary>
+        /// 컴포넌트가 제거될 때 호출되는 이벤트입니다.
+        /// </summary>
+        public event ComponentModifyDelegate ComponentRemoved;
 
         /// <inheritdoc/>
         public virtual bool TickEnabled { get; set; }
@@ -124,7 +140,6 @@ namespace SC.Engine.Runtime.GameCore
         /// <param name="deltaTime"> 이전 프레임으로부터 흐른 시간이 전달됩니다. </param>
         public virtual void TickActor(double deltaTime)
         {
-
         }
 
         /// <summary>
@@ -234,19 +249,31 @@ namespace SC.Engine.Runtime.GameCore
         /// 이 액터가 소유하는 컴포넌트를 추가합니다.
         /// </summary>
         /// <param name="ownedComponent"> 컴포넌트를 전달합니다. </param>
-        public void AddOwnedComponent(SActorComponent ownedComponent)
+        public SActorComponent AddOwnedComponent(SActorComponent ownedComponent)
         {
             if (_ownedComponents.Contains(ownedComponent))
             {
-                return;
+                return null;
             }
 
             _ownedComponents.Add(ownedComponent);
+            ComponentAdded?.Invoke(ownedComponent);
 
             if (ActorHasBegunPlay)
             {
                 ownedComponent.BeginPlay();
             }
+
+            return ownedComponent;
+        }
+
+        /// <summary>
+        /// 이 액터가 소유하는 컴포넌트를 추가합니다.
+        /// </summary>
+        /// <param name="ownedComponent"> 컴포넌트를 전달합니다. </param>
+        public T AddOwnedComponent<T>(T ownedComponent) where T : SActorComponent
+        {
+            return AddOwnedComponent(ownedComponent) as T;
         }
 
         /// <summary>
@@ -260,6 +287,7 @@ namespace SC.Engine.Runtime.GameCore
                 ownedComponent.EndPlay();
             }
 
+            ComponentRemoved?.Invoke(ownedComponent);
             _ownedComponents.Remove(ownedComponent);
         }
 
@@ -308,6 +336,38 @@ namespace SC.Engine.Runtime.GameCore
             }
 
             return null;
+        }
+
+        internal void BroadcastComponentAdd(SSceneComponent caller)
+        {
+            Stack<SSceneComponent> roots = new();
+            roots.Push(caller);
+
+            while (roots.Count != 0)
+            {
+                SSceneComponent let = roots.Pop();
+                foreach (SSceneComponent child in let.GetChildComponents())
+                {
+                    roots.Push(child);
+                }
+                ComponentAdded?.Invoke(let);
+            }
+        }
+
+        internal void BroadcastComponentRemove(SSceneComponent caller)
+        {
+            Stack<SSceneComponent> roots = new();
+            roots.Push(caller);
+
+            while (roots.Count != 0)
+            {
+                SSceneComponent let = roots.Pop();
+                foreach (SSceneComponent child in let.GetChildComponents())
+                {
+                    roots.Push(child);
+                }
+                ComponentRemoved?.Invoke(let);
+            }
         }
     }
 }

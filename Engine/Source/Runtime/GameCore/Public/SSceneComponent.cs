@@ -186,6 +186,7 @@ namespace SC.Engine.Runtime.GameCore
             }
 
             attachTo._childComponents.Add(this);
+            GetOwner().BroadcastComponentAdd(this);
             _componentAttachment.AttachParent = attachTo;
             _componentAttachment.SocketName = socketName;
 
@@ -214,6 +215,7 @@ namespace SC.Engine.Runtime.GameCore
                 GetAttachParent()._childComponents.RemoveAt(indexOf);
             }
 
+            GetOwner().BroadcastComponentRemove(this);
             _componentAttachment.Clear();
             UpdateComponentToWorld();
         }

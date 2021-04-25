@@ -271,12 +271,6 @@ namespace SC.Engine.Runtime.GameFramework.Components
             mouseTracker.MouseWheelMoved += (dy) => MouseWheelMoved?.Invoke(dy);
         }
 
-        /// <inheritdoc/>
-        public override void TickComponent(double deltaTime)
-        {
-            base.TickComponent(deltaTime);
-        }
-
         /// <summary>
         /// 키가 눌러졌을 때 발생되는 이벤트입니다.
         /// </summary>
