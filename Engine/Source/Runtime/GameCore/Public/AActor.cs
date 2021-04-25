@@ -271,5 +271,43 @@ namespace SC.Engine.Runtime.GameCore
         {
             return _ownedComponents;
         }
+
+        /// <summary>
+        /// 소유한 컴포넌트 중에서 형식으로 변환 가능한 컴포넌트를 가져옵니다.
+        /// </summary>
+        /// <typeparam name="T"> 형식을 전달합니다. </typeparam>
+        /// <returns> 컴포넌트 개체가 반환됩니다. </returns>
+        public T GetComponent<T>() where T : SActorComponent
+        {
+            // 액터 컴포넌트 목록에서 대상을 찾습니다.
+            foreach (SActorComponent actorComponent in _ownedComponents)
+            {
+                if (actorComponent is T inst)
+                {
+                    return inst;
+                }
+            }
+
+            // 재귀적 씬 컴포넌트에서 대상을 찾습니다.
+            Stack<SSceneComponent> currRoot = new();
+            currRoot.Push(GetRootComponent());
+
+            while (currRoot.Count != 0)
+            {
+                SSceneComponent curr = currRoot.Pop();
+                if (curr is T inst)
+                {
+                    return inst;
+                }
+
+                // 지원하지 않는 형식일 경우 자식 컴포넌트를 등록합니다.
+                foreach (SSceneComponent child in curr.GetChildComponents())
+                {
+                    currRoot.Push(child);
+                }
+            }
+
+            return null;
+        }
     }
 }

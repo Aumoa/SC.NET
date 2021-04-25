@@ -1031,6 +1031,82 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
+        /// 원근 투영 행렬을 생성합니다.
+        /// </summary>
+        /// <param name="FovAngleY"> 시야각을 전달합니다. </param>
+        /// <param name="AspectRatio"> 종횡비를 전달합니다. </param>
+        /// <param name="NearZ"> 최소 깊이를 전달합니다. </param>
+        /// <param name="FarZ"> 최대 깊이를 전달합니다. </param>
+        /// <returns> 값이 반환됩니다. </returns>
+        public static Matrix4x4 PerspectiveFovLH(float FovAngleY, float AspectRatio, float NearZ, float FarZ)
+        {
+            float SinFov;
+            float CosFov;
+            MathEx.SinCos(out SinFov, out CosFov, 0.5f * FovAngleY);
+
+            float Height = CosFov / SinFov;
+            float Width = Height / AspectRatio;
+            float fRange = FarZ / (FarZ - NearZ);
+
+            Matrix4x4 M;
+            M._11 = Width;
+            M._12 = 0.0f;
+            M._13 = 0.0f;
+            M._14 = 0.0f;
+
+            M._21 = 0.0f;
+            M._22 = Height;
+            M._23 = 0.0f;
+            M._24 = 0.0f;
+
+            M._31 = 0.0f;
+            M._32 = 0.0f;
+            M._33 = fRange;
+            M._34 = 1.0f;
+
+            M._41 = 0.0f;
+            M._42 = 0.0f;
+            M._43 = -fRange * NearZ;
+            M._44 = 0.0f;
+            return M;
+        }
+
+        /// <summary>
+        /// 직교 투영 행렬을 생성합니다.
+        /// </summary>
+        /// <param name="ViewWidth"> 뷰 너비를 전달합니다. </param>
+        /// <param name="ViewHeight"> 뷰 높이를 전달합니다. </param>
+        /// <param name="NearZ"> 최소 깊이를 전달합니다. </param>
+        /// <param name="FarZ"> 최대 깊이를 전달합니다. </param>
+        /// <returns> 값이 반환됩니다. </returns>
+        public static Matrix4x4 OrthographicLH(float ViewWidth, float ViewHeight, float NearZ, float FarZ)
+        {
+            float fRange = 1.0f / (FarZ - NearZ);
+
+            Matrix4x4 M;
+            M._11 = 2.0f / ViewWidth;
+            M._12 = 0.0f;
+            M._13 = 0.0f;
+            M._14 = 0.0f;
+
+            M._21 = 0.0f;
+            M._22 = 2.0f / ViewHeight;
+            M._23 = 0.0f;
+            M._24 = 0.0f;
+
+            M._31 = 0.0f;
+            M._32 = 0.0f;
+            M._33 = fRange;
+            M._34 = 0.0f;
+
+            M._41 = 0.0f;
+            M._42 = 0.0f;
+            M._43 = -fRange * NearZ;
+            M._44 = 1.0f;
+            return M;
+        }
+
+        /// <summary>
         /// 카메라에서 대상 방향을 바라보는 행렬을 생성합니다.
         /// </summary>
         /// <param name="eyePosition"> 카메라 위치를 전달합니다. </param>

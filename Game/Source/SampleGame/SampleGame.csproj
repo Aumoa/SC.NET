@@ -7,9 +7,8 @@
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	<OutputPath>$(SolutionDir)Build\</OutputPath>
-	<DocumentationFile>$(SolutionDir)Intermediate\Build\SampleGame\SampleGame.xml</DocumentationFile>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-	<RootNamespace>SC.Engine.Runtime.Core</RootNamespace>
+	<RootNamespace>SampleGame</RootNamespace>
 	<Platforms>x64</Platforms>
   </PropertyGroup>
 

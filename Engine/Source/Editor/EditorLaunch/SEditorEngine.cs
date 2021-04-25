@@ -4,9 +4,9 @@ using SC.Engine.Runtime.GameFramework;
 
 namespace SC.Engine.Editor.EditorLaunch
 {
-    class EditorEngine : SGameEngine
+    class SEditorEngine : SGameEngine
     {
-        public EditorEngine()
+        public SEditorEngine()
         {
 
         }

@@ -62,6 +62,18 @@ namespace SC.Engine.Runtime.Core.Mathematics
         /// <returns> 첫 번째 아이템에 사인 값이, 두 번째 아이템에 코사인 값이 반환됩니다. </returns>
         public static (float, float) SinCos(float radians)
         {
+            SinCos(out float sin, out float cos, radians);
+            return (sin, cos);
+        }
+
+        /// <summary>
+        /// 삼각함수 사인 및 코사인을 한 번에 계산합니다.
+        /// </summary>
+        /// <param name="sin"> 사인 값이 반환됩니다. </param>
+        /// <param name="cos"> 코사인 값이 반환됩니다. </param>
+        /// <param name="radians"> 라디안 각도 단위를 전달합니다. </param>
+        public static void SinCos(out float sin, out float cos, float radians)
+        {
             float quotient = (float)(InvPI * 0.5f) * radians;
             if (radians >= 0)
             {
@@ -91,11 +103,9 @@ namespace SC.Engine.Runtime.Core.Mathematics
 
             float y2 = y * y;
 
-            float sin = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
+                  sin = (((((-2.3889859e-08f * y2 + 2.7525562e-06f) * y2 - 0.00019840874f) * y2 + 0.0083333310f) * y2 - 0.16666667f) * y2 + 1.0f) * y;
             float p = ((((-2.6051615e-07f * y2 + 2.4760495e-05f) * y2 - 0.0013888378f) * y2 + 0.041666638f) * y2 - 0.5f) * y2 + 1.0f;
-            float cos = sign * p;
-
-            return (sin, cos);
+                  cos = sign * p;
         }
 
         /// <summary>

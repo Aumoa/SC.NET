@@ -71,5 +71,11 @@ namespace SC.Engine.Runtime.GameCore
 
             _name = value;
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $"Name: {GetName()}, {base.ToString()}";
+        }
     }
 }

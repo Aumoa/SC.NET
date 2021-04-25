@@ -1,7 +1,5 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using System;
-
 using SC.ThirdParty.WinAPI;
 
 namespace SC.Engine.Editor.EditorLaunch
@@ -10,13 +8,13 @@ namespace SC.Engine.Editor.EditorLaunch
     {
         GameAssemblyLoader _assemblyLoader;
         SSlateEditorApplication _slateApplication;
-        EditorEngine _engine;
+        SEditorEngine _engine;
 
         public EditorApplication(string assemblyPath)
         {
             _assemblyLoader = new GameAssemblyLoader(assemblyPath);
             _slateApplication = new SSlateEditorApplication();
-            _engine = new EditorEngine();
+            _engine = new SEditorEngine();
 
             Initialize += EditorApplication_Initialize;
             Shutdown += EditorApplication_Shutdown;
@@ -30,7 +28,7 @@ namespace SC.Engine.Editor.EditorLaunch
 
         private void EditorApplication_Shutdown()
         {
-            _engine.Dispose();
+            _engine.Shutdown();
         }
 
         private void EditorApplication_Initialize(CoreWindow target)

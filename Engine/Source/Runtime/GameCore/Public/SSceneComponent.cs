@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 using SC.Engine.Runtime.Core.Numerics;
 
+using static SC.Engine.Runtime.GameCore.Diagnostics.LoggingSystem;
+using static SC.Engine.Runtime.GameCore.Diagnostics.LogVerbosity;
+
 namespace SC.Engine.Runtime.GameCore
 {
     /// <summary>
@@ -109,7 +112,8 @@ namespace SC.Engine.Runtime.GameCore
         /// <returns> 소켓의 트랜스폼이 반환됩니다. </returns>
         public virtual Transform GetSocketTransform(string socketName, EComponentTransformSpace space = EComponentTransformSpace.World)
         {
-            throw new SceneComponentException(SceneComponentException.ErrorId.SocketNotFound, $"대상 컴포넌트에서 {socketName} 소켓을 찾을 수 없습니다.");
+            Log(Error, "SceneComponent", $"대상 컴포넌트에서 {socketName} 소켓을 찾을 수 없습니다.");
+            return Transform.Identity;
         }
 
         /// <summary>
@@ -202,7 +206,8 @@ namespace SC.Engine.Runtime.GameCore
             int indexOf = GetAttachParent()._childComponents.IndexOf(this);
             if (indexOf == -1)
             {
-                throw new SceneComponentException(SceneComponentException.ErrorId.NotFound, "컴포넌트를 대상 컴포넌트의 하위 목록에서 찾을 수 없습니다.");
+                Log(Error, "SceneComponent", "컴포넌트를 대상 컴포넌트의 하위 목록에서 찾을 수 없습니다.");
+                return;
             }
             else
             {
@@ -343,7 +348,8 @@ namespace SC.Engine.Runtime.GameCore
         {
             if (ComponentHasBegunPlay && _mobility != EComponentMobility.Movable)
             {
-                throw new SceneComponentException(SceneComponentException.ErrorId.Mobility, "컴포넌트가 이동 가능하지 않은데 월드 트랜스폼이 변경되려합니다.");
+                Log(Error, "SceneComponent", "컴포넌트가 이동 가능하지 않은데 월드 트랜스폼이 변경되려합니다.");
+                return;
             }
 
             if (GetAttachParent() is not null)
@@ -384,7 +390,8 @@ namespace SC.Engine.Runtime.GameCore
             {
                 if (ComponentHasBegunPlay)
                 {
-                    throw new SceneComponentException(SceneComponentException.ErrorId.Mobility, "모빌리티는 게임플레이가 시작된 후 변경할 수 없습니다.");
+                    Log(Error, "SceneComponent", "모빌리티는 게임플레이가 시작된 후 변경할 수 없습니다.");
+                    return;
                 }
 
                 _mobility = value;

@@ -1,16 +1,16 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-namespace SC.Engine.Runtime.Slate.Application
+namespace SC.Engine.Runtime.GameFramework
 {
     /// <summary>
-    /// UI로 구성되는 애플리케이션을 표현합니다.
+    /// 로컬 플레이어 제어를 제공합니다.
     /// </summary>
-    public class SApplication : SLeafWidget
+    public class APlayerController : AController
     {
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
-        public SApplication()
+        public APlayerController()
         {
 
         }
