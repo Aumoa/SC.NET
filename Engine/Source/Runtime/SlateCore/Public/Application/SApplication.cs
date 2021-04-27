@@ -12,7 +12,6 @@ namespace SC.Engine.Runtime.Slate.Application
         /// </summary>
         public SApplication()
         {
-
         }
     }
 }
