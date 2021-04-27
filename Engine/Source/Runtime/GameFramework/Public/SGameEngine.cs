@@ -2,6 +2,7 @@
 
 using SC.Engine.Runtime.Core.Diagnostics;
 using SC.Engine.Runtime.GameCore;
+using SC.Engine.Runtime.GameFramework.SceneRendering;
 using SC.Engine.Runtime.RenderCore;
 using SC.ThirdParty.WinAPI;
 
@@ -23,6 +24,7 @@ namespace SC.Engine.Runtime.GameFramework
         StepTimer _tickTimer = new();
         RHIGameViewport _gameViewport;
         RHIAutoFence _fence;
+        RenderThread _renderThread;
 
         /// <summary>
         /// 개체를 초기화합니다.
@@ -50,6 +52,8 @@ namespace SC.Engine.Runtime.GameFramework
             _queue = _device.GetPrimaryQueue();
             _fence = new RHIAutoFence(_device);
             _gameViewport = new RHIGameViewport(_device, target, _fence);
+            _renderThread = new RenderThread(_device, _gameViewport);
+            _renderThread.Init();
         }
 
         /// <summary>
@@ -69,7 +73,7 @@ namespace SC.Engine.Runtime.GameFramework
         {
             _fence.Wait();
             _tickTimer.Tick();
-
+            _renderThread.Execute();
             _gameViewport.Flush();
             _fence.Signal(_queue);
         }

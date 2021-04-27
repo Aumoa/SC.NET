@@ -19,6 +19,7 @@ void DXGI::CoInitialize()
 	CDXGIAdapter1::RegisterClass();
 	CDXGIObject::RegisterClass();
 	CDXGIOutput::RegisterClass();
+	CD3DBlob::RegisterClass();
 }
 
 void DXGI::CoUninitialize()

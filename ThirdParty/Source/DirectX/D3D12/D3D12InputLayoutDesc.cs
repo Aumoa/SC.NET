@@ -41,12 +41,15 @@ namespace SC.ThirdParty.DirectX
 		{
 			InputElementDescs ??= new List<D3D12InputElementDesc>();
 
-			if ( InputElementDescs.Count == 0 ) InputElementDescs.Add( new D3D12InputElementDesc( name, format, 0 ) );
+			if (InputElementDescs.Count == 0)
+			{
+				InputElementDescs.Add(new D3D12InputElementDesc(name, format, 0));
+			}
 			else
 			{
 				var lastElement = InputElementDescs[InputElementDescs.Count - 1];
 				var sizeInBytes = lastElement.Format.GetSizeInBytes();
-				Add( name, format, lastElement.AlignedByteOffset + sizeInBytes );
+				Add(name, format, lastElement.AlignedByteOffset + sizeInBytes);
 			}
 		}
 	}

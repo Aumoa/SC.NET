@@ -21,10 +21,7 @@
     <ProjectReference Include="..\..\..\..\ThirdParty\Source\DirectX\DirectX.csproj" />
     <ProjectReference Include="..\..\..\..\ThirdParty\Source\WinAPI\WinAPI.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Private\" />
+    <ProjectReference Include="..\RenderShader\RenderShader.vcxproj" />
   </ItemGroup>
 
 </Project>

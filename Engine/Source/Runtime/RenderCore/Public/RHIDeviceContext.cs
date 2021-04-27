@@ -15,6 +15,8 @@ namespace SC.Engine.Runtime.RenderCore
         ID3D12Device _device;
         ID3D12CommandAllocator _allocator;
         ID3D12GraphicsCommandList _commandList;
+        ID2D1DeviceContext _deviceContext2d;
+        ID3D11DeviceContext _deviceContext11;
         bool _hasBegunDraw;
 
         List<object> _pendingReferences = new();
@@ -23,10 +25,17 @@ namespace SC.Engine.Runtime.RenderCore
         /// 개체를 초기화합니다.
         /// </summary>
         /// <param name="deviceBundle"> 디바이스 개체를 전달합니다. </param>
-        public RHIDeviceContext(RHIDeviceBundle deviceBundle) : base(deviceBundle)
+        /// <param name="support2D"> 2D 렌더링 디바이스 컨텍스트를 지원합니다.</param>
+        public RHIDeviceContext(RHIDeviceBundle deviceBundle, bool support2D) : base(deviceBundle)
         {
             _device = deviceBundle.GetDevice();
-            _allocator = deviceBundle.GetDevice().CreateCommandAllocator(D3D12CommandListType.Direct);
+            _allocator = _device.CreateCommandAllocator(D3D12CommandListType.Direct);
+
+            if (support2D)
+            {
+                _deviceContext2d = deviceBundle.GetDevice2D().CreateDeviceContext(D2D1DeviceContextOptions.None);
+                _deviceContext11 = deviceBundle.GetDeviceContext();
+            }
         }
 
         /// <inheritdoc/>
@@ -37,6 +46,7 @@ namespace SC.Engine.Runtime.RenderCore
             _device?.Release();
             _allocator?.Release();
             _commandList?.Release();
+            _deviceContext2d?.Release();
 
             foreach (object pendingResource in _pendingReferences)
             {
@@ -98,6 +108,16 @@ namespace SC.Engine.Runtime.RenderCore
         internal ID3D12GraphicsCommandList GetCommandList()
         {
             return _commandList;
+        }
+
+        internal ID2D1DeviceContext GetDeviceContext2D()
+        {
+            return _deviceContext2d;
+        }
+
+        internal void Flush2D()
+        {
+            _deviceContext11.Flush();
         }
 
         /// <summary>

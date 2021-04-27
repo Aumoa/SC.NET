@@ -1,8 +1,8 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using System;
-using System.Drawing;
 
+using SC.Engine.Runtime.Core.Numerics;
 using SC.ThirdParty.DirectX;
 using SC.ThirdParty.WinAPI;
 
@@ -24,6 +24,8 @@ namespace SC.Engine.Runtime.RenderCore
         ID3D11Resource[] _interopResources = new ID3D11Resource[3];
         ID2D1Bitmap1[] _bitmaps = new ID2D1Bitmap1[3];
 
+        RHIRenderTargetView _rtv;
+
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
@@ -35,8 +37,9 @@ namespace SC.Engine.Runtime.RenderCore
             _deviceBundle = deviceBundle;
             _swapChain = new RHISwapChain(deviceBundle, target);
             _fence = fence;
+            _rtv = new RHIRenderTargetView(deviceBundle, 3);
 
-            Size clientSize = target.GetClientSize();
+            System.Drawing.Size clientSize = target.GetClientSize();
             _resolutionX = clientSize.Width;
             _resolutionY = clientSize.Height;
 
@@ -64,6 +67,22 @@ namespace SC.Engine.Runtime.RenderCore
         public void Flush()
         {
             _swapChain.Present();
+        }
+
+        /// <summary>
+        /// 렌더 타겟을 가져옵니다.
+        /// </summary>
+        /// <returns> 개체가 반환됩니다. </returns>
+        public RHIRenderTarget GetRenderTarget()
+        {
+            int index = _swapChain.GetCurrentBackBufferIndex();
+            RHIRenderTarget renderTarget;
+            renderTarget.Resource = _resources[index];
+            renderTarget.CPUHandle = _rtv.GetCPUHandle(index);
+            renderTarget.Description = $"RHIGameViewport.RenderTarget{index}";
+            renderTarget.ClearColor = Color.Transparent;
+            renderTarget.Bitmap = _bitmaps[index];
+            return renderTarget;
         }
 
         /// <summary>
@@ -104,6 +123,8 @@ namespace SC.Engine.Runtime.RenderCore
                 {
                     _bitmaps[i] = deviceContext2d.CreateBitmapFromDxgiSurface(surface, bitmapProp);
                 }
+
+                _rtv.CreateView(i, _resources[i], null);
             }
 
             _resolutionX = resolutionX;

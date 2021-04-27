@@ -59,5 +59,10 @@ namespace SC.Engine.Runtime.RenderCore
         {
             return _swapChain.GetBuffer<ID3D12Resource>(index);
         }
+
+        internal int GetCurrentBackBufferIndex()
+        {
+            return (int)_swapChain.GetCurrentBackBufferIndex();
+        }
     }
 }

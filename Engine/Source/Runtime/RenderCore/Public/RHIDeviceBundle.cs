@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
+using SC.Engine.Runtime.RenderCore.RenderPass;
 using SC.ThirdParty.DirectX;
 
 namespace SC.Engine.Runtime.RenderCore
@@ -130,6 +131,7 @@ namespace SC.Engine.Runtime.RenderCore
         internal ID3D11On12Device GetInteropDevice() => _device11On12;
         internal ID2D1DeviceContext GetDeviceContext2D() => _deviceContext2d;
         internal ID3D11DeviceContext GetDeviceContext() => _immCon11;
+        internal ID2D1Device GetDevice2D() => _device2d;
 
         bool IsAdapterSuitable(IDXGIAdapter adapter)
         {

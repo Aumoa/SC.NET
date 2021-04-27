@@ -6,6 +6,7 @@
 
 #include <Windows.h>
 #include <dxgi1_6.h>
+#include <d3dcompiler.h>
 #include <wrl/client.h>
 #include <vector>
 #include <msclr/marshal.h>
@@ -32,6 +33,7 @@ using Microsoft::WRL::ComPtr;
 #include "CDXGISwapChain2.h"
 #include "CDXGISwapChain3.h"
 #include "CDXGIFactory1.h"
+#include "CD3DBlob.h"
 
 template< class T >
 T* Take( SC::ThirdParty::DirectX::IUnknown^ pUnknown )
