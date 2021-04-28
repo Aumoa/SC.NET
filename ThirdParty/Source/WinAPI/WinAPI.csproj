@@ -3,11 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
 	<PlatformTarget>x64</PlatformTarget>
-	<IntermediateOutputPath>$(SolutionDir)Intermediate\WinAPI\</IntermediateOutputPath>
+	<IntermediateOutputPath>$(SolutionDir)Intermediate\Build\WinAPI\</IntermediateOutputPath>
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	<OutputPath>$(SolutionDir)Build\</OutputPath>
-	<DocumentationFile>$(SolutionDir)Intermediate\WinAPI\WinAPI.xml</DocumentationFile>
+	<DocumentationFile>$(SolutionDir)Intermediate\Build\WinAPI\WinAPI.xml</DocumentationFile>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<RootNamespace>SC.ThirdParty.WinAPI</RootNamespace>
 	<Platforms>x64</Platforms>
