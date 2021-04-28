@@ -9,6 +9,7 @@ using BYTE = unsigned char;
 #include <cstring>
 
 using namespace SC::Engine::Runtime::RenderShader::Shaders;
+using namespace cli;
 
 GeometryShaderCodeCompile::GeometryShaderCodeCompile() : Super()
 {
@@ -16,12 +17,12 @@ GeometryShaderCodeCompile::GeometryShaderCodeCompile() : Super()
 
 void GeometryShaderCodeCompile::CompileShader()
 {
-	_bytecodes.VertexShaderBytecode = gcnew cli::array<BYTE>(sizeof(pGeometryVertexShader));
+	_bytecodes.VertexShaderBytecode = gcnew array<BYTE>(sizeof(pGeometryVertexShader));
 	pin_ptr<BYTE> pVertexShaderBytecode = &_bytecodes.VertexShaderBytecode[0];
 	memcpy(pVertexShaderBytecode, pGeometryVertexShader, sizeof(pGeometryVertexShader));
 	pVertexShaderBytecode = nullptr;
 
-	_bytecodes.PixelShaderBytecode = gcnew cli::array<BYTE>(sizeof(pGeometryPixelShader));
+	_bytecodes.PixelShaderBytecode = gcnew array<BYTE>(sizeof(pGeometryPixelShader));
 	pin_ptr<BYTE> pPixelShaderBytecode = &_bytecodes.PixelShaderBytecode[0];
 	memcpy(pPixelShaderBytecode, pGeometryPixelShader, sizeof(pGeometryPixelShader));
 	pPixelShaderBytecode = nullptr;

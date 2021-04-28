@@ -34,10 +34,8 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
             base.Dispose();
         }
 
-        /// <summary>
-        /// 렌더 패스에서 사용하는 셰이더를 컴파일합니다.
-        /// </summary>
-        public void CompileShader()
+        /// <inheritdoc/>
+        public override void CompileShader()
         {
             _shaderCode.CompileShader();
 

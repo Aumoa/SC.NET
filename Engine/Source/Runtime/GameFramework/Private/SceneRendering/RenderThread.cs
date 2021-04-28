@@ -31,6 +31,7 @@ namespace SC.Engine.Runtime.GameFramework.SceneRendering
         public void Init()
         {
             _geometryPass.CompileShader();
+            _slatePass.CompileShader();
         }
 
         public virtual void Dispose()

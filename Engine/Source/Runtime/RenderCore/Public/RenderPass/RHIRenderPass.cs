@@ -16,6 +16,13 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
         }
 
         /// <summary>
+        /// 렌더 패스에서 사용하는 셰이더를 컴파일합니다.
+        /// </summary>
+        public virtual void CompileShader()
+        {
+        }
+
+        /// <summary>
         /// 렌더 패스를 시작합니다.
         /// </summary>
         /// <param name="deviceContext"> 디바이스 컨텍스트를 전달합니다. </param>

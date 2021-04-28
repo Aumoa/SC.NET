@@ -6,6 +6,9 @@
     <ClCompile Include="Private\Shaders\GeometryShaderCodeCompile.cpp">
       <Filter>Private\Shaders</Filter>
     </ClCompile>
+    <ClCompile Include="Private\Shaders\SlateShaderCodeCompile.cpp">
+      <Filter>Private\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -13,6 +16,9 @@
       <Filter>Public\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Public\Shaders\ShaderBytecodes.h">
+      <Filter>Public\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Shaders\SlateShaderCodeCompile.h">
       <Filter>Public\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
@@ -23,33 +29,45 @@
     <Filter Include="Public\Shaders">
       <UniqueIdentifier>{10b3f899-16e3-4434-b74c-56966562b6c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Public\Shaders\Common">
-      <UniqueIdentifier>{94d9d822-b360-4f8d-9da9-bafb4114a02e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Public\Shaders\Geometry">
-      <UniqueIdentifier>{66010839-4a67-4e0d-aa47-bb035b4dc057}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Private">
       <UniqueIdentifier>{45cba913-5da5-4c2d-9be7-869dc57d1455}</UniqueIdentifier>
     </Filter>
     <Filter Include="Private\Shaders">
       <UniqueIdentifier>{a291a2f6-4de7-4bf2-887c-65eb2fea1f73}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Private\Common">
+      <UniqueIdentifier>{94d9d822-b360-4f8d-9da9-bafb4114a02e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Geometry">
+      <UniqueIdentifier>{66010839-4a67-4e0d-aa47-bb035b4dc057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private\Slate">
+      <UniqueIdentifier>{19854c35-29c9-4729-a66e-e3f52581169a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Public\Shaders\Common\ShaderCommon.hlsli">
-      <Filter>Public\Shaders\Common</Filter>
+    <None Include="Private\Shaders\Geometry\GeometryCommon.hlsli">
+      <Filter>Private\Geometry</Filter>
     </None>
-    <None Include="Public\Shaders\Geometry\GeometryCommon.hlsli">
-      <Filter>Public\Shaders\Geometry</Filter>
+    <None Include="Private\Shaders\Common\ShaderCommon.hlsli">
+      <Filter>Private\Common</Filter>
+    </None>
+    <None Include="Private\Shaders\Slate\SlateCommon.hlsli">
+      <Filter>Private\Slate</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Public\Shaders\Geometry\GeometryVertexShader.hlsl">
-      <Filter>Public\Shaders\Geometry</Filter>
+    <FxCompile Include="Private\Shaders\Geometry\GeometryPixelShader.hlsl">
+      <Filter>Private\Geometry</Filter>
     </FxCompile>
-    <FxCompile Include="Public\Shaders\Geometry\GeometryPixelShader.hlsl">
-      <Filter>Public\Shaders\Geometry</Filter>
+    <FxCompile Include="Private\Shaders\Geometry\GeometryVertexShader.hlsl">
+      <Filter>Private\Geometry</Filter>
+    </FxCompile>
+    <FxCompile Include="Private\Shaders\Slate\SlatePixelShader.hlsl">
+      <Filter>Private\Slate</Filter>
+    </FxCompile>
+    <FxCompile Include="Private\Shaders\Slate\SlateVertexShader.hlsl">
+      <Filter>Private\Slate</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
