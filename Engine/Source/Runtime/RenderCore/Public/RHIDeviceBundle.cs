@@ -2,10 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 
-using SC.Engine.Runtime.RenderCore.RenderPass;
+using SC.Engine.Runtime.Core.FileSystem;
 using SC.ThirdParty.DirectX;
+using SC.ThirdParty.WindowsCodecs;
 
 namespace SC.Engine.Runtime.RenderCore
 {
@@ -16,6 +18,7 @@ namespace SC.Engine.Runtime.RenderCore
     {
         IDXGIFactory1 _dxgiFactory;
         ID3D12Device _device;
+        ImagingFactory _imagingFactory;
 
         ID3D11Device _device11;
         ID3D11On12Device _device11On12;
@@ -37,12 +40,9 @@ namespace SC.Engine.Runtime.RenderCore
             D3D11.CoInitialize();
             D2D1.CoInitialize();
 
-            DXGICreateFlags dxgiFlags = 0;
-
             if (debugEnabled)
             {
                 EnableDebugLayer();
-                dxgiFlags |= DXGICreateFlags.Debug;
             }
 
             // DXGI 팩토리 개체를 생성합니다.
@@ -104,6 +104,8 @@ namespace SC.Engine.Runtime.RenderCore
                 });
                 _deviceContext2d = _device2d.CreateDeviceContext(D2D1DeviceContextOptions.EnableMultithreadedOptimizations);
             }
+
+            _imagingFactory = new ImagingFactory();
         }
 
         /// <inheritdoc/>
@@ -118,6 +120,8 @@ namespace SC.Engine.Runtime.RenderCore
 
             _device2d?.Release();
             _deviceContext2d?.Release();
+
+            _imagingFactory?.Dispose();
         }
 
         /// <summary>
@@ -126,12 +130,73 @@ namespace SC.Engine.Runtime.RenderCore
         /// <returns> 개체가 반환됩니다. </returns>
         public RHICommandQueue GetPrimaryQueue() => _primaryQueue;
 
+        /// <summary>
+        /// 이미지 파일로부터 텍스처를 생성합니다.
+        /// </summary>
+        /// <param name="fr"> 파일 레퍼런스를 전달합니다. </param>
+        /// <param name="format"> 이미지 픽셀 형식을 전달합니다. </param>
+        /// <returns> 개체가 반환됩니다. </returns>
+        public RHITexture2D CreateTexture2D(FileReference fr, ImagePixelFormat format)
+        {
+            using (var img = new ImageLoader(_imagingFactory, fr))
+            using (ImageFrame frame = img.GetFrame(0))
+            using (ImageFormatConverter converter = new(_imagingFactory))
+            {
+                converter.Initialize(frame, format);
+                return RHITexture2D.LoadFromImage(this, converter);
+            }
+        }
+
         internal IDXGIFactory1 GetFactory() => _dxgiFactory;
         internal ID3D12Device GetDevice() => _device;
         internal ID3D11On12Device GetInteropDevice() => _device11On12;
         internal ID2D1DeviceContext GetDeviceContext2D() => _deviceContext2d;
         internal ID3D11DeviceContext GetDeviceContext() => _immCon11;
         internal ID2D1Device GetDevice2D() => _device2d;
+        internal ImagingFactory GetImagingFactory() => _imagingFactory;
+
+        internal ID3D12Resource CreateTexture2D(int width, int height, DXGIFormat format, D3D12ResourceFlags flags = D3D12ResourceFlags.None, D3D12ClearValue? clearValue = null, D3D12ResourceStates initialState = D3D12ResourceStates.PixelShaderResource)
+        {
+            D3D12HeapProperties heapProp = new();
+            heapProp.Type = D3D12HeapType.Default;
+
+            D3D12ResourceDesc textureDesc = new();
+            textureDesc.Dimension = D3D12ResourceDimension.Texture2D;
+            textureDesc.Width = (ulong)width;
+            textureDesc.Height = (uint)height;
+            textureDesc.DepthOrArraySize = 1;
+            textureDesc.MipLevels = 1;
+            textureDesc.Format = format;
+            textureDesc.SampleDesc = DXGISampleDesc.One;
+            textureDesc.Flags = flags;
+            return _device.CreateCommittedResource(heapProp, D3D12HeapFlags.None, textureDesc, initialState, clearValue);
+        }
+
+        internal ID3D12Resource CreateUploadHeap(ID3D12Resource resource, out D3D12PlacedSubresourceFootprint footprint)
+        {
+            D3D12ResourceDesc textureDesc = resource.GetDesc();
+            if (textureDesc.Dimension is not D3D12ResourceDimension.Texture2D)
+            {
+                throw new ArgumentException("textureDesc.Dimension is not D3D12ResourceDimension.Texture2D");
+            }
+
+            D3D12PlacedSubresourceFootprint[] footprints = _device.GetCopyableFootprints(textureDesc, 0, 1, 0, out var _, out var _, out ulong totalSize);
+            footprint = footprints[0];
+
+            D3D12HeapProperties heapProp = new();
+            heapProp.Type = D3D12HeapType.Upload;
+
+            D3D12ResourceDesc bufferDesc = new();
+            bufferDesc.Dimension = D3D12ResourceDimension.Buffer;
+            bufferDesc.Width = totalSize;
+            bufferDesc.Height = 1;
+            bufferDesc.DepthOrArraySize = 1;
+            bufferDesc.MipLevels = 1;
+            bufferDesc.SampleDesc = DXGISampleDesc.One;
+            bufferDesc.Layout = D3D12TextureLayout.RowMajor;
+
+            return _device.CreateCommittedResource(heapProp, D3D12HeapFlags.None, bufferDesc, D3D12ResourceStates.GenericRead, null);
+        }
 
         bool IsAdapterSuitable(IDXGIAdapter adapter)
         {
@@ -156,11 +221,13 @@ namespace SC.Engine.Runtime.RenderCore
         {
             try
             {
-                ID3D12Debug debug = ComObject.CoCreateInstance<ID3D12Debug>();
+                using (ID3D12Debug debug = ComObject.CoCreateInstance<ID3D12Debug>())
+                {
+                    debug.EnableDebugLayer();
+                }
             }
             catch (COMException)
             {
-
             }
         }
     }

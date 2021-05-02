@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\..\..\ThirdParty\Source\DirectX.DXGI\DirectX.DXGI.vcxproj" />
     <ProjectReference Include="..\..\..\..\ThirdParty\Source\DirectX\DirectX.csproj" />
     <ProjectReference Include="..\..\..\..\ThirdParty\Source\WinAPI\WinAPI.csproj" />
+    <ProjectReference Include="..\..\..\..\ThirdParty\Source\WindowsCodecs\WindowsCodecs.vcxproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\RenderShader\RenderShader.vcxproj" />
   </ItemGroup>

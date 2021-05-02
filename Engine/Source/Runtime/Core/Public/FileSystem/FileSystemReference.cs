@@ -15,7 +15,7 @@ namespace SC.Engine.Runtime.Core.FileSystem
         /// <param name="inPath"> 경로를 전달합니다. </param>
         public FileSystemReference(string inPath)
         {
-            FullPath = inPath;
+            FullPath = Path.GetFullPath(inPath);
             Name = Path.GetFileName(inPath);
         }
 

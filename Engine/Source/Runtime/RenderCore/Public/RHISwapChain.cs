@@ -37,6 +37,14 @@ namespace SC.Engine.Runtime.RenderCore
             }
         }
 
+        /// <inheritdoc/>
+        public override void Dispose()
+        {
+            _swapChain?.Dispose();
+
+            base.Dispose();
+        }
+
         /// <summary>
         /// 후면 버퍼 내용을 화면에 출력합니다.
         /// </summary>

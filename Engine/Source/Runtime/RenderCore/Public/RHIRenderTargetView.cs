@@ -28,8 +28,10 @@ namespace SC.Engine.Runtime.RenderCore
                 throw new IndexOutOfRangeException();
             }
 
+            var dev = GetDevice().GetDevice();
+
             D3D12CPUDescriptorHandle handle = GetCPUHandle(index);
-            GetHeap().GetDevice<ID3D12Device>().CreateRenderTargetView(target, rtvDesc, handle);
+            dev.CreateRenderTargetView(target, rtvDesc, handle);
         }
     }
 }

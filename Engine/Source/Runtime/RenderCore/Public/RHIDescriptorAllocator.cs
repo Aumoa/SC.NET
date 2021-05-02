@@ -30,6 +30,14 @@ namespace SC.Engine.Runtime.RenderCore
             _incrementSize = _device.GetDescriptorHandleIncrementSize(D3D12DescriptorHeapType.CBV_SRV_UAV);
         }
 
+        /// <inheritdoc/>
+        public override void Dispose()
+        {
+            _descriptorHeap?.Dispose();
+
+            base.Dispose();
+        }
+
         internal void SetDescriptorHeaps(ID3D12GraphicsCommandList cmdList)
         {
             cmdList.SetDescriptorHeaps(_descriptorHeap);
@@ -75,7 +83,7 @@ namespace SC.Engine.Runtime.RenderCore
         {
             uint index = 0;
 
-            if (_issuedIndex.Count == 0)
+            if (_issuedIndex.Count != 0)
             {
                 index = _issuedIndex[_issuedIndex.Count - 1];
                 index += _issuedViews[_issuedViews.Count - 1].DescriptorsCount;
@@ -111,6 +119,8 @@ namespace SC.Engine.Runtime.RenderCore
             {
                 if (_descriptorsCount < value)
                 {
+                    _descriptorHeap?.Release();
+
                     _descriptorHeap = _device.CreateDescriptorHeap(D3D12DescriptorHeapType.CBV_SRV_UAV, value, D3D12DescriptorHeapFlags.ShaderVisible);
                     _descriptorsCount = value;
                 }

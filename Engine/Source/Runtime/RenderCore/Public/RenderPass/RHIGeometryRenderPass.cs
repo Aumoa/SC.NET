@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 
+using SC.Engine.Runtime.Core.Numerics;
 using SC.Engine.Runtime.RenderShader.Shaders;
 using SC.ThirdParty.DirectX;
 

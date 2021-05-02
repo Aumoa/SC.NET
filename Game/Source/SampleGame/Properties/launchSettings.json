@@ -4,7 +4,8 @@
       "commandName": "Executable",
       "executablePath": "$(OutDir)EditorLaunch.exe",
       "commandLineArgs": "SampleGame.dll",
-      "nativeDebugging": false
+      "workingDirectory": "$(SolutionDir)Game\\Content\\",
+      "nativeDebugging": true
     }
   }
 }

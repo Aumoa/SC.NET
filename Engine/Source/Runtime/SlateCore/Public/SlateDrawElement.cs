@@ -7,8 +7,16 @@ namespace SC.Engine.Runtime.SlateCore
     /// </summary>
     public class SlateDrawElement
     {
+        /// <summary>
+        /// 개체를 초기화합니다.
+        /// </summary>
         public SlateDrawElement()
         {
         }
+
+        /// <summary>
+        /// 요소가 사용하는 브러시 정보를 나타냅니다.
+        /// </summary>
+        public SlateBrush Brush;
     }
 }

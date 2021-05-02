@@ -61,8 +61,10 @@ namespace SC.Engine.Runtime.GameFramework
         /// </summary>
         public virtual void Shutdown()
         {
+            _renderThread?.Dispose();
             _gameViewport?.Dispose();
             _queue?.Dispose();
+            _fence?.Dispose();
             _device?.Dispose();
         }
 

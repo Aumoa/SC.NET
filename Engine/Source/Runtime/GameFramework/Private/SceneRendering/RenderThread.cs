@@ -47,11 +47,10 @@ namespace SC.Engine.Runtime.GameFramework.SceneRendering
             _deviceContext.BeginDraw();
             _geometryPass.BeginPass(_deviceContext, _gameViewport.GetRenderTarget());
             _geometryPass.EndPass(_deviceContext);
-            _deviceContext.EndDraw();
-            _primaryQueue.ExecuteCommandLists(_deviceContext);
-
             _slatePass.BeginPass(_deviceContext, _gameViewport.GetRenderTarget());
             _slatePass.EndPass(_deviceContext);
+            _deviceContext.EndDraw();
+            _primaryQueue.ExecuteCommandLists(_deviceContext);
         }
     }
 }

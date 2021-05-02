@@ -57,8 +57,10 @@ namespace SC.Engine.Runtime.RenderCore
             }
 
             _deviceBundle.GetDeviceContext().Flush();
-            _fence.Wait();
+            _fence?.Wait();
             _swapChain?.Dispose();
+            _fence?.Dispose();
+            _rtv?.Dispose();
         }
 
         /// <summary>

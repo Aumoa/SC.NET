@@ -20,7 +20,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// <param name="descriptorsCount"> 뷰 디스크럽터 개수를 전달합니다. </param>
         public RHIShaderResourceView(RHIDeviceBundle deviceBundle, uint descriptorsCount) : base(deviceBundle, D3D12DescriptorHeapType.CBV_SRV_UAV, descriptorsCount)
         {
-            _device = GetHeap().GetDevice<ID3D12Device>();
+            _device = deviceBundle.GetDevice();
         }
 
         internal void CreateShaderResourceView(int index, ID3D12Resource target, D3D12ShaderResourceViewDesc? srvDesc)
