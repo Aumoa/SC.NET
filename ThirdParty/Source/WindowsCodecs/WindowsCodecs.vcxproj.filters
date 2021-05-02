@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="Public\ImageLoader.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\ImagingFactory.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\ImageFrame.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\Image.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\ImageFormatConverter.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+    <ClInclude Include="Public\ImagePixelFormat.h">
+      <Filter>Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="Private\ImagingFactory.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\ImageLoader.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\Image.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\ImageFrame.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+    <ClCompile Include="Private\ImageFormatConverter.cpp">
+      <Filter>Private</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Public">
+      <UniqueIdentifier>{2c9f35e1-52e8-4217-929b-962ae52da8dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Private">
+      <UniqueIdentifier>{9dd06057-e96f-4a8a-ab99-20fe22dbc931}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
