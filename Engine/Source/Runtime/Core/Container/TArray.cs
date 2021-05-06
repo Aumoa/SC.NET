@@ -919,5 +919,45 @@ namespace SC.Engine.Runtime.Core.Container
 
             object IEnumerator.Current => Current;
         }
+
+        /// <summary>
+        /// 값을 최상위에 추가합니다.
+        /// </summary>
+        /// <param name="value"> 값을 전달합니다. </param>
+        public void Push(in T value)
+        {
+            Insert(_count, in value);
+        }
+
+        /// <summary>
+        /// 최상위 값을 가져오고 컨테이너에서 제거합니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        public T Pop()
+        {
+            if (_count == 0)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            int indexOf = _count - 1;
+            T value = _items[indexOf];
+            RemoveAt(indexOf);
+            return value;
+        }
+
+        /// <summary>
+        /// 최상위 값의 참조를 가져옵니다.
+        /// </summary>
+        /// <returns> 값의 참조가 반환됩니다. </returns>
+        public ref T Peek()
+        {
+            if (_count == 0)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            return ref _items[^1];
+        }
     }
 }
