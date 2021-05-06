@@ -1,7 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using System.Collections.Generic;
-
+using SC.Engine.Runtime.Core.Container;
 using SC.Engine.Runtime.Core.FileSystem;
 using SC.Engine.Runtime.Core.Numerics;
 using SC.Engine.Runtime.RenderShader.Shaders;
@@ -68,7 +67,7 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
             };
 
             D3D12RootDescriptorTable descriptorTable = new();
-            descriptorTable.DescriptorRanges = new List<D3D12DescriptorRange>() { texture };
+            descriptorTable.DescriptorRanges = new TArray<D3D12DescriptorRange>() { texture };
 
             D3D12RootParameter textureParam = new();
             textureParam.ParameterType = D3D12RootParameterType.DescriptorTable;
@@ -78,11 +77,11 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
             // 루트 시그니쳐 개체를 생성합니다.
             D3D12RootSignatureDesc rsd = new()
             {
-                Parameters = new List<D3D12RootParameter>()
+                Parameters = new TArray<D3D12RootParameter>()
                 {
                     textureParam
                 },
-                StaticSamplers = new List<D3D12StaticSamplerDesc>()
+                StaticSamplers = new TArray<D3D12StaticSamplerDesc>()
                 {
                     new D3D12StaticSamplerDesc(D3D12Filter.MIN_MAG_MIP_LINEAR, D3D12TextureAddressMode.Wrap, 0, D3D12ShaderVisibility.Pixel)
                 },

@@ -1,7 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using System.Collections.Generic;
-
+using SC.Engine.Runtime.Core.Container;
 using SC.Engine.Runtime.Core.Numerics;
 using SC.Engine.Runtime.RenderShader.Shaders;
 using SC.ThirdParty.DirectX;
@@ -46,10 +45,10 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
             // 루트 시그니쳐 개체를 생성합니다.
             D3D12RootSignatureDesc rsd = new()
             {
-                Parameters = new List<D3D12RootParameter>()
+                Parameters = new TArray<D3D12RootParameter>()
                 {
                 },
-                StaticSamplers = new List<D3D12StaticSamplerDesc>()
+                StaticSamplers = new TArray<D3D12StaticSamplerDesc>()
                 {
                 },
                 Flags = D3D12RootSignatureFlags.AllowInputAssemblerInputLayout
@@ -84,7 +83,7 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
                     DepthStencilState = D3D12DepthStencilDesc.DepthTest,
                     InputLayout = new D3D12InputLayoutDesc()
                     {
-                        InputElementDescs = new List<D3D12InputElementDesc>()
+                        InputElementDescs = new TArray<D3D12InputElementDesc>()
                         {
                             new() { SemanticName = "POSITION", Format = DXGIFormat.R32G32B32_FLOAT, AlignedByteOffset = 0 },
                             new() { SemanticName = "TEXCOORD", Format = DXGIFormat.R32G32_FLOAT, AlignedByteOffset = 12 },

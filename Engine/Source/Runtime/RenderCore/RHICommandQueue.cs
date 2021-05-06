@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 
+using SC.Engine.Runtime.Core.Container;
 using SC.ThirdParty.DirectX;
 
 namespace SC.Engine.Runtime.RenderCore
@@ -44,7 +45,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// <param name="deviceContexts"> 디바이스 컨텍스트 목록을 전달합니다. </param>
         public void ExecuteCommandLists(params RHIDeviceContext[] deviceContexts)
         {
-            List<ID3D12CommandList> commandLists = new();
+            TArray<ID3D12CommandList> commandLists = new();
 
             for (int i = 0; i < deviceContexts?.Length; ++i)
             {
@@ -70,7 +71,7 @@ namespace SC.Engine.Runtime.RenderCore
             public object _reference;
         }
 
-        Queue<PendingReference> _pendingReferences = new();
+        TQueue<PendingReference> _pendingReferences = new();
 
         /// <summary>
         /// 종료 대기 리소스를 추가합니다.

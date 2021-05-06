@@ -61,6 +61,8 @@ namespace SC.Engine.Runtime.RenderCore
             _swapChain?.Dispose();
             _fence?.Dispose();
             _rtv?.Dispose();
+
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
