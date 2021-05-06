@@ -18,7 +18,6 @@
     <ProjectReference Include="..\..\..\..\ThirdParty\Source\WinAPI\WinAPI.csproj" />
     <ProjectReference Include="..\..\Runtime\Core\Core.csproj" />
     <ProjectReference Include="..\..\Runtime\GameFramework\GameFramework.csproj" />
-    <ProjectReference Include="..\..\Runtime\SlateCore\SlateCore.csproj" />
   </ItemGroup>
 
 </Project>

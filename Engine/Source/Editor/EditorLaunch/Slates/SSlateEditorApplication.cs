@@ -1,6 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using SC.Engine.Runtime.Slate.Application;
+using SC.Engine.Runtime.RenderCore.Slate.Application;
 
 namespace SC.Engine.Editor.EditorLaunch
 {

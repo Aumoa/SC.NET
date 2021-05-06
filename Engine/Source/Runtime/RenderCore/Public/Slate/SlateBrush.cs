@@ -1,9 +1,8 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using SC.Engine.Runtime.Core.Numerics;
-using SC.Engine.Runtime.RenderCore;
 
-namespace SC.Engine.Runtime.SlateCore
+namespace SC.Engine.Runtime.RenderCore.Slate
 {
     /// <summary>
     /// 슬레이트 브러시를 표현합니다.

@@ -24,6 +24,8 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
         RHIShaderResourceView _srv;
         RHIDescriptorAllocator _descriptorAllocator;
 
+        ID3D12Resource _test;
+
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>

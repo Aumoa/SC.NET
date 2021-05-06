@@ -1,17 +1,18 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-namespace SC.Engine.Runtime.Slate.Application
+namespace SC.Engine.Runtime.RenderCore.Slate
 {
     /// <summary>
-    /// UI로 구성되는 애플리케이션을 표현합니다.
+    /// 패널 위젯을 표현합니다.
     /// </summary>
-    public class SApplication : SLeafWidget
+    public abstract class SPanelWidget : SWidget
     {
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
-        public SApplication()
+        public SPanelWidget()
         {
+
         }
     }
 }

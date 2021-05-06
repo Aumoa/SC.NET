@@ -2,7 +2,7 @@
 
 using SC.Engine.Runtime.Core.Numerics;
 
-namespace SC.Engine.Runtime.SlateCore
+namespace SC.Engine.Runtime.RenderCore.Slate
 {
     /// <summary>
     /// 슬레이트 트랜스폼을 표현합니다.

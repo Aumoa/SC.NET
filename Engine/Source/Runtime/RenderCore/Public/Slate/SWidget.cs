@@ -1,8 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using SC.Engine.Runtime.SlateCore;
-
-namespace SC.Engine.Runtime.Slate
+namespace SC.Engine.Runtime.RenderCore.Slate
 {
     /// <summary>
     /// UI 위젯을 표현합니다.
