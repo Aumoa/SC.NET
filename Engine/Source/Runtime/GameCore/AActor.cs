@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 
+using SC.Engine.Runtime.Core.Container;
 using SC.Engine.Runtime.Core.Numerics;
 
 namespace SC.Engine.Runtime.GameCore
@@ -42,7 +43,7 @@ namespace SC.Engine.Runtime.GameCore
         ActorTickFunction _primaryActorTick;
 
         SSceneComponent _rootComponent;
-        HashSet<SActorComponent> _ownedComponents = new();
+        TSet<SActorComponent> _ownedComponents = new();
 
         /// <summary>
         /// 컴포넌트가 추가되거나 제거될 때 호출되는 이벤트의 대리자입니다.
@@ -317,7 +318,7 @@ namespace SC.Engine.Runtime.GameCore
             }
 
             // 재귀적 씬 컴포넌트에서 대상을 찾습니다.
-            Stack<SSceneComponent> currRoot = new();
+            TArray<SSceneComponent> currRoot = new();
             currRoot.Push(GetRootComponent());
 
             while (currRoot.Count != 0)
@@ -340,7 +341,7 @@ namespace SC.Engine.Runtime.GameCore
 
         internal void BroadcastComponentAdd(SSceneComponent caller)
         {
-            Stack<SSceneComponent> roots = new();
+            TArray<SSceneComponent> roots = new();
             roots.Push(caller);
 
             while (roots.Count != 0)
@@ -356,7 +357,7 @@ namespace SC.Engine.Runtime.GameCore
 
         internal void BroadcastComponentRemove(SSceneComponent caller)
         {
-            Stack<SSceneComponent> roots = new();
+            TArray<SSceneComponent> roots = new();
             roots.Push(caller);
 
             while (roots.Count != 0)

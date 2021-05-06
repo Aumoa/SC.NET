@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 
+using SC.Engine.Runtime.Core.Container;
 using SC.Engine.Runtime.Core.Numerics;
 
 using static SC.Engine.Runtime.GameCore.Diagnostics.LoggingSystem;
@@ -58,7 +59,7 @@ namespace SC.Engine.Runtime.GameCore
         EComponentDirtyFlags _dirtyMask = EComponentDirtyFlags.None;
 
         SceneAttachment _componentAttachment;
-        List<SSceneComponent> _childComponents = new();
+        TArray<SSceneComponent> _childComponents = new();
 
         /// <summary>
         /// 개체를 초기화합니다.
