@@ -23,14 +23,14 @@ namespace SC.Engine.Runtime.Core.Container
         /// 이 데이터와 일치하는지 여부를 검사하는 함수의 대리자입니다.
         /// </summary>
         /// <param name="inValue"> 데이터가 전달됩니다. </param>
-        public delegate bool PredicateDelegate(T inValue);
+        public delegate bool PredicateDelegate(in T inValue);
 
         /// <summary>
         /// 두 데이터를 비교한 값을 반환하는 함수의 대리자입니다.
         /// </summary>
         /// <param name="left"> 첫 번째 데이터가 전달됩니다. </param>
         /// <param name="right"> 두 번째 데이터가 전달됩니다. </param>
-        public delegate int CompareDelegate(T left, T right);
+        public delegate int CompareDelegate(in T left, in T right);
 
         /// <summary>
         /// <see cref="TArray{T}"/> 클래스의 새 인스턴스를 초기화합니다.
@@ -117,7 +117,13 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual void Add(T item)
+        public virtual void Add(T item) => Add(in item);
+
+        /// <summary>
+        /// 컬렉션에 값을 추가합니다.
+        /// </summary>
+        /// <param name="item"> 값을 전달합니다. </param>
+        public void Add(in T item)
         {
             EnsureCapacity(_count + 1, false);
             _items[_count++] = item;
@@ -131,7 +137,14 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool Contains(T item)
+        public virtual bool Contains(T item) => Contains(in item);
+
+        /// <summary>
+        /// 컬렉션에 값이 존재하는지 검사합니다.
+        /// </summary>
+        /// <param name="item"> 값을 전달합니다. </param>
+        /// <returns> 값이 존재할 경우 <see langword="true"/>가 반환됩니다. </returns>
+        public bool Contains(in T item)
         {
             for (int i = 0; i < _count; ++i)
             {
@@ -151,19 +164,34 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool Remove(T item)
-        {
-            return Remove(item, true);
-        }
+        public virtual bool Remove(T item) => Remove(in item, true);
+
+        /// <summary>
+        /// 컬렉션에 값이 포함되어 있을 경우 제거합니다.
+        /// </summary>
+        /// <param name="item"> 값을 전달합니다. </param>
+        /// <returns> 값을 제거하였을 경우 <see langword="true"/>가 반환됩니다. </returns>
+        public bool Remove(in T item) => Remove(in item, true);
 
         /// <inheritdoc/>
-        public virtual int IndexOf(T item)
-        {
-            return Array.IndexOf(_items, item);
-        }
+        public virtual int IndexOf(T item) => IndexOf(in item);
+
+        /// <summary>
+        /// 컬렉션에서 값의 위치를 찾습니다.
+        /// </summary>
+        /// <param name="item"> 값을 전달합니다. </param>
+        /// <returns> 값의 위치가 반환됩니다. 값을 찾지 못했을 경우 -1이 반환됩니다. </returns>
+        public int IndexOf(in T item) => Array.IndexOf(_items, item);
 
         /// <inheritdoc/>
-        public virtual void Insert(int index, T item)
+        public virtual void Insert(int index, T item) => Insert(index, in item);
+
+        /// <summary>
+        /// 컬렉션에 값을 위치에 추가합니다. 기존 위치 이후의 값을 뒤로 밀어냅니다.
+        /// </summary>
+        /// <param name="index"> 값을 추가할 위치를 전달합니다. </param>
+        /// <param name="item"> 값을 전달합니다. </param>
+        public void Insert(int index, in T item)
         {
             CheckIndex(index);
 
@@ -245,9 +273,9 @@ namespace SC.Engine.Runtime.Core.Container
         /// <param name="item"> 제거할 데이터를 전달합니다. </param>
         /// <param name="bAllowShrink"> 이 컨테이너의 예약 공간이 축소되는 것을 허용합니다. </param>
         /// <returns> 컨테이너에서 데이터 제거를 성공하였을 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Remove(T item, bool bAllowShrink)
+        public bool Remove(in T item, bool bAllowShrink)
         {
-            int index = IndexOf(item);
+            int index = IndexOf(in item);
             if (index < 0)
             {
                 return false;
@@ -308,16 +336,15 @@ namespace SC.Engine.Runtime.Core.Container
             CheckIndex(index);
             CheckIndex(index + count - 1);
 
-            int last = this._count;
-            this._count -= count;
+            _count -= count;
 
             // Container has items that need move to front.
-            if (count < this._count)
+            if (count < _count)
             {
-                Array.Copy(_items, index + count, _items, index, this._count - index);
+                Array.Copy(_items, index + count, _items, index, _count - index);
             }
 
-            Array.Clear(_items, this._count, count);
+            Array.Clear(_items, _count, count);
 
             _items[count] = default;
             ++_revision;
@@ -398,11 +425,11 @@ namespace SC.Engine.Runtime.Core.Container
         /// </summary>
         /// <param name="item"> 추가할 데이터를 전달합니다. </param>
         /// <returns> 데이터 추가에 성공했을 경우 <see langword="true"/>를 반환합니다. </returns>
-        public bool AddUnique(T item)
+        public bool AddUnique(in T item)
         {
-            if (!Contains(item))
+            if (!Contains(in item))
             {
-                Add(item);
+                Add(in item);
                 return true;
             }
 
@@ -415,11 +442,11 @@ namespace SC.Engine.Runtime.Core.Container
         /// <param name="index"> 데이터가 추가될 위치를 전달합니다. </param>
         /// <param name="item"> 추가할 데이터를 전달합니다. </param>
         /// <returns> 데이터 추가에 성공했을 경우 <see langword="true"/>를 반환합니다. </returns>
-        public bool InsertUnique(int index, T item)
+        public bool InsertUnique(int index, in T item)
         {
-            if (!Contains(item))
+            if (!Contains(in item))
             {
-                Insert(index, item);
+                Insert(index, in item);
                 return true;
             }
 
@@ -536,7 +563,7 @@ namespace SC.Engine.Runtime.Core.Container
             {
                 if (pred(_items[i]))
                 {
-                    result.Add(_items[i]);
+                    result.Add(in _items[i]);
                 }
             }
 
@@ -626,7 +653,7 @@ namespace SC.Engine.Runtime.Core.Container
                 collection.CopyTo(_items, index);
             }
 
-            this._count += count;
+            _count += count;
             ++_revision;
         }
 
@@ -677,7 +704,19 @@ namespace SC.Engine.Runtime.Core.Container
             }
 		}
 
-        T IList<T>.this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        T IList<T>.this[int index]
+        {
+            get
+            {
+                CheckIndex(index);
+                return _items[index];
+            }
+            set
+            {
+                CheckIndex(index);
+                _items[index] = value;
+            }
+        }
 
         /// <summary>
         /// 이 컨테이너에 보관된 값의 참조를 인덱스 값으로 가져옵니다.
