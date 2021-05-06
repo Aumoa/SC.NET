@@ -16,6 +16,7 @@ namespace SC.Engine.Runtime.Core.Container
     /// 중복 불가능한 키로 이루어진 컨테이너입니다.
     /// </summary>
     /// <typeparam name="T"> 키의 형식을 전달합니다. </typeparam>
+    [Serializable]
     public class TSet<T> : ISet<T>, IReadOnlySet<T>, ICollection<T>, ICloneable, ISerializable
     {
         int[] _buckets;

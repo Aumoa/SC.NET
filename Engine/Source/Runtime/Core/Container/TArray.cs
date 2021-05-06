@@ -10,6 +10,7 @@ namespace SC.Engine.Runtime.Core.Container
     /// 연속된 공간을 가지는 가변 데이터 컨테이너를 표현합니다.
     /// </summary>
     /// <typeparam name="T"> 데이터 유형을 전달합니다. </typeparam>
+    [Serializable]
     public partial class TArray<T> : IList<T>, IReadOnlyList<T>, ICloneable
     {
         static T[] EmptyArray = new T[0];
