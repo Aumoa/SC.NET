@@ -1,8 +1,10 @@
-﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 using SC.Engine.Runtime.Core.Mathematics;
 
@@ -13,7 +15,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// </summary>
     /// <typeparam name="TKey"> 키의 형식을 전달합니다. </typeparam>
     /// <typeparam name="TValue"> 값의 형식을 전달합니다. </typeparam>
-    public class TMap<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICloneable
+    [Serializable]
+    public class TMap<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICloneable, ISerializable
     {
         int[] _buckets;
         Entry[] _entries;
@@ -39,7 +42,7 @@ namespace SC.Engine.Runtime.Core.Container
                 Initialize(capacity);
             }
 
-            this._comparer = comparer ?? EqualityComparer<TKey>.Default;
+            _comparer = comparer ?? EqualityComparer<TKey>.Default;
         }
 
         /// <summary>
@@ -83,11 +86,11 @@ namespace SC.Engine.Runtime.Core.Container
         /// </summary>
         /// <param name="key"> 키를 전달합니다. </param>
         /// <returns> 키와 쌍을 이루는 값의 참조가 반환됩니다. </returns>
-        public ref TValue this[TKey key]
+        public ref TValue this[in TKey key]
         {
             get
             {
-                int i = FindEntry(key);
+                int i = FindEntry(in key);
                 if (i >= 0)
                 {
                     return ref _entries[i].Value;
@@ -98,14 +101,17 @@ namespace SC.Engine.Runtime.Core.Container
             }
         }
 
+        /// <inheritdoc/>
+        public virtual void Add(TKey key, TValue value) => Add(in key, in value);
+
         /// <summary>
         /// 컨테이너에 새로운 키-값 쌍을 추가합니다.
         /// </summary>
         /// <param name="key"> 키를 전달합니다. </param>
         /// <param name="value"> 값을 전달합니다. </param>
-        public virtual void Add(TKey key, TValue value)
+        public void Add(in TKey key, in TValue value)
         {
-            Insert(key, value, true);
+            Insert(in key, in value, true);
         }
 
         /// <summary>
@@ -128,15 +134,21 @@ namespace SC.Engine.Runtime.Core.Container
             }
         }
 
+        /// <inheritdoc/>
+        public virtual bool ContainsKey(TKey key) => ContainsKey(in key);
+
         /// <summary>
         /// 이 컨테이너에 지정한 키가 존재하는지 검사합니다.
         /// </summary>
         /// <param name="key"> 키를 전달합니다. </param>
         /// <returns> 존재할 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public virtual bool ContainsKey(TKey key)
+        public bool ContainsKey(in TKey key)
         {
-            return FindEntry(key) >= 0;
+            return FindEntry(in key) >= 0;
         }
+
+        /// <inheritdoc/>
+        public virtual bool ContainsValue(TValue value) => ContainsValue(in value);
 
         /// <summary>
         /// 이 컨테이너에 지정한 값이 존재하는지 검사합니다.
@@ -144,7 +156,7 @@ namespace SC.Engine.Runtime.Core.Container
         /// <param name="value"> 값을 전달합니다. </param>
         /// <returns> 존재할 경우 <see langword="true"/>가 반환됩니다. </returns>
         /// <remarks> 일반적으로 이 함수는 전체 아이템을 순회하면서 값을 찾습니다. <see cref="TMap{TKey, TValue}"/>에 기대하는 성능이 나오지 않을 수 있습니다. </remarks>
-        public virtual bool ContainsValue(TValue value)
+        public bool ContainsValue(in TValue value)
         {
             if (value == null)
             {
@@ -179,12 +191,15 @@ namespace SC.Engine.Runtime.Core.Container
             return new Enumerator(this, Enumerator.KeyValuePair);
         }
 
+        /// <inheritdoc/>
+        public virtual bool Remove(TKey key) => Remove(in key);
+
         /// <summary>
         /// 컨테이너에서 해당 키와 쌍을 이루는 값을 키와 함께 제거합니다.
         /// </summary>
         /// <param name="key"> 키를 전달합니다. </param>
         /// <returns> 키를 찾아 값을 제거했으면 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Remove(TKey key)
+        public bool Remove(in TKey key)
         {
             ThrowIfArgumentNull(key);
 
@@ -219,13 +234,16 @@ namespace SC.Engine.Runtime.Core.Container
             return false;
         }
 
+        /// <inheritdoc/>
+        public virtual bool TryGetValue(TKey key, out TValue value) => TryGetValue(in key, out value);
+
         /// <summary>
         /// 지정한 키와 쌍을 이루는 값을 찾습니다. 값을 찾지 못했을 경우 예외 대신 <see langword="false"/>를 반환합니다.
         /// </summary>
         /// <param name="key"> 키를 전달합니다. </param>
         /// <param name="value"> 값을 받을 변수의 참조를 전달합니다. </param>
         /// <returns> 값을 찾았을 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool TryGetValue(TKey key, out TValue value)
+        public bool TryGetValue(in TKey key, out TValue value)
         {
             int i = FindEntry(key);
             if (i >= 0)
@@ -246,7 +264,7 @@ namespace SC.Engine.Runtime.Core.Container
             return new TMap<TKey, TValue>(this, Comparer);
         }
 
-        int FindEntry(TKey key)
+        int FindEntry(in TKey key)
         {
             ThrowIfArgumentNull(key);
 
@@ -277,9 +295,9 @@ namespace SC.Engine.Runtime.Core.Container
             _freeList = -1;
         }
 
-        void Insert(TKey key, TValue value, bool add)
+        void Insert(in TKey key, in TValue value, bool add)
         {
-            ThrowIfArgumentNull(key);
+            ThrowIfArgumentNull(in key);
 
             if (_buckets == null)
             {
@@ -422,7 +440,7 @@ namespace SC.Engine.Runtime.Core.Container
             }
         }
 
-        static void ThrowIfArgumentNull<T>(T argument)
+        static void ThrowIfArgumentNull<T>(in T argument)
         {
             if (argument is null)
             {
@@ -576,35 +594,8 @@ namespace SC.Engine.Runtime.Core.Container
                 }
             }
 
-            object IDictionaryEnumerator.Key
-            {
-                get
-                {
-#if DEBUG
-                    if (index == 0 || (index == dictionary._count + 1))
-                    {
-                        throw new InvalidOperationException("알 수 없는 컨테이너 오류입니다.");
-                    }
-#endif
-
-                    return current.Key;
-                }
-            }
-
-            object IDictionaryEnumerator.Value
-            {
-                get
-                {
-#if DEBUG
-                    if (index == 0 || (index == dictionary._count + 1))
-                    {
-                        throw new InvalidOperationException("알 수 없는 컨테이너 오류입니다.");
-                    }
-#endif
-
-                    return current.Value;
-                }
-            }
+            object IDictionaryEnumerator.Key => current.Key;
+            object IDictionaryEnumerator.Value => current.Value;
         }
 
         /// <summary>
@@ -720,9 +711,9 @@ namespace SC.Engine.Runtime.Core.Container
                 /// <inheritdoc/>
                 public TKey Current => currentKey;
 
-                object System.Collections.IEnumerator.Current => Current;
+                object IEnumerator.Current => Current;
 
-                void System.Collections.IEnumerator.Reset()
+                void IEnumerator.Reset()
                 {
                     dictionary.ThrowIfVersionNotValidRemoted(version);
 
@@ -850,9 +841,9 @@ namespace SC.Engine.Runtime.Core.Container
                     }
                 }
 
-                object System.Collections.IEnumerator.Current => Current;
+                object IEnumerator.Current => Current;
 
-                void System.Collections.IEnumerator.Reset()
+                void IEnumerator.Reset()
                 {
                     dictionary.ThrowIfVersionNotValidRemoted(version);
 
@@ -861,12 +852,61 @@ namespace SC.Engine.Runtime.Core.Container
                 }
             }
         }
+
         struct Entry
         {
             public int HashCode;
             public int Next;
             public TKey Key;
             public TValue Value;
+        }
+
+        /// <inheritdoc/>
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (info is null)
+            {
+                throw new ArgumentNullException(nameof(info));
+            }
+
+            info.AddValue("Version", _version);
+            info.AddValue("Comparer", Comparer, typeof(IEqualityComparer<TKey>));
+            info.AddValue("HashSize", _buckets is null ? 0 : _buckets.Length);
+
+            if (_buckets is not null)
+            {
+                var array = new KeyValuePair<TKey, TValue>[Count];
+                CopyTo(array, 0);
+                info.AddValue("KeyValuePair", array, typeof(KeyValuePair<TKey, TValue>[]));
+            }
+        }
+
+        void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            if ((uint)index > (uint)array.Length)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            if (array.Length - index < Count)
+            {
+                throw new ArgumentException("Too small");
+            }
+
+            int count = _count;
+            Entry[] entries = _entries;
+            for (int i = 0; i < count; ++i)
+            {
+                if (entries[i].Next >= -1)
+                {
+                    array[index++] = new KeyValuePair<TKey, TValue>(entries[i].Key, entries[i].Value);
+                }
+            }
         }
     }
 }

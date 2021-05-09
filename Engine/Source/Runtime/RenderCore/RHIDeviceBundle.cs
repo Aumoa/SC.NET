@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 
 using SC.Engine.Runtime.Core.FileSystem;
@@ -51,32 +50,30 @@ namespace SC.Engine.Runtime.RenderCore
             // 사용 가능한 어댑터를 열거하여 가장 적합한 어댑터를 선택합니다.
             for (IEnumerator<IDXGIAdapter> enumerator = _dxgiFactory.GetEnumerator(); enumerator.MoveNext();)
             {
-                using (IDXGIAdapter adapter = enumerator.Current)
+                using IDXGIAdapter adapter = enumerator.Current;
+                if (!IsAdapterSuitable(adapter))
                 {
-                    if (!IsAdapterSuitable(adapter))
-                    {
-                        continue;
-                    }
-
-                    ID3D12Device device = null;
-                    try
-                    {
-                        device = D3D12.D3D12CreateDevice(adapter, D3DFeatureLevel.Level11_0);
-                    }
-                    catch (Exception)
-                    {
-                        continue;
-                    }
-
-                    if (!IsDeviceSuitable(device))
-                    {
-                        device.Release();
-                        continue;
-                    }
-
-                    _device = device;
-                    break;
+                    continue;
                 }
+
+                ID3D12Device device = null;
+                try
+                {
+                    device = D3D12.D3D12CreateDevice(adapter, D3DFeatureLevel.Level11_0);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+
+                if (!IsDeviceSuitable(device))
+                {
+                    device.Release();
+                    continue;
+                }
+
+                _device = device;
+                break;
             }
 
             if (_device is null)
@@ -122,6 +119,8 @@ namespace SC.Engine.Runtime.RenderCore
             _deviceContext2d?.Release();
 
             _imagingFactory?.Dispose();
+
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -138,13 +137,11 @@ namespace SC.Engine.Runtime.RenderCore
         /// <returns> 개체가 반환됩니다. </returns>
         public RHITexture2D CreateTexture2D(FileReference fr, ImagePixelFormat format)
         {
-            using (var img = new ImageLoader(_imagingFactory, fr))
-            using (ImageFrame frame = img.GetFrame(0))
-            using (ImageFormatConverter converter = new(_imagingFactory))
-            {
-                converter.Initialize(frame, format);
-                return RHITexture2D.LoadFromImage(this, converter);
-            }
+            using var img = new ImageLoader(_imagingFactory, fr);
+            using ImageFrame frame = img.GetFrame(0);
+            using ImageFormatConverter converter = new(_imagingFactory);
+            converter.Initialize(frame, format);
+            return RHITexture2D.LoadFromImage(this, converter);
         }
 
         internal IDXGIFactory1 GetFactory() => _dxgiFactory;
@@ -198,33 +195,29 @@ namespace SC.Engine.Runtime.RenderCore
             return _device.CreateCommittedResource(heapProp, D3D12HeapFlags.None, bufferDesc, D3D12ResourceStates.GenericRead, null);
         }
 
-        bool IsAdapterSuitable(IDXGIAdapter adapter)
+        static bool IsAdapterSuitable(IDXGIAdapter adapter)
         {
-            using (IDXGIAdapter1 adapter1 = adapter.QueryInterface<IDXGIAdapter1>())
+            using IDXGIAdapter1 adapter1 = adapter.QueryInterface<IDXGIAdapter1>();
+            DXGIAdapterDesc1 desc = adapter1.GetDesc1();
+            if (desc.Flags == DXGIAdapterFlags.Remote || desc.Flags == DXGIAdapterFlags.Software)
             {
-                DXGIAdapterDesc1 desc = adapter1.GetDesc1();
-                if (desc.Flags == DXGIAdapterFlags.Remote || desc.Flags == DXGIAdapterFlags.Software)
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;
         }
 
-        bool IsDeviceSuitable(ID3D12Device device)
+        static bool IsDeviceSuitable(ID3D12Device device)
         {
             return true;
         }
         
-        void EnableDebugLayer()
+        static void EnableDebugLayer()
         {
             try
             {
-                using (ID3D12Debug debug = ComObject.CoCreateInstance<ID3D12Debug>())
-                {
-                    debug.EnableDebugLayer();
-                }
+                using ID3D12Debug debug = ComObject.CoCreateInstance<ID3D12Debug>();
+                debug.EnableDebugLayer();
             }
             catch (COMException)
             {

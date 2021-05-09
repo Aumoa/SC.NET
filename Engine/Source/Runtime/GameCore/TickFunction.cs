@@ -1,7 +1,8 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using System;
-using System.Collections.Generic;
+
+using SC.Engine.Runtime.Core.Container;
 
 namespace SC.Engine.Runtime.GameCore
 {
@@ -40,7 +41,7 @@ namespace SC.Engine.Runtime.GameCore
         /// </summary>
         public double TickInterval;
 
-        List<ITickFunctionObject> _prerequisites = new();
+        TArray<ITickFunctionObject> _prerequisites = new();
         bool _needUpdateGroup = false;
 
         /// <summary>

@@ -1,8 +1,8 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using System;
-using System.Collections.Generic;
 
+using SC.Engine.Runtime.Core.Container;
 using SC.ThirdParty.DirectX;
 
 namespace SC.Engine.Runtime.RenderCore
@@ -19,7 +19,7 @@ namespace SC.Engine.Runtime.RenderCore
         ID3D11DeviceContext _deviceContext11;
         bool _hasBegunDraw;
 
-        List<object> _pendingReferences = new();
+        TArray<object> _pendingReferences = new();
 
         /// <summary>
         /// 개체를 초기화합니다.
@@ -59,6 +59,8 @@ namespace SC.Engine.Runtime.RenderCore
                     disposable?.Dispose();
                 }
             }
+
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>

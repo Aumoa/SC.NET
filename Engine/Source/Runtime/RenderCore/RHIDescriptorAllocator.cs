@@ -1,7 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using System.Collections.Generic;
-
+using SC.Engine.Runtime.Core.Container;
 using SC.ThirdParty.DirectX;
 
 namespace SC.Engine.Runtime.RenderCore
@@ -17,8 +16,8 @@ namespace SC.Engine.Runtime.RenderCore
         ID3D12DescriptorHeap _descriptorHeap;
         uint _incrementSize;
 
-        List<RHIShaderResourceView> _issuedViews = new();
-        List<uint> _issuedIndex = new();
+        TArray<RHIShaderResourceView> _issuedViews = new();
+        TArray<uint> _issuedIndex = new();
 
         /// <summary>
         /// 개체를 초기화합니다.
@@ -85,8 +84,8 @@ namespace SC.Engine.Runtime.RenderCore
 
             if (_issuedIndex.Count != 0)
             {
-                index = _issuedIndex[_issuedIndex.Count - 1];
-                index += _issuedViews[_issuedViews.Count - 1].DescriptorsCount;
+                index = _issuedIndex[^1];
+                index += _issuedViews[^1].DescriptorsCount;
             }
 
             _issuedViews.Add(view);
