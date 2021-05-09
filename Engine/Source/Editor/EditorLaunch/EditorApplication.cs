@@ -7,13 +7,11 @@ namespace SC.Engine.Editor.EditorLaunch
     class EditorApplication : Application
     {
         GameAssemblyLoader _assemblyLoader;
-        SSlateEditorApplication _slateApplication;
         SEditorEngine _engine;
 
         public EditorApplication(string assemblyPath)
         {
             _assemblyLoader = new GameAssemblyLoader(assemblyPath);
-            _slateApplication = new SSlateEditorApplication();
             _engine = new SEditorEngine();
 
             Initialize += EditorApplication_Initialize;

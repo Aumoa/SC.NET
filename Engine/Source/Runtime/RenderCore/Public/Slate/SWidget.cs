@@ -19,8 +19,16 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         /// </summary>
         /// <param name="paintArgs"> 슬레이트 렌더링 매개변수가 전달됩니다. </param>
         /// <param name="allottedTransform"> 이 위젯에 할당된 트랜스폼이 전달됩니다. </param>
-        public virtual void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
+        public void Paint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
         {
+            OnPaint(paintArgs, allottedTransform);
         }
+
+        /// <summary>
+        /// 위젯을 렌더링합니다.
+        /// </summary>
+        /// <param name="paintArgs"> 슬레이트 렌더링 매개변수가 전달됩니다. </param>
+        /// <param name="allottedTransform"> 이 위젯에 할당된 트랜스폼이 전달됩니다. </param>
+        protected abstract void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform);
     }
 }

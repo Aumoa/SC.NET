@@ -18,5 +18,10 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         /// 요소가 사용하는 브러시 정보를 나타냅니다.
         /// </summary>
         public SlateBrush Brush;
+
+        /// <summary>
+        /// 요소의 트랜스폼을 나타냅니다.
+        /// </summary>
+        public SlateTransform Transform;
     }
 }

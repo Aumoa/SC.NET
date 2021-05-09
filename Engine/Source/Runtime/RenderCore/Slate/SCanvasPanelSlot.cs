@@ -3,19 +3,19 @@
 namespace SC.Engine.Runtime.RenderCore.Slate
 {
     /// <summary>
-    /// UI 이미지를 표현합니다.
+    /// 캔버스 패널의 슬롯을 표현합니다.
     /// </summary>
-    public class SImage : SLeafWidget
+    public class SCanvasPanelSlot : SSlot
     {
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
-        public SImage()
+        public SCanvasPanelSlot()
         {
         }
 
         /// <inheritdoc/>
-        protected override void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
+        protected override void ConstructSlot(SWidget content)
         {
         }
     }

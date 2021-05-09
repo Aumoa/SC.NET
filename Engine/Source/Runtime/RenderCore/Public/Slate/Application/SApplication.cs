@@ -13,5 +13,10 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Application
         public SApplication()
         {
         }
+
+        /// <inheritdoc/>
+        protected override sealed void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
+        {
+        }
     }
 }

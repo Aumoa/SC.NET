@@ -3,16 +3,12 @@
 namespace SC.Engine.Runtime.RenderCore.Slate
 {
     /// <summary>
-    /// UI 이미지를 표현합니다.
+    /// 강제 위치를 지정하는 캔버스를 표현합니다.
     /// </summary>
-    public class SImage : SLeafWidget
+    public class SConstraintCanvas : SPanelWidget
     {
-        /// <summary>
-        /// 개체를 초기화합니다.
-        /// </summary>
-        public SImage()
-        {
-        }
+        /// <inheritdoc/>
+        protected override SSlot OnAddSlot() => new SCanvasPanelSlot();
 
         /// <inheritdoc/>
         protected override void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
