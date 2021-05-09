@@ -67,6 +67,7 @@ namespace SC.Engine.Runtime.GameFramework
         {
             _renderThread?.Dispose();
             _gameViewport?.Dispose();
+            _slateApp?.Dispose();
             _queue?.Dispose();
             _fence?.Dispose();
             _device?.Dispose();
@@ -109,7 +110,7 @@ namespace SC.Engine.Runtime.GameFramework
         /// <returns> 개체를 반환합니다. </returns>
         protected virtual SApplication CreateApplication(CoreWindow target)
         {
-            return new SGameApplication(target);
+            return new SGameApplication(target, _device);
         }
     }
 }

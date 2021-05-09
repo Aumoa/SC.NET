@@ -78,6 +78,7 @@ namespace SC.Engine.Runtime.GameFramework.SceneRendering
 
             _slatePass.BeginPass(_deviceContext, _gameViewport.GetRenderTarget());
             _slateApp.Paint(sArgs, sTransform);
+            _slatePass.RenderElements(sArgs);
             _slatePass.EndPass(_deviceContext);
         }
     }

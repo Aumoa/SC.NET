@@ -1,6 +1,7 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using SC.Engine.Runtime.Core.Container;
+using SC.Engine.Runtime.Core.Numerics;
 
 namespace SC.Engine.Runtime.RenderCore.Slate
 {
@@ -30,6 +31,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         public RHIDeviceContext Context;
 
         internal TMap<int, TArray<SlateDrawElement>> Elements = new();
+        int _elementsCount;
 
         /// <summary>
         /// 개체를 초기화합니다.
@@ -39,11 +41,16 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         }
 
         /// <summary>
+        /// 전체 화면의 크기를 나타냅니다.
+        /// </summary>
+        public Vector2 ScreenSize;
+
+        /// <summary>
         /// 새 요소를 추가합니다.
         /// </summary>
         /// <param name="element"> 요소를 전달합니다. </param>
         /// <param name="layer"> 레이어를 전달합니다. </param>
-        public void AddElement(in SlateDrawElement element, int layer)
+        public void AddElement(SlateDrawElement element, int layer)
         {
             TArray<SlateDrawElement> elementArray;
 
@@ -53,7 +60,17 @@ namespace SC.Engine.Runtime.RenderCore.Slate
                 Elements.Add(layer, elementArray);
             }
 
-            elementArray.Add(in element);
+            elementArray.Add(element);
+            _elementsCount += 1;
+        }
+
+        /// <summary>
+        /// 모든 요소의 개수를 가져옵니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        public int GetElementsCount()
+        {
+            return _elementsCount;
         }
     }
 }
