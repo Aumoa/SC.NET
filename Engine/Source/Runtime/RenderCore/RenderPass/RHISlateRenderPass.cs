@@ -179,6 +179,12 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
 
             // Preparing the cached array.
             int arraySize = args.GetElementsCount();
+            if (arraySize <= 0)
+            {
+                // There is no render elements.
+                return;
+            }
+
             if (arraySize > _cachedArraySize)
             {
                 if (_slateElementsBuf is not null)
