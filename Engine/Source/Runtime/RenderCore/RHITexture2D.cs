@@ -2,6 +2,7 @@
 
 using System;
 
+using SC.Engine.Runtime.Core.Numerics;
 using SC.ThirdParty.DirectX;
 using SC.ThirdParty.WindowsCodecs;
 
@@ -13,6 +14,7 @@ namespace SC.Engine.Runtime.RenderCore
     public class RHITexture2D : RHIDeviceResource
     {
         internal ID3D12Resource _resource;
+        internal Vector2 _desiredSize;
 
         internal RHITexture2D(RHIDeviceBundle deviceBundle) : base(deviceBundle)
         {
@@ -25,6 +27,12 @@ namespace SC.Engine.Runtime.RenderCore
 
             base.Dispose();
         }
+
+        /// <summary>
+        /// 이미지의 요청 크기를 가져옵니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        public Vector2 GetDesiredSize() => _desiredSize;
 
         internal static RHITexture2D LoadFromImage(RHIDeviceBundle deviceBundle, Image image)
         {
@@ -66,6 +74,7 @@ namespace SC.Engine.Runtime.RenderCore
 
             RHITexture2D instance = new(deviceBundle);
             instance._resource = textureResource;
+            instance._desiredSize = new Vector2(image.Width, image.Height);
             return instance;
         }
 

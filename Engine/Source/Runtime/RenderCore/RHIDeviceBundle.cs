@@ -180,12 +180,17 @@ namespace SC.Engine.Runtime.RenderCore
             D3D12PlacedSubresourceFootprint[] footprints = _device.GetCopyableFootprints(textureDesc, 0, 1, 0, out var _, out var _, out ulong totalSize);
             footprint = footprints[0];
 
+            return CreateDynamicBuffer(totalSize);
+        }
+
+        internal ID3D12Resource CreateDynamicBuffer(ulong sizeInBytes)
+        {
             D3D12HeapProperties heapProp = new();
             heapProp.Type = D3D12HeapType.Upload;
 
             D3D12ResourceDesc bufferDesc = new();
             bufferDesc.Dimension = D3D12ResourceDimension.Buffer;
-            bufferDesc.Width = totalSize;
+            bufferDesc.Width = sizeInBytes;
             bufferDesc.Height = 1;
             bufferDesc.DepthOrArraySize = 1;
             bufferDesc.MipLevels = 1;

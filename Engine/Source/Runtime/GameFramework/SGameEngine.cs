@@ -3,7 +3,9 @@
 using SC.Engine.Runtime.Core.Diagnostics;
 using SC.Engine.Runtime.GameCore;
 using SC.Engine.Runtime.GameFramework.SceneRendering;
+using SC.Engine.Runtime.GameFramework.Slate;
 using SC.Engine.Runtime.RenderCore;
+using SC.Engine.Runtime.RenderCore.Slate.Application;
 using SC.ThirdParty.WinAPI;
 
 using static SC.Engine.Runtime.GameCore.Diagnostics.LoggingSystem;
@@ -20,6 +22,7 @@ namespace SC.Engine.Runtime.GameFramework
 
         RHIDeviceBundle _device;
         RHICommandQueue _queue;
+        SApplication _slateApp;
 
         StepTimer _tickTimer = new();
         RHIGameViewport _gameViewport;
@@ -50,9 +53,10 @@ namespace SC.Engine.Runtime.GameFramework
 #endif
             _device = new RHIDeviceBundle(debugFlag);
             _queue = _device.GetPrimaryQueue();
+            _slateApp = CreateApplication(target);
             _fence = new RHIAutoFence(_device);
             _gameViewport = new RHIGameViewport(_device, target, _fence);
-            _renderThread = new RenderThread(_device, _gameViewport);
+            _renderThread = new RenderThread(_device, _slateApp, _gameViewport);
             _renderThread.Init();
         }
 
@@ -63,6 +67,7 @@ namespace SC.Engine.Runtime.GameFramework
         {
             _renderThread?.Dispose();
             _gameViewport?.Dispose();
+            _slateApp?.Dispose();
             _queue?.Dispose();
             _fence?.Dispose();
             _device?.Dispose();
@@ -96,6 +101,16 @@ namespace SC.Engine.Runtime.GameFramework
         public static SGameEngine GetEngine()
         {
             return _engine;
+        }
+
+        /// <summary>
+        /// 엔진에서 사용할 주 애플리케이션 슬레이트를 제공합니다.
+        /// </summary>
+        /// <param name="target"> 애플리케이션 타깃이 전달됩니다. </param>
+        /// <returns> 개체를 반환합니다. </returns>
+        protected virtual SApplication CreateApplication(CoreWindow target)
+        {
+            return new SGameApplication(target, _device);
         }
     }
 }

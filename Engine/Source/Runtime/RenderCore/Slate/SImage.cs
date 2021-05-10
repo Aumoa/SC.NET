@@ -1,5 +1,7 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
+using SC.Engine.Runtime.Core.Numerics;
+
 namespace SC.Engine.Runtime.RenderCore.Slate
 {
     /// <summary>
@@ -15,9 +17,29 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         }
 
         /// <inheritdoc/>
-        public override void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
+        protected override void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
         {
-            base.OnPaint(paintArgs, allottedTransform);
+            SlateDrawElement sd = new();
+            sd.Brush = Brush;
+            sd.Transform.Location = Vector2.Zero;
+            sd.Transform.Size = Brush.ImageSize;
+
+            paintArgs.AddElement(sd, 0);
+        }
+
+        /// <inheritdoc/>
+        public override Vector2 GetDesiredSize()
+        {
+            return Brush.ImageSize;
+        }
+
+        /// <summary>
+        /// 브러시를 나타냅니다.
+        /// </summary>
+        public SlateBrush Brush
+        {
+            get;
+            set;
         }
     }
 }
