@@ -17,12 +17,12 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         }
 
         /// <inheritdoc/>
-        protected override void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
+        protected override void OnPaint(SlatePaintArgs paintArgs, Geometry allottedTransform)
         {
             SlateDrawElement sd = new();
             sd.Brush = Brush;
-            sd.Transform.Location = Vector2.Zero;
-            sd.Transform.Size = Brush.ImageSize;
+            sd.Transform.Location = allottedTransform.Location;
+            sd.Transform.Size = allottedTransform.Size;
 
             paintArgs.AddElement(sd, 0);
         }

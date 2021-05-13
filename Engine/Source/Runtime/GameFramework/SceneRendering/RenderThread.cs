@@ -72,9 +72,9 @@ namespace SC.Engine.Runtime.GameFramework.SceneRendering
             sArgs.SlateParent = null;
             sArgs.Context = _deviceContext;
 
-            SlateTransform sTransform = new();
+            Geometry sTransform = new();
             sTransform.Location = Vector2.Zero;
-            sTransform.Size = new Vector2(float.MaxValue, float.MaxValue);
+            sTransform.Size = _slateApp.GetDesiredSize();
 
             _slatePass.BeginPass(_deviceContext, _gameViewport.GetRenderTarget());
             _slateApp.Paint(sArgs, sTransform);

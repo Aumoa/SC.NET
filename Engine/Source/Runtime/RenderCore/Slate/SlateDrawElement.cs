@@ -22,6 +22,6 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         /// <summary>
         /// 요소의 트랜스폼을 나타냅니다.
         /// </summary>
-        public SlateTransform Transform;
+        public Geometry Transform;
     }
 }

@@ -18,7 +18,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Application
         }
 
         /// <inheritdoc/>
-        protected override sealed void OnPaint(SlatePaintArgs paintArgs, SlateTransform allottedTransform)
+        protected override sealed void OnPaint(SlatePaintArgs paintArgs, Geometry allottedTransform)
         {
             paintArgs.ScreenSize = GetDesiredSize();
             _panel.Paint(paintArgs, allottedTransform);
