@@ -92,7 +92,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Ray3 ray, float epsilon)
+        public bool NearlyEquals(Ray3 ray, float epsilon)
         {
             bool dist = false;
 
@@ -145,7 +145,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <param name="cube"> 축 정렬 육면체를 전달합니다. </param>
         /// <returns> 내부를 통과할 경우 true를 반환합니다. </returns>
-        public bool IsOverlap(in AxisAlignedCube cube)
+        public bool IsOverlap(AxisAlignedCube cube)
         {
             return cube.IsOverlap(this);
         }
@@ -155,7 +155,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <param name="cube"> 축 정렬 육면체를 전달합니다. </param>
         /// <returns> 내부를 통과할 경우 최초 통과 지점까지 가는 광선의 거리가, 그렇지 않을 경우 null을 반환합니다. </returns>
-        public float? IsIntersect(in AxisAlignedCube cube)
+        public float? IsIntersect(AxisAlignedCube cube)
         {
             return cube.IsIntersect(this);
         }
@@ -166,7 +166,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 광선을 전달합니다. </param>
         /// <param name="right"> 두 번째 광선을 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator ==(in Ray3 left, in Ray3 right)
+        public static bool operator ==(Ray3 left, Ray3 right)
         {
             return left.Origin == right.Origin && left.Direction == right.Direction && left.Distance == right.Distance;
         }
@@ -177,7 +177,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 광선을 전달합니다. </param>
         /// <param name="right"> 두 번째 광선을 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator !=(in Ray3 left, in Ray3 right)
+        public static bool operator !=(Ray3 left, Ray3 right)
         {
             return left.Origin != right.Origin || left.Direction != right.Direction || !(left.Distance == right.Distance);
         }

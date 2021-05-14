@@ -88,7 +88,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Vector2 right, float epsilon)
+        public bool NearlyEquals(Vector2 right, float epsilon)
         {
             return Math.Abs(X - right.X) <= epsilon
                 && Math.Abs(Y - right.Y) <= epsilon;
@@ -109,18 +109,23 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public float GetComponentOrDefault(int index)
+        public unsafe float GetComponentOrDefault(int index)
         {
-            return index switch
+            fixed (float* ptr = &X)
             {
-                0 => X,
-                1 => Y,
-                _ => default
-            };
+                if (index < Count)
+                {
+                    return ptr[index];
+                }
+                else
+                {
+                    return default;
+                }
+            }
         }
 
         /// <inheritdoc/>
-        public void Construct<T>(in T vector) where T : IVectorType
+        public void Construct<T>(T vector) where T : IVectorType
         {
             if (vector is not null)
             {
@@ -149,19 +154,17 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public float this[int index]
+        public unsafe float this[int index]
         {
             get => GetComponentOrDefault(index);
             set
             {
-                switch (index)
+                fixed (float* ptr = &X)
                 {
-                    case 0:
-                        X = value;
-                        break;
-                    case 1:
-                        Y = value;
-                        break;
+                    if (index < Count)
+                    {
+                        ptr[index] = value;
+                    }
                 }
             }
         }
@@ -226,7 +229,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 제곱된 거리 값이 반환됩니다. </returns>
-        public static float DistanceSq(in Vector2 left, in Vector2 right)
+        public static float DistanceSq(Vector2 left, Vector2 right)
         {
             return (right - left).LengthSq;
         }
@@ -237,7 +240,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 거리 값이 반환됩니다. </returns>
-        public static float Distance(in Vector2 left, in Vector2 right)
+        public static float Distance(Vector2 left, Vector2 right)
         {
             return (right - left).Length;
         }
@@ -248,7 +251,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 연산 결과가 반환됩니다. </returns>
-        public static float DotProduct(in Vector2 left, in Vector2 right)
+        public static float DotProduct(Vector2 left, Vector2 right)
         {
             return left.X * right.X + left.Y * right.Y;
         }
@@ -258,7 +261,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <param name="left"> 벡터를 전달합니다. </param>
         /// <returns> 벡터가 반환됩니다. </returns>
-        public static Vector2 operator -(in Vector2 left)
+        public static Vector2 operator -(Vector2 left)
         {
             return new Vector2(-left.X, -left.Y);
         }
@@ -269,7 +272,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 벡터가 반환됩니다. </returns>
-        public static Vector2 operator +(in Vector2 left, in Vector2 right)
+        public static Vector2 operator +(Vector2 left, Vector2 right)
         {
             return new Vector2(left.X + right.X, left.Y + right.Y);
         }
@@ -280,7 +283,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 벡터가 반환됩니다. </returns>
-        public static Vector2 operator -(in Vector2 left, in Vector2 right)
+        public static Vector2 operator -(Vector2 left, Vector2 right)
         {
             return new Vector2(left.X - right.X, left.Y - right.Y);
         }
@@ -291,7 +294,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 벡터가 반환됩니다. </returns>
-        public static Vector2 operator *(in Vector2 left, in Vector2 right)
+        public static Vector2 operator *(Vector2 left, Vector2 right)
         {
             return new Vector2(left.X * right.X, left.Y * right.Y);
         }
@@ -302,7 +305,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 벡터가 반환됩니다. </returns>
-        public static Vector2 operator *(float left, in Vector2 right)
+        public static Vector2 operator *(float left, Vector2 right)
         {
             return new Vector2(left * right.X, left * right.Y);
         }
@@ -313,7 +316,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 벡터가 반환됩니다. </returns>
-        public static Vector2 operator *(in Vector2 left, float right)
+        public static Vector2 operator *(Vector2 left, float right)
         {
             return new Vector2(left.X * right, left.Y * right);
         }
@@ -324,7 +327,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 벡터가 반환됩니다. </returns>
-        public static Vector2 operator /(in Vector2 left, in Vector2 right)
+        public static Vector2 operator /(Vector2 left, Vector2 right)
         {
             return new Vector2(left.X / right.X, left.Y / right.Y);
         }
@@ -335,7 +338,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 벡터가 반환됩니다. </returns>
-        public static Vector2 operator /(float left, in Vector2 right)
+        public static Vector2 operator /(float left, Vector2 right)
         {
             return new Vector2(left / right.X, left / right.Y);
         }
@@ -346,7 +349,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 벡터가 반환됩니다. </returns>
-        public static Vector2 operator /(in Vector2 left, float right)
+        public static Vector2 operator /(Vector2 left, float right)
         {
             return new Vector2(left.X / right, left.Y / right);
         }
@@ -357,7 +360,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 계산된 스칼라가 반환됩니다. </returns>
-        public static float operator |(in Vector2 left, in Vector2 right)
+        public static float operator |(Vector2 left, Vector2 right)
         {
             return DotProduct(left, right);
         }
@@ -368,7 +371,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator ==(in Vector2 left, in Vector2 right)
+        public static bool operator ==(Vector2 left, Vector2 right)
         {
             return left.X == right.X && left.Y == right.Y;
         }
@@ -379,7 +382,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator !=(in Vector2 left, in Vector2 right)
+        public static bool operator !=(Vector2 left, Vector2 right)
         {
             return left.X != right.X || left.Y != right.Y;
         }

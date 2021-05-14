@@ -124,7 +124,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in AxisAlignedCube cube, float epsilon)
+        public bool NearlyEquals(AxisAlignedCube cube, float epsilon)
         {
             return Math.Abs(Left - cube.Left) < epsilon
                 && Math.Abs(Top - cube.Top) < epsilon
@@ -152,22 +152,23 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public float GetComponentOrDefault(int index)
+        public unsafe float GetComponentOrDefault(int index)
         {
-            return index switch
+            fixed (float* ptr = &Left)
             {
-                0 => Left,
-                1 => Top,
-                2 => Right,
-                3 => Bottom,
-                4 => Near,
-                5 => Far,
-                _ => default
-            };
+                if (index < Count)
+                {
+                    return ptr[index];
+                }
+                else
+                {
+                    return default;
+                }
+            }
         }
 
         /// <inheritdoc/>
-        public void Construct<T>(in T vector) where T : IVectorType
+        public void Construct<T>(T vector) where T : IVectorType
         {
             if (vector is null)
             {
@@ -193,7 +194,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         public T Convert<T>() where T : IVectorType, new()
         {
             var value = new T();
-            value.Construct(in this);
+            value.Construct(this);
             return value;
         }
 
@@ -204,31 +205,17 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public float this[int index]
+        public unsafe float this[int index]
         {
             get => GetComponentOrDefault(index);
             set
             {
-                switch (index)
+                fixed (float* ptr = &Left)
                 {
-                    case 0:
-                        Left = value;
-                        break;
-                    case 1:
-                        Top = value;
-                        break;
-                    case 2:
-                        Right = value;
-                        break;
-                    case 3:
-                        Bottom = value;
-                        break;
-                    case 4:
-                        Near = value;
-                        break;
-                    case 5:
-                        Far = value;
-                        break;
+                    if (index < Count)
+                    {
+                        ptr[index] = value;
+                    }
                 }
             }
         }

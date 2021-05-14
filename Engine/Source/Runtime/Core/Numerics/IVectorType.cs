@@ -19,7 +19,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <typeparam name="T"> 제네릭 벡터 유형을 전달합니다. </typeparam>
         /// <param name="vector"> 벡터 값을 전달합니다. </param>
-        void Construct<T>(in T vector) where T : IVectorType;
+        void Construct<T>(T vector) where T : IVectorType;
 
         /// <summary>
         /// <see cref="IVectorType"/> 인터페이스를 구현한 벡터 형식으로 변경합니다. 이 과정에서 데이터가 손실 또는 추가될 수 있습니다.

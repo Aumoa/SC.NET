@@ -118,13 +118,7 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual void Add(T item) => Add(in item);
-
-        /// <summary>
-        /// 컬렉션에 값을 추가합니다.
-        /// </summary>
-        /// <param name="item"> 값을 전달합니다. </param>
-        public void Add(in T item)
+        public virtual void Add(T item)
         {
             EnsureCapacity(_count + 1, false);
             _items[_count++] = item;
@@ -138,14 +132,7 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool Contains(T item) => Contains(in item);
-
-        /// <summary>
-        /// 컬렉션에 값이 존재하는지 검사합니다.
-        /// </summary>
-        /// <param name="item"> 값을 전달합니다. </param>
-        /// <returns> 값이 존재할 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Contains(in T item)
+        public virtual bool Contains(T item)
         {
             for (int i = 0; i < _count; ++i)
             {
@@ -165,37 +152,20 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool Remove(T item) => Remove(in item, true);
-
-        /// <summary>
-        /// 컬렉션에 값이 포함되어 있을 경우 제거합니다.
-        /// </summary>
-        /// <param name="item"> 값을 전달합니다. </param>
-        /// <returns> 값을 제거하였을 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Remove(in T item) => Remove(in item, true);
+        public virtual bool Remove(T item) => Remove(item, true);
 
         /// <inheritdoc/>
-        public virtual int IndexOf(T item) => IndexOf(in item);
-
-        /// <summary>
-        /// 컬렉션에서 값의 위치를 찾습니다.
-        /// </summary>
-        /// <param name="item"> 값을 전달합니다. </param>
-        /// <returns> 값의 위치가 반환됩니다. 값을 찾지 못했을 경우 -1이 반환됩니다. </returns>
-        public int IndexOf(in T item) => Array.IndexOf(_items, item);
+        public virtual int IndexOf(T item) => Array.IndexOf(_items, item);
 
         /// <inheritdoc/>
-        public virtual void Insert(int index, T item) => Insert(index, in item);
-
-        /// <inheritdoc/>
-        public virtual void Insert(Index index, T item) => Insert(IndexToInt(index), in item);
+        public virtual void Insert(Index index, T item) => Insert(IndexToInt(index), item);
 
         /// <summary>
         /// 컬렉션에 값을 위치에 추가합니다. 기존 위치 이후의 값을 뒤로 밀어냅니다.
         /// </summary>
         /// <param name="index"> 값을 추가할 위치를 전달합니다. </param>
         /// <param name="item"> 값을 전달합니다. </param>
-        public void Insert(int index, in T item)
+        public void Insert(int index, T item)
         {
             CheckIndex(index);
 
@@ -283,9 +253,9 @@ namespace SC.Engine.Runtime.Core.Container
         /// <param name="item"> 제거할 데이터를 전달합니다. </param>
         /// <param name="bAllowShrink"> 이 컨테이너의 예약 공간이 축소되는 것을 허용합니다. </param>
         /// <returns> 컨테이너에서 데이터 제거를 성공하였을 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Remove(in T item, bool bAllowShrink)
+        public bool Remove(T item, bool bAllowShrink)
         {
-            int index = IndexOf(in item);
+            int index = IndexOf(item);
             if (index < 0)
             {
                 return false;
@@ -443,11 +413,11 @@ namespace SC.Engine.Runtime.Core.Container
         /// </summary>
         /// <param name="item"> 추가할 데이터를 전달합니다. </param>
         /// <returns> 데이터 추가에 성공했을 경우 <see langword="true"/>를 반환합니다. </returns>
-        public bool AddUnique(in T item)
+        public bool AddUnique(T item)
         {
-            if (!Contains(in item))
+            if (!Contains(item))
             {
-                Add(in item);
+                Add(item);
                 return true;
             }
 
@@ -460,11 +430,11 @@ namespace SC.Engine.Runtime.Core.Container
         /// <param name="index"> 데이터가 추가될 위치를 전달합니다. </param>
         /// <param name="item"> 추가할 데이터를 전달합니다. </param>
         /// <returns> 데이터 추가에 성공했을 경우 <see langword="true"/>를 반환합니다. </returns>
-        public bool InsertUnique(int index, in T item)
+        public bool InsertUnique(int index, T item)
         {
-            if (!Contains(in item))
+            if (!Contains(item))
             {
-                Insert(index, in item);
+                Insert(index, item);
                 return true;
             }
 
@@ -581,7 +551,7 @@ namespace SC.Engine.Runtime.Core.Container
             {
                 if (pred(_items[i]))
                 {
-                    result.Add(in _items[i]);
+                    result.Add(_items[i]);
                 }
             }
 
@@ -972,9 +942,9 @@ namespace SC.Engine.Runtime.Core.Container
         /// 값을 최상위에 추가합니다.
         /// </summary>
         /// <param name="value"> 값을 전달합니다. </param>
-        public void Push(in T value)
+        public void Push(T value)
         {
-            Insert(_count, in value);
+            Insert(_count, value);
         }
 
         /// <summary>

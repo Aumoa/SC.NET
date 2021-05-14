@@ -223,7 +223,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Matrix4x4 right, float epsilon)
+        public bool NearlyEquals(Matrix4x4 right, float epsilon)
         {
             return Math.Abs(_11 - right._11) <= epsilon
                 && Math.Abs(_12 - right._12) <= epsilon
@@ -271,22 +271,21 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public T GetComponentOrDefault<T>(int index) where T : IVectorType, new()
+        public unsafe T GetComponentOrDefault<T>(int index) where T : IVectorType, new()
         {
             var v = new T();
-            v.Construct(index switch
+            if (index < Count)
             {
-                0 => new Vector4(_11, _12, _13, _14),
-                1 => new Vector4(_21, _22, _23, _24),
-                2 => new Vector4(_31, _32, _33, _34),
-                3 => new Vector4(_41, _42, _43, _44),
-                _ => default
-            });
+                fixed (float* ptr = &_11)
+                {
+                    v.Construct(new Vector4(ptr[index * 4 + 0], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]));
+                }
+            }
             return v;
         }
 
         /// <inheritdoc/>
-        public void Construct<T>(in T matrix) where T : IMatrixType
+        public void Construct<T>(T matrix) where T : IMatrixType
         {
             Vector4 v1;
             Vector4 v2;
@@ -350,37 +349,20 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public IVectorType this[int index]
+        public unsafe IVectorType this[int index]
         {
             get => GetComponentOrDefault<Vector4>(index);
             set
             {
-                switch (index)
+                fixed (float* ptr = &_11)
                 {
-                    case 0:
-                        _11 = value[0];
-                        _12 = value[1];
-                        _13 = value[2];
-                        _14 = value[3];
-                        break;
-                    case 1:
-                        _21 = value[0];
-                        _22 = value[1];
-                        _23 = value[2];
-                        _24 = value[3];
-                        break;
-                    case 2:
-                        _31 = value[0];
-                        _32 = value[1];
-                        _33 = value[2];
-                        _34 = value[3];
-                        break;
-                    case 3:
-                        _41 = value[0];
-                        _42 = value[1];
-                        _43 = value[2];
-                        _44 = value[3];
-                        break;
+                    if (index < Count)
+                    {
+                        ptr[index * 4 + 0] = value[0];
+                        ptr[index * 4 + 1] = value[1];
+                        ptr[index * 4 + 2] = value[2];
+                        ptr[index * 4 + 3] = value[3];
+                    }
                 }
             }
         }
