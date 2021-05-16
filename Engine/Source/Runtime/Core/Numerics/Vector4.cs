@@ -212,72 +212,6 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
-        /// 벡터의 길이의 제곱을 가져옵니다.
-        /// </summary>
-        public float LengthSq
-        {
-            get => X * X + Y * Y + Z * Z + W * W;
-        }
-
-        /// <summary>
-        /// 벡터의 길이를 가져옵니다.
-        /// </summary>
-        public float Length
-        {
-            get => MathEx.Sqrt(LengthSq);
-        }
-
-        /// <summary>
-        /// 정규화된 벡터를 가져옵니다.
-        /// </summary>
-        public Vector4 Normalized
-        {
-            get => this / Length;
-        }
-
-        /// <summary>
-        /// 정규화된 벡터 방향을 설정하거나 가져옵니다.
-        /// </summary>
-        public Vector4 Direction
-        {
-            get => Normalized;
-            set => this = value * Length;
-        }
-
-        /// <summary>
-        /// 두 벡터의 거리의 제곱을 가져옵니다.
-        /// </summary>
-        /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
-        /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
-        /// <returns> 제곱된 거리 값이 반환됩니다. </returns>
-        public static float DistanceSq(Vector4 left, Vector4 right)
-        {
-            return (right - left).LengthSq;
-        }
-
-        /// <summary>
-        /// 두 벡터의 거리를 가져옵니다.
-        /// </summary>
-        /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
-        /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
-        /// <returns> 거리 값이 반환됩니다. </returns>
-        public static float Distance(Vector4 left, Vector4 right)
-        {
-            return (right - left).Length;
-        }
-
-        /// <summary>
-        /// 두 벡터의 내적 연산한 결과를 가져옵니다.
-        /// </summary>
-        /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
-        /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
-        /// <returns> 연산 결과가 반환됩니다. </returns>
-        public static float DotProduct(Vector4 left, Vector4 right)
-        {
-            return left.X * right.X + left.Y * right.Y + left.Z * right.Z + left.X * right.W;
-        }
-
-        /// <summary>
         /// 부호가 변경된 벡터 값을 가져옵니다.
         /// </summary>
         /// <param name="left"> 벡터를 전달합니다. </param>
@@ -383,7 +317,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <returns> 계산된 스칼라가 반환됩니다. </returns>
         public static float operator |(Vector4 left, Vector4 right)
         {
-            return DotProduct(left, right);
+            return left.DotProduct(right);
         }
 
         /// <summary>

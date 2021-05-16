@@ -281,18 +281,6 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
-        /// 정규화된 사원수 값을 가져옵니다.
-        /// </summary>
-        public Quaternion Normalized
-        {
-            get
-            {
-                var length = MathEx.Sqrt(X * X + Y * Y + Z * Z + W * W);
-                return new Quaternion(X / length, Y / length, Z / length, W / length);
-            }
-        }
-
-        /// <summary>
         /// 사원수를 회전 행렬로 변환합니다.
         /// </summary>
         /// <returns> 값이 반환됩니다. </returns>
@@ -460,17 +448,6 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
-        /// 두 사원수의 내적 연산한 결과를 가져옵니다.
-        /// </summary>
-        /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
-        /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
-        /// <returns> 연산 결과가 반환됩니다. </returns>
-        public static float DotProduct(Quaternion left, Quaternion right)
-        {
-            return left.X * right.X + left.Y * right.Y + left.Z * right.Z + left.X * right.W;
-        }
-
-        /// <summary>
         /// 선형 보간 결과를 가져옵니다.
         /// </summary>
         /// <param name="left"> 첫 번째 사원수 값을 전달합니다. </param>
@@ -479,7 +456,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <returns> 보간된 사원수가 반환됩니다. </returns>
         public static Quaternion Lerp(Quaternion left, Quaternion right, float t)
         {
-            float Dot = DotProduct(left, right);
+            float Dot = left.DotProduct(right);
             float Bias = Dot >= 0 ? 1.0f : -1.0f;
             return (right * t) + (left * (Bias * (1 - t)));
         }
@@ -495,10 +472,10 @@ namespace SC.Engine.Runtime.Core.Numerics
         {
             float Threshold = 0.9995f;
 
-            Quaternion v0 = left.Normalized;
-            Quaternion v1 = right.Normalized;
+            Quaternion v0 = left.GetNormal();
+            Quaternion v1 = right.GetNormal();
 
-            float dot = DotProduct(v0, v1);
+            float dot = v0.DotProduct(v1);
 
             if (dot < 0)
             {
@@ -516,7 +493,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 
             if (dot > Threshold)
             {
-                return Lerp(v0, v1, t).Normalized;
+                return Lerp(v0, v1, t).GetNormal();
             }
 
             float sin_theta = MathEx.Sin(theta);
@@ -535,9 +512,9 @@ namespace SC.Engine.Runtime.Core.Numerics
         {
             Quaternion t;
 
-            forward = forward.Normalized;
-            Vector3 right = Vector3.CrossProduct(up, forward).Normalized;
-            up = Vector3.CrossProduct(forward, right).Normalized;
+            forward = forward.GetNormal();
+            Vector3 right = Vector3.CrossProduct(up, forward).GetNormal();
+            up = Vector3.CrossProduct(forward, right).GetNormal();
 
             var rotation = new Matrix4x4(
                 right.X, up.X, forward.X, 0,
@@ -553,7 +530,7 @@ namespace SC.Engine.Runtime.Core.Numerics
             t.Y = (rotation._13 - rotation._31) * w4_recip;
             t.Z = (rotation._21 - rotation._12) * w4_recip;
 
-            return t.Normalized;
+            return t.GetNormal();
         }
 
         /// <summary>
@@ -662,7 +639,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <returns> 계산된 스칼라가 반환됩니다. </returns>
         public static float operator |(Quaternion left, Quaternion right)
         {
-            return DotProduct(left, right);
+            return left.DotProduct(right);
         }
 
         /// <summary>

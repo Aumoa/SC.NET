@@ -744,9 +744,9 @@ namespace SC.Engine.Runtime.Core.Numerics
                     *(pVectorBasis[1]) = new Vector3(_21, _22, _23);
                     *(pVectorBasis[2]) = new Vector3(_31, _32, _33);
 
-                    scale.X = pVectorBasis[0]->Length;
-                    scale.Y = pVectorBasis[1]->Length;
-                    scale.Z = pVectorBasis[2]->Length;
+                    scale.X = pVectorBasis[0]->GetLength();
+                    scale.Y = pVectorBasis[1]->GetLength();
+                    scale.Z = pVectorBasis[2]->GetLength();
 
                     uint a, b, c;
                     float x = pfScales[0], y = pfScales[1], z = pfScales[2];
@@ -804,7 +804,7 @@ namespace SC.Engine.Runtime.Core.Numerics
                         *(pVectorBasis[a]) = pCanonicalBasis[a];
                     }
 
-                    *pVectorBasis[a] = pVectorBasis[a]->Normalized;
+                    *pVectorBasis[a] = pVectorBasis[a]->GetNormal();
 
                     if (pfScales[b] < DecomposeEpsilon)
                     {
@@ -857,14 +857,14 @@ namespace SC.Engine.Runtime.Core.Numerics
                         *pVectorBasis[b] = Vector3.CrossProduct(*pVectorBasis[a], *(pCanonicalBasis + cc));
                     }
 
-                    *pVectorBasis[b] = pVectorBasis[b]->Normalized;
+                    *pVectorBasis[b] = pVectorBasis[b]->GetNormal();
 
                     if (pfScales[c] < DecomposeEpsilon)
                     {
                         *pVectorBasis[c] = Vector3.CrossProduct(*pVectorBasis[a], *pVectorBasis[b]);
                     }
 
-                    *pVectorBasis[c] = pVectorBasis[c]->Normalized;
+                    *pVectorBasis[c] = pVectorBasis[c]->GetNormal();
 
                     det = matTemp.Determinant;
 
@@ -1098,13 +1098,13 @@ namespace SC.Engine.Runtime.Core.Numerics
         public static Matrix4x4 LookToLH(Vector3 eyePosition, Vector3 eyeDirection, Vector3 upDirection)
         {
             Vector3 R2 = eyeDirection;
-            Vector3 R0 = Vector3.CrossProduct(upDirection, R2).Normalized;
+            Vector3 R0 = Vector3.CrossProduct(upDirection, R2).GetNormal();
             var     R1 = Vector3.CrossProduct(R2, R0);
             Vector3 NegEyePosition = -eyePosition;
 
-            float D0 = Vector3.DotProduct(R0, NegEyePosition);
-            float D1 = Vector3.DotProduct(R1, NegEyePosition);
-            float D2 = Vector3.DotProduct(R2, NegEyePosition);
+            float D0 = R0.DotProduct(NegEyePosition);
+            float D1 = R1.DotProduct(NegEyePosition);
+            float D2 = R2.DotProduct(NegEyePosition);
 
             Matrix4x4 M = Identity;
             M.SetRow(0, new Vector4(R0, D0));

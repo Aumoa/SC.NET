@@ -282,5 +282,149 @@ namespace SC.Engine.Runtime.Core.Mathematics
         {
             return new Vector4(Math.Min(lh.X, rh.X), Math.Min(lh.Y, rh.Y), Math.Min(lh.Z, rh.Z), Math.Min(lh.W, rh.W));
         }
+
+        /// <summary>
+        /// 탄젠트 값을 계산합니다.
+        /// </summary>
+        /// <param name="a"> 매개변수를 전달합니다. </param>
+        /// <returns> 계산 값이 반환됩니다. </returns>
+        public static float Tan(float a)
+        {
+            return (float)Math.Tan(a);
+        }
+
+        /// <summary>
+        /// 두 값 중 큰 값을 가져옵니다.
+        /// </summary>
+        /// <param name="arg1"> 값을 전달합니다. </param>
+        /// <param name="arg2"> 값을 전달합니다. </param>
+        /// <returns> 가장 큰 값이 반환됩니다. </returns>
+        public static float Max(float arg1, float arg2) => arg1 > arg2 ? arg1 : arg2;
+
+        /// <summary>
+        /// 전달된 값 중 큰 값을 가져옵니다.
+        /// </summary>
+        /// <param name="arg1"> 값을 전달합니다. </param>
+        /// <param name="arg2"> 값을 전달합니다. </param>
+        /// <param name="arg3"> 값을 전달합니다. </param>
+        /// <returns> 가장 큰 값이 반환됩니다. </returns>
+        public static float Max(float arg1, float arg2, float arg3) => Max(Max(arg1, arg2), arg3);
+
+        /// <summary>
+        /// 전달된 값 중 큰 값을 가져옵니다.
+        /// </summary>
+        /// <param name="arg1"> 값을 전달합니다. </param>
+        /// <param name="arg2"> 값을 전달합니다. </param>
+        /// <param name="arg3"> 값을 전달합니다. </param>
+        /// <param name="arg4"> 값을 전달합니다. </param>
+        /// <returns> 가장 큰 값이 반환됩니다. </returns>
+        public static float Max(float arg1, float arg2, float arg3, float arg4) => Max(Max(arg1, arg2, arg3), arg4);
+
+        /// <summary>
+        /// 전달된 값 중 큰 값을 가져옵니다.
+        /// </summary>
+        /// <param name="arg1"> 값을 전달합니다. </param>
+        /// <param name="arg2"> 값을 전달합니다. </param>
+        /// <param name="arg3"> 값을 전달합니다. </param>
+        /// <param name="arg4"> 값을 전달합니다. </param>
+        /// <param name="arg5"> 값을 전달합니다. </param>
+        /// <param name="args"> 값을 전달합니다. </param>
+        /// <returns> 가장 큰 값이 반환됩니다. </returns>
+        public static float Max(float arg1, float arg2, float arg3, float arg4, float arg5, params float[] args)
+        {
+            float v = Max(Max(arg1, arg2, arg3, arg4), arg5);
+            if (args.Length != 0)
+            {
+                for (int i = 0; i < args.Length; ++i)
+                {
+                    v = Max(v, args[i]);
+                }
+            }
+            return v;
+        }
+
+        /// <summary>
+        /// 두 값 중 작은 값을 가져옵니다.
+        /// </summary>
+        /// <param name="arg1"> 값을 전달합니다. </param>
+        /// <param name="arg2"> 값을 전달합니다. </param>
+        /// <returns> 가장 작은 값이 반환됩니다. </returns>
+        public static float Min(float arg1, float arg2) => arg1 > arg2 ? arg1 : arg2;
+
+        /// <summary>
+        /// 전달된 값 중 작은 값을 가져옵니다.
+        /// </summary>
+        /// <param name="arg1"> 값을 전달합니다. </param>
+        /// <param name="arg2"> 값을 전달합니다. </param>
+        /// <param name="arg3"> 값을 전달합니다. </param>
+        /// <returns> 가장 작은 값이 반환됩니다. </returns>
+        public static float Min(float arg1, float arg2, float arg3) => Min(Min(arg1, arg2), arg3);
+
+        /// <summary>
+        /// 전달된 값 중 작은 값을 가져옵니다.
+        /// </summary>
+        /// <param name="arg1"> 값을 전달합니다. </param>
+        /// <param name="arg2"> 값을 전달합니다. </param>
+        /// <param name="arg3"> 값을 전달합니다. </param>
+        /// <param name="arg4"> 값을 전달합니다. </param>
+        /// <returns> 가장 작은 값이 반환됩니다. </returns>
+        public static float Min(float arg1, float arg2, float arg3, float arg4) => Min(Min(arg1, arg2, arg3), arg4);
+
+        /// <summary>
+        /// 전달된 값 중 작은 값을 가져옵니다.
+        /// </summary>
+        /// <param name="arg1"> 값을 전달합니다. </param>
+        /// <param name="arg2"> 값을 전달합니다. </param>
+        /// <param name="arg3"> 값을 전달합니다. </param>
+        /// <param name="arg4"> 값을 전달합니다. </param>
+        /// <param name="arg5"> 값을 전달합니다. </param>
+        /// <param name="args"> 값을 전달합니다. </param>
+        /// <returns> 가장 작은 값이 반환됩니다. </returns>
+        public static float Min(float arg1, float arg2, float arg3, float arg4, float arg5, params float[] args)
+        {
+            float v = Min(Min(arg1, arg2, arg3, arg4), arg5);
+            if (args.Length != 0)
+            {
+                for (int i = 0; i < args.Length; ++i)
+                {
+                    v = Min(v, args[i]);
+                }
+            }
+            return v;
+        }
+
+        /// <summary>
+        /// 값이 범위 안에 있는지 검사합니다.
+        /// </summary>
+        /// <param name="testValue"> 값을 전달합니다. </param>
+        /// <param name="minValue"> 최소값을 전달합니다. </param>
+        /// <param name="maxValue"> 최댓값을 전달합니다. </param>
+        /// <returns> 검사 결과가 반환됩니다. </returns>
+        public static bool IsWithin(float testValue, float minValue, float maxValue)
+        {
+            return testValue > minValue && testValue < maxValue;
+        }
+
+        /// <summary>
+        /// 값이 범위 안에 있는지 검사합니다. 정확한 범위 수치를 포함합니다.
+        /// </summary>
+        /// <param name="testValue"> 값을 전달합니다. </param>
+        /// <param name="minValue"> 최소값을 전달합니다. </param>
+        /// <param name="maxValue"> 최댓값을 전달합니다. </param>
+        /// <returns> 검사 결과가 반환됩니다. </returns>
+        public static bool IsWithinInclusive(float testValue, float minValue, float maxValue)
+        {
+            return testValue >= minValue && testValue <= maxValue;
+        }
+
+        /// <summary>
+        /// 인접한 정수 값을 계산합니다.
+        /// </summary>
+        /// <param name="x"> 실수 값을 전달합니다. </param>
+        /// <returns> 정수 값의 실수 형식이 반환됩니다. </returns>
+        public static float Round(float x)
+        {
+            return (float)Math.Round(x);
+        }
     }
 }

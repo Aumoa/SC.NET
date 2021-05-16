@@ -176,84 +176,14 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
-        /// 위치가 대상 사각형 내에 존재하는지 검사합니다.
-        /// </summary>
-        /// <param name="rect"> 대상 사삭형을 전달합니다. </param>
-        /// <returns> 내부에 존재할 경우 true를 반환합니다. </returns>
-        public bool IsOverlap(Rectangle rect)
-        {
-            if (X >= rect.Left && X <= rect.Right &&
-                Y >= rect.Top && Y <= rect.Bottom)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 벡터의 길이의 제곱을 가져옵니다.
-        /// </summary>
-        public float LengthSq
-        {
-            get => X * X + Y * Y;
-        }
-
-        /// <summary>
-        /// 벡터의 길이를 가져옵니다.
-        /// </summary>
-        public float Length
-        {
-            get => MathEx.Sqrt(LengthSq);
-        }
-
-        /// <summary>
-        /// 정규화된 벡터를 가져옵니다.
-        /// </summary>
-        public Vector2 Normalized
-        {
-            get => this / Length;
-        }
-
-        /// <summary>
-        /// 정규화된 벡터 방향을 설정하거나 가져옵니다.
-        /// </summary>
-        public Vector2 Direction
-        {
-            get => Normalized;
-            set => this = value * Length;
-        }
-
-        /// <summary>
-        /// 두 벡터의 거리의 제곱을 가져옵니다.
-        /// </summary>
-        /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
-        /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
-        /// <returns> 제곱된 거리 값이 반환됩니다. </returns>
-        public static float DistanceSq(Vector2 left, Vector2 right)
-        {
-            return (right - left).LengthSq;
-        }
-
-        /// <summary>
-        /// 두 벡터의 거리를 가져옵니다.
-        /// </summary>
-        /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
-        /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
-        /// <returns> 거리 값이 반환됩니다. </returns>
-        public static float Distance(Vector2 left, Vector2 right)
-        {
-            return (right - left).Length;
-        }
-
-        /// <summary>
-        /// 두 벡터의 내적 연산한 결과를 가져옵니다.
+        /// 두 벡터의 외적 연산한 결과를 가져옵니다.
         /// </summary>
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
         /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
         /// <returns> 연산 결과가 반환됩니다. </returns>
-        public static float DotProduct(Vector2 left, Vector2 right)
+        public static float CrossProduct(Vector2 left, Vector2 right)
         {
-            return left.X * right.X + left.Y * right.Y;
+            return left.X * right.Y - left.Y * right.X;
         }
 
         /// <summary>
@@ -355,6 +285,17 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
+        /// 두 벡터의 내적 연산 결과 벡터를 가져옵니다.
+        /// </summary>
+        /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
+        /// <param name="right"> 두 번째 벡터를 전달합니다. </param>
+        /// <returns> 계산된 벡터가 반환됩니다. </returns>
+        public static float operator ^(Vector2 left, Vector2 right)
+        {
+            return CrossProduct(left, right);
+        }
+
+        /// <summary>
         /// 두 벡터의 내적 연산 결과를 가져옵니다.
         /// </summary>
         /// <param name="left"> 첫 번째 벡터를 전달합니다. </param>
@@ -362,7 +303,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <returns> 계산된 스칼라가 반환됩니다. </returns>
         public static float operator |(Vector2 left, Vector2 right)
         {
-            return DotProduct(left, right);
+            return left.DotProduct(right);
         }
 
         /// <summary>

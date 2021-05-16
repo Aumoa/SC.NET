@@ -36,11 +36,11 @@ namespace SC.Engine.Runtime.Core.Numerics
         bool Contains(int index);
 
         /// <summary>
-        /// 해당 인덱스에 포함된 요소를 가져오거나 없을 경우 기본값을 반환합니다.
+        /// 해당 인덱스에 포함된 요소를 설정하거나 가져옵니다. 없을 경우 기본값을 반환합니다.
         /// </summary>
         /// <param name="index"> 요소 인덱스를 전달합니다. </param>
         /// <returns> 인덱스에 포함된 값 또는 기본값이 반환됩니다. </returns>
-        float this[int index] { get; }
+        float this[int index] { get; set; }
 
         /// <summary>
         /// 요소의 개수를 가져옵니
