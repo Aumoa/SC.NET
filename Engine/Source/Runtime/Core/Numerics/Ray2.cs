@@ -92,7 +92,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Ray2 ray, float epsilon)
+        public bool NearlyEquals(Ray2 ray, float epsilon)
         {
             bool dist;
 
@@ -145,7 +145,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <param name="rect"> 사각형을 전달합니다. </param>
         /// <returns> 내부를 통과할 경우 true를 반환합니다. </returns>
-        public bool IsOverlap(in Rectangle rect)
+        public bool IsOverlap(Rectangle rect)
         {
             return rect.IsOverlap(this);
         }
@@ -155,7 +155,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <param name="rect"> 사각형을 전달합니다. </param>
         /// <returns> 내부를 통과할 경우 최초 통과 지점까지 가는 광선의 거리가, 그렇지 않을 경우 null을 반환합니다. </returns>
-        public float? IsIntersect(in Rectangle rect)
+        public float? IsIntersect(Rectangle rect)
         {
             return rect.IsIntersect(this);
         }
@@ -166,7 +166,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 광선을 전달합니다. </param>
         /// <param name="right"> 두 번째 광선을 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator ==(in Ray2 left, in Ray2 right)
+        public static bool operator ==(Ray2 left, Ray2 right)
         {
             return left.Origin == right.Origin && left.Direction == right.Direction && left.Distance == right.Distance;
         }
@@ -177,7 +177,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 광선을 전달합니다. </param>
         /// <param name="right"> 두 번째 광선을 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator !=(in Ray2 left, in Ray2 right)
+        public static bool operator !=(Ray2 left, Ray2 right)
         {
             return left.Origin != right.Origin || left.Direction != right.Direction || !(left.Distance == right.Distance);
         }

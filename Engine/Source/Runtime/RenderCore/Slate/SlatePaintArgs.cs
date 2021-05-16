@@ -2,6 +2,7 @@
 
 using SC.Engine.Runtime.Core.Container;
 using SC.Engine.Runtime.Core.Numerics;
+using SC.Engine.Runtime.RenderCore.Slate.Widgets;
 
 namespace SC.Engine.Runtime.RenderCore.Slate
 {

@@ -7,6 +7,7 @@ using SC.Engine.Runtime.RenderCore;
 using SC.Engine.Runtime.RenderCore.RenderPass;
 using SC.Engine.Runtime.RenderCore.Slate;
 using SC.Engine.Runtime.RenderCore.Slate.Application;
+using SC.Engine.Runtime.RenderCore.Slate.Layout;
 
 namespace SC.Engine.Runtime.GameFramework.SceneRendering
 {
@@ -72,12 +73,8 @@ namespace SC.Engine.Runtime.GameFramework.SceneRendering
             sArgs.SlateParent = null;
             sArgs.Context = _deviceContext;
 
-            SlateTransform sTransform = new();
-            sTransform.Location = Vector2.Zero;
-            sTransform.Size = new Vector2(float.MaxValue, float.MaxValue);
-
             _slatePass.BeginPass(_deviceContext, _gameViewport.GetRenderTarget());
-            _slateApp.Paint(sArgs, sTransform);
+            _slateApp.Paint(sArgs);
             _slatePass.RenderElements(sArgs);
             _slatePass.EndPass(_deviceContext);
         }

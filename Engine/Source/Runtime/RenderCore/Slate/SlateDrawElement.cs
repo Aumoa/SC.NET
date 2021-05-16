@@ -1,5 +1,7 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
+using SC.Engine.Runtime.RenderCore.Slate.Layout;
+
 namespace SC.Engine.Runtime.RenderCore.Slate
 {
     /// <summary>
@@ -22,6 +24,6 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         /// <summary>
         /// 요소의 트랜스폼을 나타냅니다.
         /// </summary>
-        public SlateTransform Transform;
+        public Geometry Transform;
     }
 }

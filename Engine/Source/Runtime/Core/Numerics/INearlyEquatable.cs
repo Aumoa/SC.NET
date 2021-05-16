@@ -17,6 +17,6 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="right"> 비교 대상 개체를 전달합니다. </param>
         /// <param name="epsilon"> 얼마나 근접할 때 true를 반환할지 결정하는 값을 전달합니다. </param>
         /// <returns> 근접 여부의 부울 값이 반환됩니다. </returns>
-        bool NearlyEquals(in T right, ValueType epsilon);
+        bool NearlyEquals(T right, ValueType epsilon);
     }
 }

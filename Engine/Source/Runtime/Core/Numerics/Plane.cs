@@ -89,7 +89,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Plane cube, float epsilon)
+        public bool NearlyEquals(Plane cube, float epsilon)
         {
             return Normal.NearlyEquals(cube.Normal, epsilon)
                 && Math.Abs(cube.Distance - Distance) <= epsilon;
@@ -116,7 +116,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 평면을 전달합니다. </param>
         /// <param name="right"> 두 번째 평면을 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator ==(in Plane left, in Plane right)
+        public static bool operator ==(Plane left, Plane right)
         {
             return
                 left.Normal == right.Normal &&
@@ -129,7 +129,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 평면을 전달합니다. </param>
         /// <param name="right"> 두 번째 평면을 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator !=(in Plane left, in Plane right)
+        public static bool operator !=(Plane left, Plane right)
         {
             return
                 left.Normal != right.Normal ||

@@ -80,6 +80,7 @@ namespace SC.Engine.Runtime.GameFramework
         {
             _fence.Wait();
             _tickTimer.Tick();
+            _slateApp.Tick(_tickTimer.TotalSeconds, (float)_tickTimer.ElapsedSeconds);
             _renderThread.Execute();
             _gameViewport.Flush();
             _fence.Signal(_queue);

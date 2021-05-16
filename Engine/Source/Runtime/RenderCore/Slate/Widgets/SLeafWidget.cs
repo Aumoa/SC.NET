@@ -1,6 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
 {
     /// <summary>
     /// 자식을 가지지 않는 단일 위젯을 표현합니다.

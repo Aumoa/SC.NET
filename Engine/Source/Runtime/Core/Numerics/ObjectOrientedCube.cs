@@ -90,7 +90,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 		}
 
 		/// <inheritdoc/>
-		public bool NearlyEquals(in ObjectOrientedCube cube, float epsilon)
+		public bool NearlyEquals(ObjectOrientedCube cube, float epsilon)
 		{
 			return Center.NearlyEquals(cube.Center, epsilon)
 				&& Extent.NearlyEquals(cube.Extent, epsilon)
@@ -118,7 +118,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 		/// </summary>
 		/// <param name="cube"> 축 회전 육면체를 전달합니다. </param>
 		/// <returns> 서로 겹칠 경우 </returns>
-		public unsafe bool IsOverlap(in ObjectOrientedCube cube)
+		public unsafe bool IsOverlap(ObjectOrientedCube cube)
 		{
 			Span<Vector3> Axis = stackalloc Vector3[3] { AxisX, AxisY, AxisZ };
 			Span<float> pExtent = stackalloc float[3] { Extent.X, Extent.Y, Extent.Z };

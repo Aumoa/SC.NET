@@ -70,7 +70,7 @@ namespace SC.Engine.Runtime.GameCore
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Transform rh, float epsilon)
+        public bool NearlyEquals(Transform rh, float epsilon)
         {
             return Translation.NearlyEquals(rh.Translation, epsilon)
                 && Scale.NearlyEquals(rh.Scale, epsilon)
