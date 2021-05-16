@@ -2,6 +2,8 @@
 
 using SC.Engine.Runtime.Core.Numerics;
 using SC.Engine.Runtime.RenderCore.Slate;
+using SC.Engine.Runtime.RenderCore.Slate.Layout;
+using SC.Engine.Runtime.RenderCore.Slate.Widgets;
 
 namespace SC.Engine.Runtime.GameFramework.Slate.Panel
 {

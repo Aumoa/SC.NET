@@ -2,11 +2,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using SC.Engine.Runtime.Core.Container;
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+namespace SC.Engine.Runtime.RenderCore.Slate.Layout
 {
     /// <summary>
     /// 배열된 레이아웃을 표현합니다.

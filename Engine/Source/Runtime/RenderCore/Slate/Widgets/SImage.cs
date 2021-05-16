@@ -1,8 +1,9 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using SC.Engine.Runtime.Core.Numerics;
+using SC.Engine.Runtime.RenderCore.Slate.Layout;
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
 {
     /// <summary>
     /// UI 이미지를 표현합니다.
@@ -21,8 +22,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         {
             SlateDrawElement sd = new();
             sd.Brush = Brush;
-            sd.Transform.Location = allottedTransform.Location;
-            sd.Transform.Size = allottedTransform.Size;
+            sd.Transform = allottedTransform;
 
             paintArgs.AddElement(sd, 0);
         }

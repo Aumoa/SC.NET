@@ -3,8 +3,9 @@
 using System;
 
 using SC.Engine.Runtime.Core.Numerics;
+using SC.Engine.Runtime.RenderCore.Slate.Layout;
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
 {
     /// <summary>
     /// UI 위젯을 표현합니다.
@@ -76,5 +77,33 @@ namespace SC.Engine.Runtime.RenderCore.Slate
                 _visibility = value;
             }
         }
+
+        /// <summary>
+        /// 위젯의 방향에 따른 렌더 트랜스폼 기준점을 가져옵니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        public Vector2 GetRenderTransformPivotWithRespectToFlowDirection()
+        {
+            return RenderTransformPivot;
+        }
+
+        /// <summary>
+        /// 위젯의 방향에 따른 렌더 트랜스폼을 가져옵니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        public SlateRenderTransform? GetRenderTransformWithRespectToFlowDirection()
+        {
+            return RenderTransform;
+        }
+
+        /// <summary>
+        /// 렌더링 트랜스폼을 가져옵니다.
+        /// </summary>
+        public SlateRenderTransform? RenderTransform { get; set; }
+
+        /// <summary>
+        /// 렌더링 트랜스폼 기준점을 가져옵니다.
+        /// </summary>
+        public Vector2 RenderTransformPivot { get; set; }
     }
 }

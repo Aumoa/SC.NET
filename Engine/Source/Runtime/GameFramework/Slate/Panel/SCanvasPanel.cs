@@ -5,13 +5,15 @@ using System;
 using SC.Engine.Runtime.Core.Container;
 using SC.Engine.Runtime.Core.Numerics;
 using SC.Engine.Runtime.RenderCore.Slate;
+using SC.Engine.Runtime.RenderCore.Slate.Layout;
+using SC.Engine.Runtime.RenderCore.Slate.Widgets;
 
 namespace SC.Engine.Runtime.GameFramework.Slate.Panel
 {
-	/// <summary>
-	/// 위치를 지정하여 위젯 목록을 렌더링하는 패널을 표현합니다.
-	/// </summary>
-	public class SCanvasPanel : SPanelWidget
+    /// <summary>
+    /// 위치를 지정하여 위젯 목록을 렌더링하는 패널을 표현합니다.
+    /// </summary>
+    public class SCanvasPanel : SPanelWidget
     {
         /// <summary>
         /// 개체를 초기화합니다.

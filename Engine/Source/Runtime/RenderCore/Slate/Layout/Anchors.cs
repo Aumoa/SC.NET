@@ -2,7 +2,7 @@
 
 using SC.Engine.Runtime.Core.Numerics;
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+namespace SC.Engine.Runtime.RenderCore.Slate.Layout
 {
     /// <summary>
     /// 고정점 계산이 필요한 영역을 표현합니다.

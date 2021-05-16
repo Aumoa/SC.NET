@@ -81,6 +81,21 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
+        /// <see cref="Matrix3x2"/> 구조체의 새 인스턴스를 초기화합니다.
+        /// </summary>
+        /// <param name="m2x2"> 2x2 행렬을 전달합니다. </param>
+        /// <param name="v3"> 3행을 채우는 벡터를 전달합니다. </param>
+        public Matrix3x2(Matrix2x2 m2x2, Vector2 v3)
+        {
+            _11 = m2x2._11;
+            _12 = m2x2._12;
+            _21 = m2x2._21;
+            _22 = m2x2._22;
+            _31 = v3.X;
+            _32 = v3.Y;
+        }
+
+        /// <summary>
         /// 대상 오브젝트가 행렬일 경우, 두 행렬이 서로 같은지 비교합니다.
         /// </summary>
         /// <param name="obj"> 대상 오브젝트를 전달합니다. </param>

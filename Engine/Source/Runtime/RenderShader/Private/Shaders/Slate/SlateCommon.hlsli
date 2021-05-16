@@ -21,15 +21,18 @@ struct SlateConstants
 
 struct SlateElement
 {
-    float2 Location;
-    float2 Size;
+    float2x2 M;
+    float2 AbsolutePosition;
+    float2 AbsoluteSize;
     float Depth;
 };
 
 float3 GetSlateNDCLocation(SlateConstants constants, SlateElement element, float2 vertexPos)
 {
-    float2 slatePos = vertexPos * element.Size;
-    slatePos += element.Location;
+    float2 slatePos = vertexPos;
+    slatePos *= element.AbsoluteSize;
+    slatePos = mul(element.M, slatePos);
+    slatePos += element.AbsolutePosition;
     
     float2 ndc = slatePos;
     ndc /= constants.ScreenSize * 0.5f;

@@ -2,7 +2,9 @@
 
 using System;
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+using SC.Engine.Runtime.RenderCore.Slate.Layout;
+
+namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
 {
     /// <summary>
     /// 패널 위젯을 표현합니다.

@@ -9,29 +9,29 @@ namespace SC.Engine.Runtime.RenderCore.Slate
     /// </summary>
     public static class SlateVisibilityExtensions
     {
-		/** Entity is visible */
+		/// <summary> Entity is visible </summary>
 		const int VISPRIVATE_Visible = 0x1 << 0;
-		/** Entity is invisible and takes up no space */
+		/// <summary> Entity is invisible and takes up no space </summary>
 		const int VISPRIVATE_Collapsed = 0x1 << 1;
-		/** Entity is invisible, but still takes up space (layout pretends it is visible) */
+		/// <summary> Entity is invisible, but still takes up space (layout pretends it is visible) </summary>
 		const int VISPRIVATE_Hidden = 0x1 << 2;
-		/** Can we click on this widget or is it just non-interactive decoration? */
+		/// <summary> Can we click on this widget or is it just non-interactive decoration? </summary>
 		const int VISPRIVATE_SelfHitTestVisible = 0x1 << 3;
-		/** Can we click on this widget's child widgets? */
+		/// <summary> Can we click on this widget's child widgets? </summary>
 		const int VISPRIVATE_ChildrenHitTestVisible = 0x1 << 4;
 
-        /** Default widget visibility - visible and can interactive with the cursor */
+        /// <summary> Default widget visibility - visible and can interactive with the cursor </summary>
         const int VIS_Visible = VISPRIVATE_Visible | VISPRIVATE_SelfHitTestVisible | VISPRIVATE_ChildrenHitTestVisible;
-		/** Not visible and takes up no space in the layout; can never be clicked on because it takes up no space. */
+		/// <summary> Not visible and takes up no space in the layout; can never be clicked on because it takes up no space. </summary>
 		const int VIS_Collapsed = VISPRIVATE_Collapsed;
-		/** Not visible, but occupies layout space. Not interactive for obvious reasons. */
+		/// <summary> Not visible, but occupies layout space. Not interactive for obvious reasons. </summary>
 		const int VIS_Hidden = VISPRIVATE_Hidden;
-		/** Visible to the user, but only as art. The cursors hit tests will never see this widget. */
+		/// <summary> Visible to the user, but only as art. The cursors hit tests will never see this widget. </summary>
 		const int VIS_HitTestInvisible = VISPRIVATE_Visible;
-		/** Same as HitTestInvisible, but doesn't apply to child widgets. */
+		/// <summary> Same as HitTestInvisible, but doesn't apply to child widgets. </summary>
 		const int VIS_SelfHitTestInvisible = VISPRIVATE_Visible | VISPRIVATE_ChildrenHitTestVisible;
 
-        /** Any visibility will do */
+        /// <summary> Any visibility will do </summary>
         const int VIS_All = VISPRIVATE_Visible | VISPRIVATE_Hidden | VISPRIVATE_Collapsed | VISPRIVATE_SelfHitTestVisible | VISPRIVATE_ChildrenHitTestVisible;
 
         /// <summary>

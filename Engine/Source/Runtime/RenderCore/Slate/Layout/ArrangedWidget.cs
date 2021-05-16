@@ -1,6 +1,8 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+using SC.Engine.Runtime.RenderCore.Slate.Widgets;
+
+namespace SC.Engine.Runtime.RenderCore.Slate.Layout
 {
     /// <summary>
     /// 배열된 위젯 정보를 표현합니다.
@@ -26,6 +28,12 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         {
             Widget = widget;
             Geometry = geometry;
+        }
+        
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $"{Widget} % {Geometry}";
         }
     }
 }

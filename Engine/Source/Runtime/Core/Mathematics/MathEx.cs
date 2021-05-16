@@ -426,5 +426,12 @@ namespace SC.Engine.Runtime.Core.Mathematics
         {
             return (float)Math.Round(x);
         }
+
+        /// <summary>
+        /// 절댓값을 가져옵니다.
+        /// </summary>
+        /// <param name="x"> 값을 전달합니다. </param>
+        /// <returns> 절댓값이 반환됩니다. </returns>
+        public static float Abs(float x) => x * Math.Sign(x);
     }
 }

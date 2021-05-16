@@ -1,9 +1,8 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using System;
-using System.Diagnostics;
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+namespace SC.Engine.Runtime.RenderCore.Slate.Layout
 {
     /// <summary>
     /// 위젯의 여백을 표현합니다.

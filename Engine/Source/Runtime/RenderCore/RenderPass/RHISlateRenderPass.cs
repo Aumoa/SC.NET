@@ -216,24 +216,28 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
                 
                 foreach (var elem in elements)
                 {
-                    // Push element.
-                    shaderElements[lastIndex] = new SlateShaderElement()
+                    if (elem.Transform.bHasRenderTransform)
                     {
-                        Location = elem.Transform.Location,
-                        Size = elem.Transform.Size,
-                        Depth = depth
-                    };
+                        // Push element.
+                        shaderElements[lastIndex] = new SlateShaderElement()
+                        {
+                            M = elem.Transform.AccumulatedRenderTransform.M,
+                            AbsolutePosition = elem.Transform.AccumulatedRenderTransform.Translation,
+                            AbsoluteSize = elem.Transform.Size,
+                            Depth = depth
+                        };
 
-                    int index = _descriptorAllocator.Issue(elem.Brush.ImageSource);
+                        int index = _descriptorAllocator.Issue(elem.Brush.ImageSource);
 
-                    _instances.Add(new SlateDrawInstance()
-                    {
-                        Brush = elem.Brush,
-                        DescriptorIndex = index,
-                    });
+                        _instances.Add(new SlateDrawInstance()
+                        {
+                            Brush = elem.Brush,
+                            DescriptorIndex = index,
+                        });
 
-                    depth += depthStep;
-                    lastIndex += 1;
+                        depth += depthStep;
+                        lastIndex += 1;
+                    }
                 }
             }
             _descriptorAllocator.EndAllocate();
