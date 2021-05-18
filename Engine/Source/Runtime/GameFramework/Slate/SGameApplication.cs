@@ -32,68 +32,115 @@ namespace SC.Engine.Runtime.GameFramework.Slate
             _srv = new RHIShaderResourceView(deviceBundle, 1);
             _srv.CreateShaderResourceView(0, _texture);
 
-            _canvasPanel.AddSlot<SCanvasPanelSlot>()
-            [
-                _image = new SImage()
-                {
-                    Brush = new SlateBrush(_srv, _texture.GetDesiredSize())
-                }
-            ].Init
-            (
-                Offset: new Margin(100, 100, 100, 100),
-                Anchors: new Anchors(0, 0, 1, 1)
-            );
+            SlateBrush brush = new(_srv, new Vector2(100, 100));
 
-            _canvasPanel.AddSlot<SCanvasPanelSlot>()
+            _canvasPanel
+            .AddSlot()
             [
                 new SImage()
                 {
-                    Brush = new SlateBrush(_srv, _texture.GetDesiredSize()),
+                    Brush = brush,
                     Visibility = SlateVisibility.Collapsed
                 }
-            ].Init
+            ]
+            .Init
             (
                 Anchors: new Anchors(0, 0),
                 Offset: new Margin(0, 0, 100, 100)
-            );
-
-            _canvasPanel.AddSlot<SCanvasPanelSlot>()
+            )
+            .AddSlot()
             [
                 new SImage()
                 {
-                    Brush = new SlateBrush(_srv, _texture.GetDesiredSize())
+                    Brush = brush
                 }
-            ].Init
+            ]
+            .Init
             (
                 Anchors: new Anchors(1, 0),
                 Offset: new Margin(0, 0, 100, 100),
                 Alignment: new Vector2(1, 0)
-            );
-
-            _canvasPanel.AddSlot<SCanvasPanelSlot>()
+            )
+            .AddSlot()
             [
                 new SImage()
                 {
-                    Brush = new SlateBrush(_srv, _texture.GetDesiredSize())
+                    Brush = brush
                 }
             ].Init
             (
                 Anchors: new Anchors(1, 1),
                 Offset: new Margin(0, 0, 100, 100),
                 Alignment: new Vector2(1, 1)
-            );
-
-            _canvasPanel.AddSlot<SCanvasPanelSlot>()
+            )
+            .AddSlot()
             [
                 new SImage()
                 {
-                    Brush = new SlateBrush(_srv, _texture.GetDesiredSize())
+                    Brush = brush
                 }
-            ].Init
+            ]
+            .Init
             (
                 Anchors: new Anchors(0, 1),
                 Offset: new Margin(0, 0, 100, 100),
                 Alignment: new Vector2(0, 1)
+            )
+            .AddSlot()
+            [
+                new SHorizontalBoxPanel()
+                {
+                }
+                .AddSlot()
+                [
+                    new SImage()
+                    {
+                        Brush = brush
+                    }
+                ].Init
+                (
+                    HAlignment: HorizontalAlignment.Left,
+                    SizeParam: new SizeParam(SizeRule.Auto, 1.0f)
+                )
+                .AddSlot()
+                [
+                    new SImage()
+                    {
+                        Brush = brush
+                    }
+                ].Init
+                (
+                    HAlignment: HorizontalAlignment.Fill,
+                    SizeParam: new SizeParam(SizeRule.Stretch, 1.0f)
+                )
+                .AddSlot()
+                [
+                    new SImage()
+                    {
+                        Brush = brush
+                    }
+                ].Init
+                (
+                    HAlignment: HorizontalAlignment.Right,
+                    SizeParam: new SizeParam(SizeRule.Auto, 1.0f)
+                )
+            ].Init
+            (
+                Anchors: new Anchors(0, 0),
+                Offset: new Margin(0, 0, 1500, 100),
+                Alignment: new Vector2(0, 0)
+            )
+            .AddSlot()
+            [
+                _image = new SImage()
+                {
+                    Brush = brush
+                }
+            ]
+            .Init
+            (
+                Offset: new Margin(100, 100, 100, 100),
+                Anchors: new Anchors(0, 0, 1, 1)
             );
         }
 

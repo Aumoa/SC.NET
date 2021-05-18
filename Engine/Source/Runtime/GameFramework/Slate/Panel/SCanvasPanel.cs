@@ -62,14 +62,14 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
 			/// <param name="ZOrder"> Z 순서를 전달합니다. </param>
 			/// <param name="AutoSize"> 자동 크기 조절 설정 여부를 전달합니다. </param>
 			/// <returns> 작업 체인이 반환됩니다. </returns>
-			public SSlot Init(Margin? Offset = null, Anchors? Anchors = null, Vector2? Alignment = null, float? ZOrder = null, bool? AutoSize = null)
+			public SCanvasPanel Init(Margin? Offset = null, Anchors? Anchors = null, Vector2? Alignment = null, float? ZOrder = null, bool? AutoSize = null)
 			{
 				this.Offset = Offset ?? new Margin(0, 0, 100, 100);
 				this.Anchors = Anchors ?? default;
 				this.Alignment = Alignment ?? default;
 				this.ZOrder = ZOrder ?? default;
 				this.AutoSize = AutoSize ?? default;
-				return this;
+				return SourcePanel as SCanvasPanel;
 			}
 
 			/// <summary>

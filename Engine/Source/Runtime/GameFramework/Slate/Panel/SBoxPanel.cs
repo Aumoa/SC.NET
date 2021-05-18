@@ -46,7 +46,7 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
             /// <summary>
             /// 크기 매개변수를 가져오거나 설정합니다.
             /// </summary>
-            public SizeParam SizeParam { get; set; } = new SizeParam { SizeRule = SizeRule.Stretch, Value = 1.0f };
+            public SizeParam SizeParam { get; set; } = new SizeParam(SizeRule.Stretch, 1.0f);
 
             /// <summary>
             /// 슬롯의 각 위치로부터 여백을 가져오거나 설정합니다.
@@ -65,13 +65,32 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
             public SSlot(SBoxPanel owner) : base(owner)
             {
             }
+
+            /// <summary>
+            /// 특성을 초기화합니다.
+            /// </summary>
+            /// <param name="HAlignment"> 수평 정렬 위치를 가져오거나 설정합니다. </param>
+            /// <param name="VAlignment"> 수직 정렬 위치를 가져오거나 설정합니다. </param>
+            /// <param name="SizeParam"> 크기 매개변수를 가져오거나 설정합니다. </param>
+            /// <param name="SlotPadding"> 슬롯의 각 위치로부터 여백을 가져오거나 설정합니다. </param>
+            /// <param name="MaxSize"> 슬롯의 최대 크기를 가져오거나 설정합니다. 0일 경우 최댓값이 없습니다. </param>
+            /// <returns> 작업 체인이 반환됩니다. </returns>
+            public SBoxPanel Init(HorizontalAlignment? HAlignment = null, VerticalAlignment? VAlignment = null, SizeParam SizeParam = null, Margin? SlotPadding = null, float? MaxSize = null)
+            {
+                this.HAlignment = HAlignment ?? this.HAlignment;
+                this.VAlignment = VAlignment ?? this.VAlignment;
+                this.SizeParam = SizeParam ?? this.SizeParam;
+                this.SlotPadding = SlotPadding ?? this.SlotPadding;
+                this.MaxSize = MaxSize ?? this.MaxSize;
+                return SourcePanel as SBoxPanel;
+            }
         }
 
         /// <summary>
         /// 새 슬롯을 추가합니다.
         /// </summary>
         /// <returns> 생성된 슬롯이 반환됩니다. </returns>
-        public SSlot AddSlot()
+        public virtual SSlot AddSlot()
         {
             var slot = new SSlot(this);
             _childrens.Add(slot);
@@ -140,9 +159,18 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
         }
 
         /// <summary>
+        /// 개체를 초기화합니다.
+        /// </summary>
+        /// <param name="orientation"> 패널의 방향을 전달합니다. </param>
+        public SBoxPanel(Orientation orientation)
+        {
+            Orientation = orientation;
+        }
+
+        /// <summary>
         /// 위젯의 방향을 가져오거나 설정합니다.
         /// </summary>
-        public Orientation Orientation { get; set; }
+        public Orientation Orientation { get; init; }
 
         void ArrangeChildrenAlong(Orientation orientation, FlowDirection inLayoutFlow, Geometry allottedGeometry, ArrangedChildren arrangedChildren)
         {
@@ -284,5 +312,10 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
         }
 
         TArray<SSlot> _childrens = new();
+
+        /// <summary>
+        /// 자식 슬롯 목록을 가져옵니다.
+        /// </summary>
+        protected IList<SSlot> Childrens => _childrens;
     }
 }
