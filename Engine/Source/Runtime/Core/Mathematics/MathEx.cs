@@ -349,7 +349,7 @@ namespace SC.Engine.Runtime.Core.Mathematics
         /// <param name="arg1"> 값을 전달합니다. </param>
         /// <param name="arg2"> 값을 전달합니다. </param>
         /// <returns> 가장 작은 값이 반환됩니다. </returns>
-        public static float Min(float arg1, float arg2) => arg1 > arg2 ? arg1 : arg2;
+        public static float Min(float arg1, float arg2) => arg1 < arg2 ? arg1 : arg2;
 
         /// <summary>
         /// 전달된 값 중 작은 값을 가져옵니다.

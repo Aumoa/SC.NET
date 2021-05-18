@@ -90,7 +90,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 		public override string ToString()
 		{
 			return string.Format(
-				"{{LB: {0}, RB: {1}, [{2} * {3}]}}",
+				"{{LT: {0}, RB: {1}, [{2} * {3}]}}",
 				LeftTop,
 				RightBottom,
 				Width,
