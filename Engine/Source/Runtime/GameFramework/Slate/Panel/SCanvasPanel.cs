@@ -10,34 +10,164 @@ using SC.Engine.Runtime.RenderCore.Slate.Widgets;
 
 namespace SC.Engine.Runtime.GameFramework.Slate.Panel
 {
-    /// <summary>
-    /// 위치를 지정하여 위젯 목록을 렌더링하는 패널을 표현합니다.
-    /// </summary>
-    public class SCanvasPanel : SPanelWidget
-    {
+	/// <summary>
+	/// 위치를 지정하여 위젯 목록을 렌더링하는 패널을 표현합니다.
+	/// </summary>
+	public class SCanvasPanel : SPanelWidget
+	{
+		/// <summary>
+		/// <see cref="SCanvasPanel"/>의 슬롯을 표현합니다.
+		/// </summary>
+		public class SSlot : SSlotBase
+		{
+			/// <summary>
+			/// 개체를 초기화합니다.
+			/// </summary>
+			/// <param name="sourcePanel"> 슬롯의 소유자를 전달합니다. </param>
+			public SSlot(SCanvasPanel sourcePanel) : base(sourcePanel)
+			{
+			}
+
+			/// <summary>
+			/// 슬롯의 오프셋을 설정하거나 가져옵니다.
+			/// </summary>
+			public Margin Offset { get; set; } = new Margin(0, 0, 100, 100);
+
+			/// <summary>
+			/// 슬롯의 고정점 영역을 설정하거나 가져옵니다.
+			/// </summary>
+			public Anchors Anchors { get; set; }
+
+			/// <summary>
+			/// 정렬 계수를 설정하거나 가져옵니다.
+			/// </summary>
+			public Vector2 Alignment { get; set; }
+
+			/// <summary>
+			/// Z 순서를 설정하거나 가져옵니다.
+			/// </summary>
+			public float ZOrder { get; set; }
+
+			/// <summary>
+			/// 슬롯의 크기를 컨텐츠의 크기에 맞게 자동으로 결정합니다.
+			/// </summary>
+			public bool AutoSize { get; set; }
+
+			/// <summary>
+			/// 특성을 초기화합니다.
+			/// </summary>
+			/// <param name="Offset"> 슬롯의 오프셋을 전달합니다. </param>
+			/// <param name="Anchors"> 슬롯의 고정점 영역을 전달합니다. </param>
+			/// <param name="Alignment"> 정렬 계수를 전달합니다. </param>
+			/// <param name="ZOrder"> Z 순서를 전달합니다. </param>
+			/// <param name="AutoSize"> 자동 크기 조절 설정 여부를 전달합니다. </param>
+			/// <returns> 작업 체인이 반환됩니다. </returns>
+			public SSlot Init(Margin? Offset = null, Anchors? Anchors = null, Vector2? Alignment = null, float? ZOrder = null, bool? AutoSize = null)
+			{
+				this.Offset = Offset ?? new Margin(0, 0, 100, 100);
+				this.Anchors = Anchors ?? default;
+				this.Alignment = Alignment ?? default;
+				this.ZOrder = ZOrder ?? default;
+				this.AutoSize = AutoSize ?? default;
+				return this;
+			}
+
+			/// <summary>
+			/// 슬롯의 컨텐츠를 설정합니다.
+			/// </summary>
+			/// <param name="content"> 컨텐츠를 전달합니다. </param>
+			/// <returns> 작업 체인이 반환됩니다. </returns>
+			public SSlot this[SWidget content]
+			{
+				get
+				{
+					Content = content;
+					return this;
+				}
+			}
+		}
+
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
         public SCanvasPanel() : base()
         {
+		}
+
+		int GetChildIndex(Index index)
+        {
+			if (index.IsFromEnd)
+            {
+				return _childrens.Count - index.Value;
+            }
+			else
+            {
+				return index.Value;
+            }
         }
 
-        /// <inheritdoc/>
-        protected override SSlot OnAddSlot()
-        {
-            var slot = new SCanvasPanelSlot(this);
+		/// <summary>
+		/// 새 슬롯을 추가합니다.
+		/// </summary>
+		/// <returns> 생성된 슬롯이 반환됩니다. </returns>
+		public SSlot AddSlot()
+		{
+			var slot = new SSlot(this);
 			_childrens.Add(slot);
 			return slot;
-        }
+		}
+
+		/// <summary>
+		/// 슬롯을 제거합니다.
+		/// </summary>
+		/// <param name="index"> 제거할 슬롯의 인덱스를 전달합니다. </param>
+		/// <returns> 슬롯이 올바르게 제거되었는지 나타내는 값을 반환합니다. </returns>
+		public bool RemoveSlot(int index)
+        {
+			if (_childrens.IsValidIndex(index))
+			{
+				_childrens.RemoveAt(index);
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// 슬롯을 제거합니다.
+		/// </summary>
+		/// <param name="index"> 제거할 슬롯의 인덱스를 전달합니다. </param>
+		public void RemoveSlot(Index index) => RemoveSlot(GetChildIndex(index));
+
+		/// <summary>
+		/// 슬롯 목록에 해당 위젯을 사용하는 슬롯이 포함되어 있을 경우 대상 슬롯을 제거합니다.
+		/// </summary>
+		/// <param name="slotWidget"> 위젯 개체를 전달합니다. </param>
+		/// <returns> 제거된 슬롯의 인덱스가 반환됩니다. 제거되지 않았을 경우 -1이 반환됩니다. </returns>
+		public int RemoveSlot(SWidget slotWidget)
+        {
+			for (int i = 0; i < _childrens.Count; ++i)
+            {
+				if (_childrens[i].Content.Equals(slotWidget))
+                {
+					_childrens.RemoveAt(i);
+					return i;
+                }
+            }
+
+			return -1;
+		}
+
+		/// <summary>
+		/// 모든 슬롯을 제거합니다.
+		/// </summary>
+		public void ClearChildren()
+		{
+			_childrens.Clear();
+		}
 
 		/// <inheritdoc/>
-        protected override void OnRemoveSlot(Index index)
-        {
-			_childrens.RemoveAt(index);
-        }
-
-        /// <inheritdoc/>
-        protected override int OnPaint(SlatePaintArgs paintArgs, Geometry allottedGeometry, Rectangle myCullingRect, SlateWindowElementList drawElements, int layer, bool parentEnabled)
+		protected override int OnPaint(SlatePaintArgs paintArgs, Geometry allottedGeometry, Rectangle myCullingRect, SlateWindowElementList drawElements, int layer, bool parentEnabled)
         {
             ArrangedChildren arrangedChildren = new(SlateVisibility.Visible);
             ArrangeChildren(arrangedChildren, allottedGeometry);
@@ -88,7 +218,7 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
 				 : CompareAscending(lh.ZOrder, rh.ZOrder);
 		}
 
-		TArray<SCanvasPanelSlot> _childrens = new();
+		TArray<SSlot> _childrens = new();
 
 		/// <inheritdoc/>
 		protected override void OnArrangeChildren(ArrangedChildren arrangedChildren, Geometry allottedGeometry)

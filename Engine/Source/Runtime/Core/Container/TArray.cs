@@ -859,7 +859,7 @@ namespace SC.Engine.Runtime.Core.Container
             }
         }
 
-        class VectorEnumerator : IEnumerator<T>
+        class VectorEnumerator : IEnumerator<T>, IEnumerable<T>
         {
             TArray<T> origin;
             int revision;
@@ -868,14 +868,16 @@ namespace SC.Engine.Runtime.Core.Container
 
             int startIndex;
             int length;
+            bool reversed;
 
-            public VectorEnumerator(TArray<T> InOrigin, int InRevision, int InStartIndex, int InLength)
+            public VectorEnumerator(TArray<T> InOrigin, int InRevision, int InStartIndex, int InLength, bool Reversed = false)
             {
                 origin = InOrigin;
                 revision = InRevision;
 
                 startIndex = InStartIndex;
                 length = InLength;
+                reversed = Reversed;
             }
 
             public virtual void Dispose()
@@ -887,8 +889,7 @@ namespace SC.Engine.Runtime.Core.Container
             {
                 VersionCheck();
 
-                bool bValid = IsValidIndex(Index);
-
+                bool bValid = IsValidIndex(myIndex) && origin.IsValidIndex(Index);
                 if (bValid)
                 {
                     current = origin[Index];
@@ -933,9 +934,23 @@ namespace SC.Engine.Runtime.Core.Container
                 return true;
             }
 
+            public IEnumerator<T> GetEnumerator() => this;
+
+            IEnumerator IEnumerable.GetEnumerator() => this;
+
             int Index
             {
-                get => startIndex + myIndex;
+                get
+                {
+                    if (reversed)
+                    {
+                        return startIndex - myIndex;
+                    }
+                    else
+                    {
+                        return startIndex + myIndex;
+                    }
+                }
             }
 
             object IEnumerator.Current => Current;
@@ -990,6 +1005,29 @@ namespace SC.Engine.Runtime.Core.Container
             else
             {
                 return index.Value;
+            }
+        }
+
+        /// <summary>
+        /// 범위 열거자를 가져옵니다.
+        /// </summary>
+        /// <param name="range"> 범위를 전달합니다. </param>
+        /// <returns> 개체가 반환됩니다. </returns>
+        public IEnumerable<T> this[Range range]
+        {
+            get
+            {
+                int start = IndexToInt(range.Start);
+                int end = IndexToInt(range.End);
+
+                if (start > end)
+                {
+                    return new VectorEnumerator(this, _revision, start, -(end - start), true);
+                }
+                else
+                {
+                    return new VectorEnumerator(this, _revision, start, end - start);
+                }
             }
         }
     }
