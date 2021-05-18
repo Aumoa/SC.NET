@@ -49,5 +49,38 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
         /// 슬롯의 크기를 컨텐츠의 크기에 맞게 자동으로 결정합니다.
         /// </summary>
         public bool AutoSize { get; set; }
+
+        /// <summary>
+        /// 특성을 초기화합니다.
+        /// </summary>
+        /// <param name="Offset"> 슬롯의 오프셋을 전달합니다. </param>
+        /// <param name="Anchors"> 슬롯의 고정점 영역을 전달합니다. </param>
+        /// <param name="Alignment"> 정렬 계수를 전달합니다. </param>
+        /// <param name="ZOrder"> Z 순서를 전달합니다. </param>
+        /// <param name="AutoSize"> 자동 크기 조절 설정 여부를 전달합니다. </param>
+        /// <returns> 작업 체인이 반환됩니다. </returns>
+        public SCanvasPanelSlot Init(Margin? Offset = null, Anchors? Anchors = null, Vector2? Alignment = null, float? ZOrder = null, bool? AutoSize = null)
+        {
+            this.Offset = Offset ?? new Margin(0, 0, 100, 100);
+            this.Anchors = Anchors ?? default;
+            this.Alignment = Alignment ?? default;
+            this.ZOrder = ZOrder ?? default;
+            this.AutoSize = AutoSize ?? default;
+            return this;
+        }
+
+        /// <summary>
+        /// 슬롯의 컨텐츠를 설정합니다.
+        /// </summary>
+        /// <param name="content"> 컨텐츠를 전달합니다. </param>
+        /// <returns> 작업 체인이 반환됩니다. </returns>
+        public SCanvasPanelSlot this[SWidget content]
+        {
+            get
+            {
+                Content = content;
+                return this;
+            }
+        }
     }
 }

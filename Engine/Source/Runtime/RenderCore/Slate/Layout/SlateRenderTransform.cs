@@ -1,7 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using System;
-using System.Runtime.InteropServices;
 
 using SC.Engine.Runtime.Core.Numerics;
 
@@ -10,19 +9,16 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
     /// <summary>
     /// 2차원 트랜스폼을 표현합니다.
     /// </summary>
-    [StructLayout(LayoutKind.Explicit)]
     public struct SlateRenderTransform : ILayoutTransform2D, IEquatable<SlateRenderTransform>, INearlyEquatable<SlateRenderTransform, float>, IFormattable, IMatrixType
     {
         /// <summary>
         /// 회전 및 비례를 나타내는 행렬입니다.
         /// </summary>
-        [FieldOffset(0)]
         public Matrix2x2 M;
 
         /// <summary>
         /// 이동을 나타내는 벡터입니다.
         /// </summary>
-        [FieldOffset(16)]
         public Vector2 Translation;
 
         /// <summary>

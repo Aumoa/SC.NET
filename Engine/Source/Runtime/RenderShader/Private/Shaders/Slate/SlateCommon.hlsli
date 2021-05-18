@@ -25,6 +25,7 @@ struct SlateElement
     float2 AbsolutePosition;
     float2 AbsoluteSize;
     float Depth;
+    float3 pad;
 };
 
 float3 GetSlateNDCLocation(SlateConstants constants, SlateElement element, float2 vertexPos)

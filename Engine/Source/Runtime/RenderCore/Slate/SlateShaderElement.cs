@@ -6,7 +6,7 @@ using SC.Engine.Runtime.Core.Numerics;
 
 namespace SC.Engine.Runtime.RenderCore.Slate
 {
-    [StructLayout(LayoutKind.Explicit)]
+    [StructLayout(LayoutKind.Explicit, Size = 48)]
     struct SlateShaderElement
     {
         [FieldOffset(0)]

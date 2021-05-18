@@ -246,15 +246,15 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
             fixed (float* screenSize = &args.ScreenSize.X)
             {
                 commandList.SetGraphicsRoot32BitConstants(1, 2, new IntPtr(screenSize), 0);
-                commandList.SetGraphicsRootShaderResourceView(2, _slateElementsBuf.GetGPUVirtualAddress());
                 _descriptorAllocator.SetDescriptorHeaps(commandList);
             }
 
             for (int i = 0; i < arraySize; ++i)
             {
+                commandList.SetGraphicsRootShaderResourceView(2, _slateElementsBuf.GetGPUVirtualAddress() + (ulong)(sizeof(SlateShaderElement) * i));
                 ref SlateDrawInstance instance = ref _instances[i];
                 commandList.SetGraphicsRootDescriptorTable(0, _descriptorAllocator.GetViewGpuHandle(instance.DescriptorIndex));
-                commandList.DrawInstanced(4, 1, 0, (uint)i);
+                commandList.DrawInstanced(4, 1);
             }
         }
     }
