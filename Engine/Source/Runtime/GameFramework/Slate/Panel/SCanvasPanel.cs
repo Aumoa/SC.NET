@@ -39,7 +39,7 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
         /// <inheritdoc/>
         protected override int OnPaint(SlatePaintArgs paintArgs, Geometry allottedGeometry, Rectangle myCullingRect, SlateWindowElementList drawElements, int layer, bool parentEnabled)
         {
-            ArrangedChildren arrangedChildren = new();
+            ArrangedChildren arrangedChildren = new(SlateVisibility.Visible);
             ArrangeChildren(arrangedChildren, allottedGeometry);
 
 			bool forwardedEnabled = ShouldBeEnabled(parentEnabled);

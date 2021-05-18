@@ -22,7 +22,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
         /// <inheritdoc/>
         protected override int OnPaint(SlatePaintArgs paintArgs, Geometry allottedGeometry, Rectangle myCullingRect, SlateWindowElementList drawElements, int layer, bool parentEnabled)
         {
-            ArrangedChildren arrangedChildren = new();
+            ArrangedChildren arrangedChildren = new(SlateVisibility.Visible);
             ArrangeChildren(arrangedChildren, allottedGeometry);
 
             return PaintArrangedChildren(paintArgs, arrangedChildren, allottedGeometry, myCullingRect, drawElements, layer, parentEnabled);

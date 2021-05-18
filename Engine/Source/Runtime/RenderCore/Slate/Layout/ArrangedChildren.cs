@@ -15,8 +15,10 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
-        public ArrangedChildren()
+        /// <param name="visibilityFilter"> 비저빌리티 필터를 전달합니다. </param>
+        public ArrangedChildren(SlateVisibility visibilityFilter)
         {
+            VisibilityFilter = visibilityFilter;
         }
 
         /// <summary>
