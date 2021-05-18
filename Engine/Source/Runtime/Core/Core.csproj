@@ -13,4 +13,8 @@
 	<Platforms>x64</Platforms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Localization\" />
+  </ItemGroup>
+
 </Project>

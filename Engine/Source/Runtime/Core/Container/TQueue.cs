@@ -13,6 +13,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// </summary>
     /// <typeparam name="T"> 자료 형식을 전달합니다. </typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(IReadOnlyCollectionDebugView<>))]
+    [DebuggerDisplay("Count = {Count}")]
     public class TQueue<T> : IReadOnlyCollection<T>
     {
         private T[] _array;

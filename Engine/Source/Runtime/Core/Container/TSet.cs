@@ -17,6 +17,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// </summary>
     /// <typeparam name="T"> 키의 형식을 전달합니다. </typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(IReadOnlyCollectionDebugView<>))]
+    [DebuggerDisplay("Count = {Count}")]
     public class TSet<T> : ISet<T>, IReadOnlySet<T>, ICollection<T>, ICloneable, ISerializable
     {
         int[] _buckets;

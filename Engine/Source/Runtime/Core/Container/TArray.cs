@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SC.Engine.Runtime.Core.Container
 {
@@ -11,6 +12,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// </summary>
     /// <typeparam name="T"> 데이터 유형을 전달합니다. </typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(IReadOnlyCollectionDebugView<>))]
+    [DebuggerDisplay("Count = {Count}")]
     public partial class TArray<T> : IList<T>, IReadOnlyList<T>, ICloneable
     {
         static T[] EmptyArray = new T[0];

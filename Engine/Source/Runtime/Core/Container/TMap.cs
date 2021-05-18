@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 using SC.Engine.Runtime.Core.Mathematics;
@@ -16,6 +17,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// <typeparam name="TKey"> 키의 형식을 전달합니다. </typeparam>
     /// <typeparam name="TValue"> 값의 형식을 전달합니다. </typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(IDictionaryDebugView<,>))]
+    [DebuggerDisplay("Count = {Count}")]
     public class TMap<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICloneable, ISerializable
     {
         int[] _buckets;
