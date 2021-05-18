@@ -169,16 +169,21 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
         /// <summary>
         /// 슬레이트 요소를 렌더링합니다.
         /// </summary>
-        /// <param name="args"> 요소 매개변수를 전달합니다. </param>
-        public void RenderElements(SlatePaintArgs args)
+        /// <param name="deviceContext"> 디바이스 컨텍스트를 전달합니다. </param>
+        /// <param name="drawElements"> 렌더링 요소 목록 개체를 전달합니다. </param>
+        public void RenderElements(RHIDeviceContext deviceContext, SlateWindowElementList drawElements)
         {
             RHIDeviceBundle device = GetDevice();
-
-            RHIDeviceContext deviceContext = args.Context;
             ID3D12GraphicsCommandList commandList = deviceContext.GetCommandList();
 
             // Preparing the cached array.
-            int arraySize = args.GetElementsCount();
+            int arraySize = drawElements.NumElements();
+            if (arraySize <= 0)
+            {
+                // There is no render elements.
+                return;
+            }
+
             if (arraySize > _cachedArraySize)
             {
                 if (_slateElementsBuf is not null)
@@ -190,31 +195,31 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
                 _cachedArraySize = arraySize;
             }
 
+            // Sort by layer.
+            drawElements.SortByLayer();
+
             _instances.Clear(false);
             _instances.Capacity = Math.Max(_instances.Capacity, arraySize);
 
             // Write datas sequential
             var shaderElements = (SlateShaderElement*)_slateElementsBuf.Map().ToPointer();
-            var arrangedKeys = args.Elements.Keys.ToList();
-            arrangedKeys.Sort();
 
             int lastIndex = 0;
             _descriptorAllocator.BeginAllocate();
-            foreach (var key in arrangedKeys)
-            {
-                TArray<SlateDrawElement> elements = args.Elements[key];
 
-                int count = elements.Count;
-                float depthStep = 1.0f / count;
-                float depth = 0;
+            float depthStep = 1.0f / arraySize;
+            float depth = 0;
                 
-                foreach (var elem in elements)
+            foreach (var elem in drawElements)
+            {
+                if (elem.Transform.bHasRenderTransform)
                 {
                     // Push element.
                     shaderElements[lastIndex] = new SlateShaderElement()
                     {
-                        Location = elem.Transform.Location,
-                        Size = elem.Transform.Size,
+                        M = elem.Transform.AccumulatedRenderTransform.M,
+                        AbsolutePosition = elem.Transform.AccumulatedRenderTransform.Translation,
+                        AbsoluteSize = elem.Transform.LocalSize,
                         Depth = depth
                     };
 
@@ -233,18 +238,16 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
             _descriptorAllocator.EndAllocate();
 
             // Draw call for all elements.
-            fixed (float* screenSize = &args.ScreenSize.X)
-            {
-                commandList.SetGraphicsRoot32BitConstants(1, 2, new IntPtr(screenSize), 0);
-                commandList.SetGraphicsRootShaderResourceView(2, _slateElementsBuf.GetGPUVirtualAddress());
-                _descriptorAllocator.SetDescriptorHeaps(commandList);
-            }
+            Vector2 desiredSize = drawElements.PaintWindow.GetDesiredSize();
+            commandList.SetGraphicsRoot32BitConstants(1, 2, new IntPtr(&desiredSize.X), 0);
+            _descriptorAllocator.SetDescriptorHeaps(commandList);
 
             for (int i = 0; i < arraySize; ++i)
             {
+                commandList.SetGraphicsRootShaderResourceView(2, _slateElementsBuf.GetGPUVirtualAddress() + (ulong)(sizeof(SlateShaderElement) * i));
                 ref SlateDrawInstance instance = ref _instances[i];
                 commandList.SetGraphicsRootDescriptorTable(0, _descriptorAllocator.GetViewGpuHandle(instance.DescriptorIndex));
-                commandList.DrawInstanced(4, 1, 0, (uint)i);
+                commandList.DrawInstanced(4, 1);
             }
         }
     }

@@ -2,6 +2,8 @@
 
 using System;
 
+using SC.Engine.Runtime.Core.Mathematics;
+
 namespace SC.Engine.Runtime.Core.Numerics
 {
     /// <summary>
@@ -79,6 +81,21 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
+        /// <see cref="Matrix3x2"/> 구조체의 새 인스턴스를 초기화합니다.
+        /// </summary>
+        /// <param name="m2x2"> 2x2 행렬을 전달합니다. </param>
+        /// <param name="v3"> 3행을 채우는 벡터를 전달합니다. </param>
+        public Matrix3x2(Matrix2x2 m2x2, Vector2 v3)
+        {
+            _11 = m2x2._11;
+            _12 = m2x2._12;
+            _21 = m2x2._21;
+            _22 = m2x2._22;
+            _31 = v3.X;
+            _32 = v3.Y;
+        }
+
+        /// <summary>
         /// 대상 오브젝트가 행렬일 경우, 두 행렬이 서로 같은지 비교합니다.
         /// </summary>
         /// <param name="obj"> 대상 오브젝트를 전달합니다. </param>
@@ -131,7 +148,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Matrix3x2 right, float epsilon)
+        public bool NearlyEquals(Matrix3x2 right, float epsilon)
         {
             return Math.Abs(_11 - right._11) <= epsilon
                 && Math.Abs(_12 - right._12) <= epsilon
@@ -160,26 +177,21 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public T GetComponentOrDefault<T>(int index) where T : IVectorType, new()
+        public unsafe T GetComponentOrDefault<T>(int index) where T : IVectorType, new()
         {
             var v = new T();
-            switch (index)
+            if (index < Count)
             {
-                case 0:
-                    v.Construct(new Vector2(_11, _12));
-                    break;
-                case 1:
-                    v.Construct(new Vector2(_21, _22));
-                    break;
-                case 2:
-                    v.Construct(new Vector2(_31, _32));
-                    break;
+                fixed (float* ptr = &_11)
+                {
+                    v.Construct(new Vector2(ptr[index * 2 + 0], ptr[index * 2 + 1]));
+                }
             }
             return v;
         }
 
         /// <inheritdoc/>
-        public void Construct<T>(in T matrix) where T : IMatrixType
+        public void Construct<T>(T matrix) where T : IMatrixType
         {
             Vector2 v1;
             Vector2 v2;
@@ -227,25 +239,18 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public IVectorType this[int index]
+        public unsafe IVectorType this[int index]
         {
             get => GetComponentOrDefault<Vector2>(index);
             set
             {
-                switch (index)
+                fixed (float* ptr = &_11)
                 {
-                    case 0:
-                        _11 = value[0];
-                        _12 = value[1];
-                        break;
-                    case 1:
-                        _21 = value[0];
-                        _22 = value[1];
-                        break;
-                    case 2:
-                        _31 = value[0];
-                        _32 = value[1];
-                        break;
+                    if (index < Count)
+                    {
+                        ptr[index * 2 + 0] = value[0];
+                        ptr[index * 2 + 1] = value[1];
+                    }
                 }
             }
         }
@@ -277,6 +282,30 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
+        /// 두 행렬을 곱합니다.
+        /// </summary>
+        /// <param name="lhs"> 값을 전달합니다. </param>
+        /// <param name="rhs"> 값을 전달합니다. </param>
+        /// <returns> 행렬 값이 반환됩니다. </returns>
+        public static Matrix3x2 Multiply(Matrix3x2 lhs, Matrix3x2 rhs)
+        {
+            Matrix3x2 m;
+
+            m._11 = lhs._11 * rhs._11 + lhs._12 * rhs._21;
+            m._12 = lhs._11 * rhs._12 + lhs._12 * rhs._22;
+
+            // Second row
+            m._21 = lhs._21 * rhs._11 + lhs._22 * rhs._21;
+            m._22 = lhs._21 * rhs._12 + lhs._22 * rhs._22;
+
+            // Third row
+            m._31 = lhs._31 * rhs._11 + lhs._32 * rhs._21 + rhs._31;
+            m._32 = lhs._31 * rhs._12 + lhs._32 * rhs._22 + rhs._32;
+
+            return m;
+        }
+
+        /// <summary>
         /// 단위 행렬을 가져옵니다.
         /// </summary>
         public static Matrix3x2 Identity
@@ -294,7 +323,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 계산된 행렬이 반환됩니다. </returns>
-        public static Matrix3x2 operator +(in Matrix3x2 left, in Matrix3x2 right)
+        public static Matrix3x2 operator +(Matrix3x2 left, Matrix3x2 right)
         {
             return new Matrix3x2(
                 left._11 + right._11, left._12 + right._12,
@@ -309,7 +338,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 계산된 행렬이 반환됩니다. </returns>
-        public static Matrix3x2 operator -(in Matrix3x2 left, in Matrix3x2 right)
+        public static Matrix3x2 operator -(Matrix3x2 left, Matrix3x2 right)
         {
             return new Matrix3x2(
                 left._11 - right._11, left._12 - right._12,
@@ -324,7 +353,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 계산된 행렬이 반환됩니다. </returns>
-        public static Matrix3x2 operator *(in Matrix3x2 left, in Matrix3x2 right)
+        public static Matrix3x2 operator *(Matrix3x2 left, Matrix3x2 right)
         {
             return new Matrix3x2(
                 left._11 * right._11, left._12 * right._12,
@@ -339,7 +368,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 계산된 행렬이 반환됩니다. </returns>
-        public static Matrix3x2 operator *(float left, in Matrix3x2 right)
+        public static Matrix3x2 operator *(float left, Matrix3x2 right)
         {
             return new Matrix3x2(
                 left * right._11, left * right._12,
@@ -354,7 +383,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 계산된 행렬이 반환됩니다. </returns>
-        public static Matrix3x2 operator *(in Matrix3x2 left, float right)
+        public static Matrix3x2 operator *(Matrix3x2 left, float right)
         {
             return new Matrix3x2(
                 left._11 * right, left._12 * right,
@@ -369,7 +398,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 계산된 행렬이 반환됩니다. </returns>
-        public static Matrix3x2 operator /(in Matrix3x2 left, in Matrix3x2 right)
+        public static Matrix3x2 operator /(Matrix3x2 left, Matrix3x2 right)
         {
             return new Matrix3x2(
                 left._11 / right._11, left._12 / right._12,
@@ -384,7 +413,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 계산된 행렬이 반환됩니다. </returns>
-        public static Matrix3x2 operator /(float left, in Matrix3x2 right)
+        public static Matrix3x2 operator /(float left, Matrix3x2 right)
         {
             return new Matrix3x2(
                 left / right._11, left / right._12,
@@ -399,7 +428,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 계산된 행렬이 반환됩니다. </returns>
-        public static Matrix3x2 operator /(in Matrix3x2 left, float right)
+        public static Matrix3x2 operator /(Matrix3x2 left, float right)
         {
             return new Matrix3x2(
                 left._11 / right, left._12 / right,
@@ -414,7 +443,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator ==(in Matrix3x2 left, in Matrix3x2 right)
+        public static bool operator ==(Matrix3x2 left, Matrix3x2 right)
         {
             return left._11 == right._11 && left._12 == right._12
                 && left._21 == right._21 && left._22 == right._22
@@ -427,11 +456,69 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 행렬을 전달합니다. </param>
         /// <param name="right"> 두 번째 행렬을 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator !=(in Matrix3x2 left, in Matrix3x2 right)
+        public static bool operator !=(Matrix3x2 left, Matrix3x2 right)
         {
             return left._11 != right._11 || left._12 != right._12
                 || left._21 != right._21 || left._22 != right._22
                 || left._31 != right._31 || left._32 != right._32;
+        }
+
+        /// <summary>
+        /// 이동 행렬을 계선합니다.
+        /// </summary>
+        /// <param name="translation"> 이동 벡터를 전달합니다. </param>
+        /// <returns> 행렬 값이 반환됩니다. </returns>
+        public static Matrix3x2 Translation(Vector2 translation)
+        {
+            return new Matrix3x2(
+                1.0f, 0.0f,
+                0.0f, 1.0f,
+                translation.X, translation.Y
+                );
+        }
+
+        /// <summary>
+        /// 비례 행렬을 계산합니다.
+        /// </summary>
+        /// <param name="scale"> 비례 벡터를 전달합니다. </param>
+        /// <returns> 행렬 값이 반환됩니다. </returns>
+        public static Matrix3x2 Scale(Vector2 scale)
+        {
+            return new Matrix3x2(
+                scale.X, 0,
+                0, scale.Y,
+                0, 0
+                );
+        }
+
+        /// <summary>
+        /// 회전 행렬을 계산합니다.
+        /// </summary>
+        /// <param name="radAngle"> 회전 각도를 전달합니다. </param>
+        /// <returns> 행렬 값이 반환됩니다. </returns>
+        public static Matrix3x2 Rotation(float radAngle)
+        {
+            MathEx.SinCos(out float sin, out float cos, radAngle);
+
+            return new Matrix3x2(
+                cos, -sin,
+                sin, cos,
+                0, 0
+                );
+        }
+
+        /// <summary>
+        /// 전단 행렬을 계산합니다.
+        /// </summary>
+        /// <param name="shear"> 값을 전달합니다. </param>
+        /// <returns> 행렬 값이 반환됩니다. </returns>
+        public static Matrix3x2 Shear(Vector2 shear)
+        {
+            return new Matrix3x2(
+                1, shear.Y,
+                shear.X, 1,
+                0, 1
+                );
         }
     }
 }

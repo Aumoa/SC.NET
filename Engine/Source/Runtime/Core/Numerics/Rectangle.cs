@@ -90,7 +90,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 		public override string ToString()
 		{
 			return string.Format(
-				"{{LB: {0}, RB: {1}, [{2} * {3}]}}",
+				"{{LT: {0}, RB: {1}, [{2} * {3}]}}",
 				LeftTop,
 				RightBottom,
 				Width,
@@ -109,7 +109,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
 		/// <inheritdoc/>
-		public bool NearlyEquals(in Rectangle right, float epsilon)
+		public bool NearlyEquals(Rectangle right, float epsilon)
 		{
 			return Math.Abs(Left - right.Left) <= epsilon
 				&& Math.Abs(Top - right.Top) <= epsilon
@@ -135,20 +135,23 @@ namespace SC.Engine.Runtime.Core.Numerics
 		}
 
 		/// <inheritdoc/>
-		public float GetComponentOrDefault(int index)
+		public unsafe float GetComponentOrDefault(int index)
 		{
-            return index switch
-            {
-                0 => Left,
-                1 => Top,
-                2 => Right,
-                3 => Bottom,
-                _ => 0,
-            };
-        }
+			fixed (float* ptr = &Left)
+			{
+				if (index < Count)
+				{
+					return ptr[index];
+				}
+				else
+				{
+					return default;
+				}
+			}
+		}
 
 		/// <inheritdoc/>
-		public void Construct<T>(in T vector) where T : IVectorType
+		public void Construct<T>(T vector) where T : IVectorType
 		{
 			if (vector is not null)
 			{
@@ -181,27 +184,19 @@ namespace SC.Engine.Runtime.Core.Numerics
 		}
 
 		/// <inheritdoc/>
-		public float this[int index]
+		public unsafe float this[int index]
 		{
 			get => GetComponentOrDefault(index);
 			set
-            {
-                switch (index)
-                {
-					case 0:
-						Left = value;
-						break;
-					case 1:
-						Top = value;
-						break;
-					case 2:
-						Right = value;
-						break;
-					case 3:
-						Bottom = value;
-						break;
-                }					
-            }
+			{
+				fixed (float* ptr = &Left)
+				{
+					if (index < Count)
+					{
+						ptr[index] = value;
+					}
+				}
+			}
 		}
 
 		/// <inheritdoc/>
@@ -359,7 +354,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 		/// <param name="left"> 첫 번째 사각형을 전달합니다. </param>
 		/// <param name="right"> 두 번째 사각형을 전달합니다. </param>
 		/// <returns> 비교 결과가 반환됩니다. </returns>
-		public static bool operator ==(in Rectangle left, in Rectangle right)
+		public static bool operator ==(Rectangle left, Rectangle right)
 		{
 			return left.Left == right.Left && left.Top == right.Top && left.Right == right.Right && left.Bottom == right.Bottom;
 		}
@@ -370,7 +365,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 		/// <param name="left"> 첫 번째 사각형을 전달합니다. </param>
 		/// <param name="right"> 두 번째 사각형을 전달합니다. </param>
 		/// <returns> 비교 결과가 반환됩니다. </returns>
-		public static bool operator !=(in Rectangle left, in Rectangle right)
+		public static bool operator !=(Rectangle left, Rectangle right)
 		{
 			return left.Left != right.Left || left.Top != right.Top || left.Right != right.Right || left.Bottom != right.Bottom;
 		}

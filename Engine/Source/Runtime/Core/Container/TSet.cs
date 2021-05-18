@@ -17,6 +17,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// </summary>
     /// <typeparam name="T"> 키의 형식을 전달합니다. </typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(IReadOnlyCollectionDebugView<>))]
+    [DebuggerDisplay("Count = {Count}")]
     public class TSet<T> : ISet<T>, IReadOnlySet<T>, ICollection<T>, ICloneable, ISerializable
     {
         int[] _buckets;
@@ -52,7 +54,7 @@ namespace SC.Engine.Runtime.Core.Container
         public TSet(ISet<T> set, IEqualityComparer<T> comparer = null) :
             this(set is not null ? set.Count : 0, comparer)
         {
-            ThrowIfArgumentNull(in set);
+            ThrowIfArgumentNull(set);
 
             foreach (T value in set)
             {
@@ -136,14 +138,7 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool Remove(T value) => Remove(in value);
-
-        /// <summary>
-        /// 컨테이너에서 해당 키와 쌍을 이루는 값을 키와 함께 제거합니다.
-        /// </summary>
-        /// <param name="value"> 키를 전달합니다. </param>
-        /// <returns> 키를 찾아 값을 제거했으면 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Remove(in T value)
+        public virtual bool Remove(T value)
         {
             ThrowIfArgumentNull(value);
 
@@ -182,9 +177,9 @@ namespace SC.Engine.Runtime.Core.Container
         /// <param name="key"> 찾을 값을 전달합니다. </param>
         /// <param name="value"> 실제 저장된 값을 받을 변수의 참조를 전달합니다. </param>
         /// <returns> 값을 찾았을 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool TryGetValue(in T key, out T value)
+        public bool TryGetValue(T key, out T value)
         {
-            int i = FindEntry(in key);
+            int i = FindEntry(key);
             if (i >= 0)
             {
                 value = _entries[i].Value;
@@ -203,9 +198,9 @@ namespace SC.Engine.Runtime.Core.Container
             return new TSet<T>(this, Comparer);
         }
 
-        int FindEntry(in T key)
+        int FindEntry(T key)
         {
-            ThrowIfArgumentNull(in key);
+            ThrowIfArgumentNull(key);
 
             if (_buckets is not null)
             {
@@ -327,7 +322,7 @@ namespace SC.Engine.Runtime.Core.Container
 
         void ICollection<T>.CopyTo(T[] array, int index)
         {
-            ThrowIfArgumentNull(in array);
+            ThrowIfArgumentNull(array);
             ThrowIfIndexOutOfRange(index, array.Length);
 
             if (array.Length - index < Count)
@@ -380,7 +375,7 @@ namespace SC.Engine.Runtime.Core.Container
             }
         }
 
-        static void ThrowIfArgumentNull<T2>(in T2 argument)
+        static void ThrowIfArgumentNull<T2>(T2 argument)
         {
             if (argument is null)
             {
@@ -692,7 +687,7 @@ namespace SC.Engine.Runtime.Core.Container
             // Mark if contains: find index of in slots array and mark corresponding element in bit array.
             foreach (T item in other)
             {
-                int index = FindEntry(in item);
+                int index = FindEntry(item);
                 if (index >= 0)
                 {
                     bitHelper.MarkBit(index);

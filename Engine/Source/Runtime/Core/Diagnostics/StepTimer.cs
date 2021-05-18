@@ -122,7 +122,7 @@ namespace SC.Engine.Runtime.Core.Diagnostics
         /// <returns> 초 값이 반환됩니다. </returns>
         private double TicksToSeconds(ulong inValue)
         {
-            return inValue / InvFrequency;
+            return inValue * InvFrequency;
         }
 
         /// <summary>

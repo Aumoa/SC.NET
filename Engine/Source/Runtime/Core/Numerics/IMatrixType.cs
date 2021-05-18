@@ -20,7 +20,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <typeparam name="T"> <see cref="IMatrixType"/> 인터페이스를 구현한 행렬 형식을 전달합니다. </typeparam>
         /// <param name="matrix"> 행렬 값을 전달합니다. </param>
-        void Construct<T>(in T matrix) where T : IMatrixType;
+        void Construct<T>(T matrix) where T : IMatrixType;
 
         /// <summary>
         /// <see cref="IMatrixType"/> 인터페이스를 구현한 행렬 형식으로 변경합니다. 이 과정에서 데이터가 손실 또는 추가될 수 있습니다.

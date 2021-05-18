@@ -102,7 +102,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
 		/// <inheritdoc/>
-		public bool NearlyEquals(in Color right, float epsilon)
+		public bool NearlyEquals(Color right, float epsilon)
 		{
 			return Math.Abs(R - right.R) <= epsilon
 				&& Math.Abs(G - right.G) <= epsilon
@@ -127,20 +127,23 @@ namespace SC.Engine.Runtime.Core.Numerics
 		}
 
 		/// <inheritdoc/>
-		public float GetComponentOrDefault(int index)
-        {
-			return index switch
+		public unsafe float GetComponentOrDefault(int index)
+		{
+			fixed (float* ptr = &R)
 			{
-				0 => R,
-				1 => G,
-				2 => B,
-				3 => A,
-				_ => default
-			};
-        }
+				if (index < Count)
+				{
+					return ptr[index];
+				}
+				else
+				{
+					return default;
+				}
+			}
+		}
 
 		/// <inheritdoc/>
-		public void Construct<T>(in T vector) where T : IVectorType
+		public void Construct<T>(T vector) where T : IVectorType
 		{
 			if (vector is not null)
 			{
@@ -162,7 +165,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 		public T Convert<T>() where T : IVectorType, new()
 		{
 			var value = new T();
-			value.Construct(in this);
+			value.Construct(this);
 			return value;
 		}
 
@@ -173,27 +176,19 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
 		/// <inheritdoc/>
-		public float this[int index]
+		public unsafe float this[int index]
 		{
 			get => GetComponentOrDefault(index);
 			set
-            {
-				switch (index)
-                {
-					case 0:
-						R = value;
-						break;
-					case 1:
-						G = value;
-						break;
-					case 2:
-						B = value;
-						break;
-					case 3:
-						A = value;
-						break;
-                }
-            }
+			{
+				fixed (float* ptr = &R)
+				{
+					if (index < Count)
+					{
+						ptr[index] = value;
+					}
+				}
+			}
 		}
 
 		/// <inheritdoc/>

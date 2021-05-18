@@ -4,6 +4,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 using SC.Engine.Runtime.Core.Mathematics;
@@ -16,6 +17,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// <typeparam name="TKey"> 키의 형식을 전달합니다. </typeparam>
     /// <typeparam name="TValue"> 값의 형식을 전달합니다. </typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(IDictionaryDebugView<,>))]
+    [DebuggerDisplay("Count = {Count}")]
     public class TMap<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, ICloneable, ISerializable
     {
         int[] _buckets;
@@ -86,11 +89,11 @@ namespace SC.Engine.Runtime.Core.Container
         /// </summary>
         /// <param name="key"> 키를 전달합니다. </param>
         /// <returns> 키와 쌍을 이루는 값의 참조가 반환됩니다. </returns>
-        public ref TValue this[in TKey key]
+        public ref TValue this[TKey key]
         {
             get
             {
-                int i = FindEntry(in key);
+                int i = FindEntry(key);
                 if (i >= 0)
                 {
                     return ref _entries[i].Value;
@@ -102,16 +105,9 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual void Add(TKey key, TValue value) => Add(in key, in value);
-
-        /// <summary>
-        /// 컨테이너에 새로운 키-값 쌍을 추가합니다.
-        /// </summary>
-        /// <param name="key"> 키를 전달합니다. </param>
-        /// <param name="value"> 값을 전달합니다. </param>
-        public void Add(in TKey key, in TValue value)
+        public virtual void Add(TKey key, TValue value)
         {
-            Insert(in key, in value, true);
+            Insert(key, value, true);
         }
 
         /// <summary>
@@ -135,28 +131,13 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool ContainsKey(TKey key) => ContainsKey(in key);
-
-        /// <summary>
-        /// 이 컨테이너에 지정한 키가 존재하는지 검사합니다.
-        /// </summary>
-        /// <param name="key"> 키를 전달합니다. </param>
-        /// <returns> 존재할 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool ContainsKey(in TKey key)
+        public virtual bool ContainsKey(TKey key)
         {
-            return FindEntry(in key) >= 0;
+            return FindEntry(key) >= 0;
         }
 
         /// <inheritdoc/>
-        public virtual bool ContainsValue(TValue value) => ContainsValue(in value);
-
-        /// <summary>
-        /// 이 컨테이너에 지정한 값이 존재하는지 검사합니다.
-        /// </summary>
-        /// <param name="value"> 값을 전달합니다. </param>
-        /// <returns> 존재할 경우 <see langword="true"/>가 반환됩니다. </returns>
-        /// <remarks> 일반적으로 이 함수는 전체 아이템을 순회하면서 값을 찾습니다. <see cref="TMap{TKey, TValue}"/>에 기대하는 성능이 나오지 않을 수 있습니다. </remarks>
-        public bool ContainsValue(in TValue value)
+        public virtual bool ContainsValue(TValue value)
         {
             if (value == null)
             {
@@ -192,14 +173,7 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool Remove(TKey key) => Remove(in key);
-
-        /// <summary>
-        /// 컨테이너에서 해당 키와 쌍을 이루는 값을 키와 함께 제거합니다.
-        /// </summary>
-        /// <param name="key"> 키를 전달합니다. </param>
-        /// <returns> 키를 찾아 값을 제거했으면 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Remove(in TKey key)
+        public virtual bool Remove(TKey key)
         {
             ThrowIfArgumentNull(key);
 
@@ -235,15 +209,7 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool TryGetValue(TKey key, out TValue value) => TryGetValue(in key, out value);
-
-        /// <summary>
-        /// 지정한 키와 쌍을 이루는 값을 찾습니다. 값을 찾지 못했을 경우 예외 대신 <see langword="false"/>를 반환합니다.
-        /// </summary>
-        /// <param name="key"> 키를 전달합니다. </param>
-        /// <param name="value"> 값을 받을 변수의 참조를 전달합니다. </param>
-        /// <returns> 값을 찾았을 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool TryGetValue(in TKey key, out TValue value)
+        public virtual bool TryGetValue(TKey key, out TValue value)
         {
             int i = FindEntry(key);
             if (i >= 0)
@@ -264,7 +230,7 @@ namespace SC.Engine.Runtime.Core.Container
             return new TMap<TKey, TValue>(this, Comparer);
         }
 
-        int FindEntry(in TKey key)
+        int FindEntry(TKey key)
         {
             ThrowIfArgumentNull(key);
 
@@ -295,9 +261,9 @@ namespace SC.Engine.Runtime.Core.Container
             _freeList = -1;
         }
 
-        void Insert(in TKey key, in TValue value, bool add)
+        void Insert(TKey key, TValue value, bool add)
         {
-            ThrowIfArgumentNull(in key);
+            ThrowIfArgumentNull(key);
 
             if (_buckets == null)
             {
@@ -440,7 +406,7 @@ namespace SC.Engine.Runtime.Core.Container
             }
         }
 
-        static void ThrowIfArgumentNull<T>(in T argument)
+        static void ThrowIfArgumentNull<T>(T argument)
         {
             if (argument is null)
             {

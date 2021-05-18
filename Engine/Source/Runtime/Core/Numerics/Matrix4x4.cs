@@ -223,7 +223,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Matrix4x4 right, float epsilon)
+        public bool NearlyEquals(Matrix4x4 right, float epsilon)
         {
             return Math.Abs(_11 - right._11) <= epsilon
                 && Math.Abs(_12 - right._12) <= epsilon
@@ -271,22 +271,21 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public T GetComponentOrDefault<T>(int index) where T : IVectorType, new()
+        public unsafe T GetComponentOrDefault<T>(int index) where T : IVectorType, new()
         {
             var v = new T();
-            v.Construct(index switch
+            if (index < Count)
             {
-                0 => new Vector4(_11, _12, _13, _14),
-                1 => new Vector4(_21, _22, _23, _24),
-                2 => new Vector4(_31, _32, _33, _34),
-                3 => new Vector4(_41, _42, _43, _44),
-                _ => default
-            });
+                fixed (float* ptr = &_11)
+                {
+                    v.Construct(new Vector4(ptr[index * 4 + 0], ptr[index * 4 + 1], ptr[index * 4 + 2], ptr[index * 4 + 3]));
+                }
+            }
             return v;
         }
 
         /// <inheritdoc/>
-        public void Construct<T>(in T matrix) where T : IMatrixType
+        public void Construct<T>(T matrix) where T : IMatrixType
         {
             Vector4 v1;
             Vector4 v2;
@@ -350,37 +349,20 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public IVectorType this[int index]
+        public unsafe IVectorType this[int index]
         {
             get => GetComponentOrDefault<Vector4>(index);
             set
             {
-                switch (index)
+                fixed (float* ptr = &_11)
                 {
-                    case 0:
-                        _11 = value[0];
-                        _12 = value[1];
-                        _13 = value[2];
-                        _14 = value[3];
-                        break;
-                    case 1:
-                        _21 = value[0];
-                        _22 = value[1];
-                        _23 = value[2];
-                        _24 = value[3];
-                        break;
-                    case 2:
-                        _31 = value[0];
-                        _32 = value[1];
-                        _33 = value[2];
-                        _34 = value[3];
-                        break;
-                    case 3:
-                        _41 = value[0];
-                        _42 = value[1];
-                        _43 = value[2];
-                        _44 = value[3];
-                        break;
+                    if (index < Count)
+                    {
+                        ptr[index * 4 + 0] = value[0];
+                        ptr[index * 4 + 1] = value[1];
+                        ptr[index * 4 + 2] = value[2];
+                        ptr[index * 4 + 3] = value[3];
+                    }
                 }
             }
         }
@@ -762,9 +744,9 @@ namespace SC.Engine.Runtime.Core.Numerics
                     *(pVectorBasis[1]) = new Vector3(_21, _22, _23);
                     *(pVectorBasis[2]) = new Vector3(_31, _32, _33);
 
-                    scale.X = pVectorBasis[0]->Length;
-                    scale.Y = pVectorBasis[1]->Length;
-                    scale.Z = pVectorBasis[2]->Length;
+                    scale.X = pVectorBasis[0]->GetLength();
+                    scale.Y = pVectorBasis[1]->GetLength();
+                    scale.Z = pVectorBasis[2]->GetLength();
 
                     uint a, b, c;
                     float x = pfScales[0], y = pfScales[1], z = pfScales[2];
@@ -822,7 +804,7 @@ namespace SC.Engine.Runtime.Core.Numerics
                         *(pVectorBasis[a]) = pCanonicalBasis[a];
                     }
 
-                    *pVectorBasis[a] = pVectorBasis[a]->Normalized;
+                    *pVectorBasis[a] = pVectorBasis[a]->GetNormal();
 
                     if (pfScales[b] < DecomposeEpsilon)
                     {
@@ -875,14 +857,14 @@ namespace SC.Engine.Runtime.Core.Numerics
                         *pVectorBasis[b] = Vector3.CrossProduct(*pVectorBasis[a], *(pCanonicalBasis + cc));
                     }
 
-                    *pVectorBasis[b] = pVectorBasis[b]->Normalized;
+                    *pVectorBasis[b] = pVectorBasis[b]->GetNormal();
 
                     if (pfScales[c] < DecomposeEpsilon)
                     {
                         *pVectorBasis[c] = Vector3.CrossProduct(*pVectorBasis[a], *pVectorBasis[b]);
                     }
 
-                    *pVectorBasis[c] = pVectorBasis[c]->Normalized;
+                    *pVectorBasis[c] = pVectorBasis[c]->GetNormal();
 
                     det = matTemp.Determinant;
 
@@ -1116,13 +1098,13 @@ namespace SC.Engine.Runtime.Core.Numerics
         public static Matrix4x4 LookToLH(Vector3 eyePosition, Vector3 eyeDirection, Vector3 upDirection)
         {
             Vector3 R2 = eyeDirection;
-            Vector3 R0 = Vector3.CrossProduct(upDirection, R2).Normalized;
+            Vector3 R0 = Vector3.CrossProduct(upDirection, R2).GetNormal();
             var     R1 = Vector3.CrossProduct(R2, R0);
             Vector3 NegEyePosition = -eyePosition;
 
-            float D0 = Vector3.DotProduct(R0, NegEyePosition);
-            float D1 = Vector3.DotProduct(R1, NegEyePosition);
-            float D2 = Vector3.DotProduct(R2, NegEyePosition);
+            float D0 = R0.DotProduct(NegEyePosition);
+            float D1 = R1.DotProduct(NegEyePosition);
+            float D2 = R2.DotProduct(NegEyePosition);
 
             Matrix4x4 M = Identity;
             M.SetRow(0, new Vector4(R0, D0));

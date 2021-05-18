@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SC.Engine.Runtime.Core.Container
 {
@@ -11,6 +12,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// </summary>
     /// <typeparam name="T"> 데이터 유형을 전달합니다. </typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(IReadOnlyCollectionDebugView<>))]
+    [DebuggerDisplay("Count = {Count}")]
     public partial class TArray<T> : IList<T>, IReadOnlyList<T>, ICloneable
     {
         static T[] EmptyArray = new T[0];
@@ -24,14 +27,14 @@ namespace SC.Engine.Runtime.Core.Container
         /// 이 데이터와 일치하는지 여부를 검사하는 함수의 대리자입니다.
         /// </summary>
         /// <param name="inValue"> 데이터가 전달됩니다. </param>
-        public delegate bool PredicateDelegate(in T inValue);
+        public delegate bool PredicateDelegate(T inValue);
 
         /// <summary>
         /// 두 데이터를 비교한 값을 반환하는 함수의 대리자입니다.
         /// </summary>
         /// <param name="left"> 첫 번째 데이터가 전달됩니다. </param>
         /// <param name="right"> 두 번째 데이터가 전달됩니다. </param>
-        public delegate int CompareDelegate(in T left, in T right);
+        public delegate int CompareDelegate(T left, T right);
 
         /// <summary>
         /// <see cref="TArray{T}"/> 클래스의 새 인스턴스를 초기화합니다.
@@ -118,13 +121,7 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual void Add(T item) => Add(in item);
-
-        /// <summary>
-        /// 컬렉션에 값을 추가합니다.
-        /// </summary>
-        /// <param name="item"> 값을 전달합니다. </param>
-        public void Add(in T item)
+        public virtual void Add(T item)
         {
             EnsureCapacity(_count + 1, false);
             _items[_count++] = item;
@@ -138,14 +135,7 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool Contains(T item) => Contains(in item);
-
-        /// <summary>
-        /// 컬렉션에 값이 존재하는지 검사합니다.
-        /// </summary>
-        /// <param name="item"> 값을 전달합니다. </param>
-        /// <returns> 값이 존재할 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Contains(in T item)
+        public virtual bool Contains(T item)
         {
             for (int i = 0; i < _count; ++i)
             {
@@ -165,34 +155,20 @@ namespace SC.Engine.Runtime.Core.Container
         }
 
         /// <inheritdoc/>
-        public virtual bool Remove(T item) => Remove(in item, true);
-
-        /// <summary>
-        /// 컬렉션에 값이 포함되어 있을 경우 제거합니다.
-        /// </summary>
-        /// <param name="item"> 값을 전달합니다. </param>
-        /// <returns> 값을 제거하였을 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Remove(in T item) => Remove(in item, true);
+        public virtual bool Remove(T item) => Remove(item, true);
 
         /// <inheritdoc/>
-        public virtual int IndexOf(T item) => IndexOf(in item);
-
-        /// <summary>
-        /// 컬렉션에서 값의 위치를 찾습니다.
-        /// </summary>
-        /// <param name="item"> 값을 전달합니다. </param>
-        /// <returns> 값의 위치가 반환됩니다. 값을 찾지 못했을 경우 -1이 반환됩니다. </returns>
-        public int IndexOf(in T item) => Array.IndexOf(_items, item);
+        public virtual int IndexOf(T item) => Array.IndexOf(_items, item);
 
         /// <inheritdoc/>
-        public virtual void Insert(int index, T item) => Insert(index, in item);
+        public virtual void Insert(Index index, T item) => Insert(IndexToInt(index), item);
 
         /// <summary>
         /// 컬렉션에 값을 위치에 추가합니다. 기존 위치 이후의 값을 뒤로 밀어냅니다.
         /// </summary>
         /// <param name="index"> 값을 추가할 위치를 전달합니다. </param>
         /// <param name="item"> 값을 전달합니다. </param>
-        public void Insert(int index, in T item)
+        public void Insert(int index, T item)
         {
             CheckIndex(index);
 
@@ -211,6 +187,12 @@ namespace SC.Engine.Runtime.Core.Container
 
         /// <inheritdoc/>
         public virtual void RemoveAt(int index)
+        {
+            RemoveAt(index, true);
+        }
+
+        /// <inheritdoc/>
+        public virtual void RemoveAt(Index index)
         {
             RemoveAt(index, true);
         }
@@ -274,9 +256,9 @@ namespace SC.Engine.Runtime.Core.Container
         /// <param name="item"> 제거할 데이터를 전달합니다. </param>
         /// <param name="bAllowShrink"> 이 컨테이너의 예약 공간이 축소되는 것을 허용합니다. </param>
         /// <returns> 컨테이너에서 데이터 제거를 성공하였을 경우 <see langword="true"/>가 반환됩니다. </returns>
-        public bool Remove(in T item, bool bAllowShrink)
+        public bool Remove(T item, bool bAllowShrink)
         {
-            int index = IndexOf(in item);
+            int index = IndexOf(item);
             if (index < 0)
             {
                 return false;
@@ -291,16 +273,24 @@ namespace SC.Engine.Runtime.Core.Container
         /// </summary>
         /// <param name="index"> 인덱스를 전달합니다. </param>
         /// <param name="bAllowShrink"> 이 컨테이너의 예약 공간이 축소되는 것을 허용합니다. </param>
-        public void RemoveAt(int index, bool bAllowShrink)
+        public void RemoveAt(int index, bool bAllowShrink) => RemoveAt(new Index(index), bAllowShrink);
+
+        /// <summary>
+        /// 컨테이너에서 해당 인덱스에 있는 데이터를 제거합니다.
+        /// </summary>
+        /// <param name="index"> 인덱스를 전달합니다. </param>
+        /// <param name="bAllowShrink"> 이 컨테이너의 예약 공간이 축소되는 것을 허용합니다. </param>
+        public void RemoveAt(Index index, bool bAllowShrink)
         {
-            CheckIndex(index);
+            int i = IndexToInt(index);
+            CheckIndex(i);
 
             --_count;
 
             // Container has items that need move to front.
-            if (index < _count)
+            if (i < _count)
             {
-                Array.Copy(_items, index + 1, _items, index, _count - index);
+                Array.Copy(_items, i + 1, _items, i, _count - i);
             }
 
             _items[_count] = default;
@@ -426,11 +416,11 @@ namespace SC.Engine.Runtime.Core.Container
         /// </summary>
         /// <param name="item"> 추가할 데이터를 전달합니다. </param>
         /// <returns> 데이터 추가에 성공했을 경우 <see langword="true"/>를 반환합니다. </returns>
-        public bool AddUnique(in T item)
+        public bool AddUnique(T item)
         {
-            if (!Contains(in item))
+            if (!Contains(item))
             {
-                Add(in item);
+                Add(item);
                 return true;
             }
 
@@ -443,11 +433,11 @@ namespace SC.Engine.Runtime.Core.Container
         /// <param name="index"> 데이터가 추가될 위치를 전달합니다. </param>
         /// <param name="item"> 추가할 데이터를 전달합니다. </param>
         /// <returns> 데이터 추가에 성공했을 경우 <see langword="true"/>를 반환합니다. </returns>
-        public bool InsertUnique(int index, in T item)
+        public bool InsertUnique(int index, T item)
         {
-            if (!Contains(in item))
+            if (!Contains(item))
             {
-                Insert(index, in item);
+                Insert(index, item);
                 return true;
             }
 
@@ -564,7 +554,7 @@ namespace SC.Engine.Runtime.Core.Container
             {
                 if (pred(_items[i]))
                 {
-                    result.Add(in _items[i]);
+                    result.Add(_items[i]);
                 }
             }
 
@@ -606,6 +596,24 @@ namespace SC.Engine.Runtime.Core.Container
             T temp = _items[left];
             _items[left] = _items[right];
             _items[right] = temp;
+        }
+
+        /// <summary>
+        /// 컨테이너 내의 두 데이터의 위치를 교환합니다.
+        /// </summary>
+        /// <param name="left"> 첫 번째 데이터의 위치를 전달합니다. </param>
+        /// <param name="right"> 두 번째 데이터의 위치를 전달합니다. </param>
+        public void Swap(Index left, Index right)
+        {
+            int l = IndexToInt(left);
+            int r = IndexToInt(right);
+
+            CheckIndex(l);
+            CheckIndex(r);
+
+            T temp = _items[l];
+            _items[l] = _items[r];
+            _items[r] = temp;
         }
 
         /// <summary>
@@ -696,10 +704,10 @@ namespace SC.Engine.Runtime.Core.Container
                     value = _count;
                 }
 
-                if (_items.Length != value)
+                if (_items is null || _items.Length != value)
                 {
                     var tempArray = new T[value];
-                    _items.CopyTo(tempArray, 0);
+                    _items?.CopyTo(tempArray, 0);
                     _items = tempArray;
                 }
             }
@@ -729,7 +737,19 @@ namespace SC.Engine.Runtime.Core.Container
                 CheckIndex(index);
                 return ref _items[index];
             }
-		}
+        }
+
+        /// <summary>
+        /// 이 컨테이너에 보관된 값의 참조를 인덱스 값으로 가져옵니다.
+        /// </summary>
+        public ref T this[Index index]
+        {
+            get
+            {
+                int i = IndexToInt(index);
+                return ref this[i];
+            }
+        }
 
         bool EnsureCapacity(int minimumCount, bool bExplicit)
         {
@@ -839,7 +859,7 @@ namespace SC.Engine.Runtime.Core.Container
             }
         }
 
-        class VectorEnumerator : IEnumerator<T>
+        class VectorEnumerator : IEnumerator<T>, IEnumerable<T>
         {
             TArray<T> origin;
             int revision;
@@ -848,14 +868,16 @@ namespace SC.Engine.Runtime.Core.Container
 
             int startIndex;
             int length;
+            bool reversed;
 
-            public VectorEnumerator(TArray<T> InOrigin, int InRevision, int InStartIndex, int InLength)
+            public VectorEnumerator(TArray<T> InOrigin, int InRevision, int InStartIndex, int InLength, bool Reversed = false)
             {
                 origin = InOrigin;
                 revision = InRevision;
 
                 startIndex = InStartIndex;
                 length = InLength;
+                reversed = Reversed;
             }
 
             public virtual void Dispose()
@@ -867,8 +889,7 @@ namespace SC.Engine.Runtime.Core.Container
             {
                 VersionCheck();
 
-                bool bValid = IsValidIndex(Index);
-
+                bool bValid = IsValidIndex(myIndex) && origin.IsValidIndex(Index);
                 if (bValid)
                 {
                     current = origin[Index];
@@ -913,9 +934,23 @@ namespace SC.Engine.Runtime.Core.Container
                 return true;
             }
 
+            public IEnumerator<T> GetEnumerator() => this;
+
+            IEnumerator IEnumerable.GetEnumerator() => this;
+
             int Index
             {
-                get => startIndex + myIndex;
+                get
+                {
+                    if (reversed)
+                    {
+                        return startIndex - myIndex;
+                    }
+                    else
+                    {
+                        return startIndex + myIndex;
+                    }
+                }
             }
 
             object IEnumerator.Current => Current;
@@ -925,9 +960,9 @@ namespace SC.Engine.Runtime.Core.Container
         /// 값을 최상위에 추가합니다.
         /// </summary>
         /// <param name="value"> 값을 전달합니다. </param>
-        public void Push(in T value)
+        public void Push(T value)
         {
-            Insert(_count, in value);
+            Insert(_count, value);
         }
 
         /// <summary>
@@ -959,6 +994,41 @@ namespace SC.Engine.Runtime.Core.Container
             }
 
             return ref _items[^1];
+        }
+
+        int IndexToInt(Index index)
+        {
+            if (index.IsFromEnd)
+            {
+                return _count - index.Value;
+            }
+            else
+            {
+                return index.Value;
+            }
+        }
+
+        /// <summary>
+        /// 범위 열거자를 가져옵니다.
+        /// </summary>
+        /// <param name="range"> 범위를 전달합니다. </param>
+        /// <returns> 개체가 반환됩니다. </returns>
+        public IEnumerable<T> this[Range range]
+        {
+            get
+            {
+                int start = IndexToInt(range.Start);
+                int end = IndexToInt(range.End);
+
+                if (start > end)
+                {
+                    return new VectorEnumerator(this, _revision, start, -(end - start), true);
+                }
+                else
+                {
+                    return new VectorEnumerator(this, _revision, start, end - start);
+                }
+            }
         }
     }
 }

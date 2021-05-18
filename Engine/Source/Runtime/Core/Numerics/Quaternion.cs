@@ -105,7 +105,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public bool NearlyEquals(in Quaternion right, float epsilon)
+        public bool NearlyEquals(Quaternion right, float epsilon)
         {
             return Math.Abs(X - right.X) <= epsilon
                 && Math.Abs(Y - right.Y) <= epsilon
@@ -129,20 +129,23 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public float GetComponentOrDefault(int index)
+        public unsafe float GetComponentOrDefault(int index)
         {
-            return index switch
+            fixed (float* ptr = &X)
             {
-                0 => X,
-                1 => Y,
-                2 => Z,
-                3 => W,
-                _ => default
-            };
+                if (index < Count)
+                {
+                    return ptr[index];
+                }
+                else
+                {
+                    return default;
+                }
+            }
         }
 
         /// <inheritdoc/>
-        public void Construct<T>(in T vector) where T : IVectorType
+        public void Construct<T>(T vector) where T : IVectorType
         {
             if (vector is not null)
             {
@@ -171,7 +174,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <inheritdoc/>
         public bool Contains(int index)
         {
-            return index >= 0 && index < 3;
+            return index >= 0 && index < 4;
         }
 
         /// <summary>
@@ -190,7 +193,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <param name="v"> 회전할 벡터를 전달합니다. </param>
         /// <returns> 회전한 벡터가 반환됩니다. </returns>
-        public Vector3 RotateVector(in Vector3 v)
+        public Vector3 RotateVector(Vector3 v)
         {
             var Q = new Vector3(X, Y, Z);
             Vector3 T = 2.0f * Vector3.CrossProduct(Q, v);
@@ -200,25 +203,17 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <inheritdoc/>
-        public float this[int index]
+        public unsafe float this[int index]
         {
             get => GetComponentOrDefault(index);
             set
             {
-                switch (index)
+                fixed (float* ptr = &X)
                 {
-                    case 0:
-                        X = value;
-                        break;
-                    case 1:
-                        Y = value;
-                        break;
-                    case 2:
-                        Z = value;
-                        break;
-                    case 3:
-                        W = value;
-                        break;
+                    if (index < Count)
+                    {
+                        ptr[index] = value;
+                    }
                 }
             }
         }
@@ -286,18 +281,6 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
-        /// 정규화된 사원수 값을 가져옵니다.
-        /// </summary>
-        public Quaternion Normalized
-        {
-            get
-            {
-                var length = MathEx.Sqrt(X * X + Y * Y + Z * Z + W * W);
-                return new Quaternion(X / length, Y / length, Z / length, W / length);
-            }
-        }
-
-        /// <summary>
         /// 사원수를 회전 행렬로 변환합니다.
         /// </summary>
         /// <returns> 값이 반환됩니다. </returns>
@@ -343,7 +326,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="InLeft"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="InRight"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수 개체가 반환됩니다. </returns>
-        public static Quaternion Concatenate(in Quaternion InLeft, in Quaternion InRight)
+        public static Quaternion Concatenate(Quaternion InLeft, Quaternion InRight)
         {
             Quaternion quaternion;
             float x = (InRight.Y * InLeft.Z) - (InRight.Z * InLeft.Y);
@@ -380,7 +363,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="InAxis"> 정규화된 축을 전달합니다. </param>
         /// <param name="InAngleRadian"> 각도를 라디안 단위로 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion FromAxisAngle(in Vector3 InAxis, float InAngleRadian)
+        public static Quaternion FromAxisAngle(Vector3 InAxis, float InAngleRadian)
         {
             float half = InAngleRadian * 0.5f;
             float vsin = MathEx.Sin(half);
@@ -400,7 +383,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <param name="InRotMatrix"> 회전을 나타내는 행렬을 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion FromMatrix(in Matrix4x4 InRotMatrix)
+        public static Quaternion FromMatrix(Matrix4x4 InRotMatrix)
         {
             float side = (InRotMatrix._11 + InRotMatrix._22) + InRotMatrix._33;
 
@@ -465,26 +448,15 @@ namespace SC.Engine.Runtime.Core.Numerics
         }
 
         /// <summary>
-        /// 두 사원수의 내적 연산한 결과를 가져옵니다.
-        /// </summary>
-        /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
-        /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
-        /// <returns> 연산 결과가 반환됩니다. </returns>
-        public static float DotProduct(in Quaternion left, in Quaternion right)
-        {
-            return left.X * right.X + left.Y * right.Y + left.Z * right.Z + left.X * right.W;
-        }
-
-        /// <summary>
         /// 선형 보간 결과를 가져옵니다.
         /// </summary>
         /// <param name="left"> 첫 번째 사원수 값을 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수 값을 전달합니다. </param>
         /// <param name="t"> 보간 값을 전달합니다. </param>
         /// <returns> 보간된 사원수가 반환됩니다. </returns>
-        public static Quaternion Lerp(in Quaternion left, in Quaternion right, float t)
+        public static Quaternion Lerp(Quaternion left, Quaternion right, float t)
         {
-            float Dot = DotProduct(left, right);
+            float Dot = left.DotProduct(right);
             float Bias = Dot >= 0 ? 1.0f : -1.0f;
             return (right * t) + (left * (Bias * (1 - t)));
         }
@@ -500,10 +472,10 @@ namespace SC.Engine.Runtime.Core.Numerics
         {
             float Threshold = 0.9995f;
 
-            Quaternion v0 = left.Normalized;
-            Quaternion v1 = right.Normalized;
+            Quaternion v0 = left.GetNormal();
+            Quaternion v1 = right.GetNormal();
 
-            float dot = DotProduct(v0, v1);
+            float dot = v0.DotProduct(v1);
 
             if (dot < 0)
             {
@@ -521,7 +493,7 @@ namespace SC.Engine.Runtime.Core.Numerics
 
             if (dot > Threshold)
             {
-                return Lerp(v0, v1, t).Normalized;
+                return Lerp(v0, v1, t).GetNormal();
             }
 
             float sin_theta = MathEx.Sin(theta);
@@ -540,9 +512,9 @@ namespace SC.Engine.Runtime.Core.Numerics
         {
             Quaternion t;
 
-            forward = forward.Normalized;
-            Vector3 right = Vector3.CrossProduct(up, forward).Normalized;
-            up = Vector3.CrossProduct(forward, right).Normalized;
+            forward = forward.GetNormal();
+            Vector3 right = Vector3.CrossProduct(up, forward).GetNormal();
+            up = Vector3.CrossProduct(forward, right).GetNormal();
 
             var rotation = new Matrix4x4(
                 right.X, up.X, forward.X, 0,
@@ -558,7 +530,7 @@ namespace SC.Engine.Runtime.Core.Numerics
             t.Y = (rotation._13 - rotation._31) * w4_recip;
             t.Z = (rotation._21 - rotation._12) * w4_recip;
 
-            return t.Normalized;
+            return t.GetNormal();
         }
 
         /// <summary>
@@ -566,7 +538,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// </summary>
         /// <param name="left"> 사원수를 전달합니다. </param>
         /// <returns> 사원수가 반환됩니다. </returns>
-        public static Quaternion operator -(in Quaternion left)
+        public static Quaternion operator -(Quaternion left)
         {
             return new Quaternion(-left.X, -left.Y, -left.Z, -left.W);
         }
@@ -577,7 +549,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion operator +(in Quaternion left, in Quaternion right)
+        public static Quaternion operator +(Quaternion left, Quaternion right)
         {
             return new Quaternion(left.X + right.X, left.Y + right.Y, left.Z + right.Z, left.W + right.W);
         }
@@ -588,7 +560,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion operator -(in Quaternion left, in Quaternion right)
+        public static Quaternion operator -(Quaternion left, Quaternion right)
         {
             return new Quaternion(left.X - right.X, left.Y - right.Y, left.Z - right.Z, left.W - right.W);
         }
@@ -599,7 +571,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion operator *(in Quaternion left, in Quaternion right)
+        public static Quaternion operator *(Quaternion left, Quaternion right)
         {
             return new Quaternion(left.X * right.X, left.Y * right.Y, left.Z * right.Z, left.W * right.W);
         }
@@ -610,7 +582,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion operator *(float left, in Quaternion right)
+        public static Quaternion operator *(float left, Quaternion right)
         {
             return new Quaternion(left * right.X, left * right.Y, left * right.Z, left * right.W);
         }
@@ -621,7 +593,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion operator *(in Quaternion left, float right)
+        public static Quaternion operator *(Quaternion left, float right)
         {
             return new Quaternion(left.X * right, left.Y * right, left.Z * right, left.W * right);
         }
@@ -632,9 +604,9 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion operator /(in Quaternion left, in Quaternion right)
+        public static Quaternion operator /(Quaternion left, Quaternion right)
         {
-            return new Quaternion(left.X / right.X, left.Y / right.Y, left.X / right.Z, left.W / right.W);
+            return new Quaternion(left.X / right.X, left.Y / right.Y, left.Z / right.Z, left.W / right.W);
         }
 
         /// <summary>
@@ -643,7 +615,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion operator /(float left, in Quaternion right)
+        public static Quaternion operator /(float left, Quaternion right)
         {
             return new Quaternion(left / right.X, left / right.Y, left / right.Z, left / right.W);
         }
@@ -654,7 +626,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 사원수가 반환됩니다. </returns>
-        public static Quaternion operator /(in Quaternion left, float right)
+        public static Quaternion operator /(Quaternion left, float right)
         {
             return new Quaternion(left.X / right, left.Y / right, left.Z / right, left.W / right);
         }
@@ -665,9 +637,9 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 계산된 스칼라가 반환됩니다. </returns>
-        public static float operator |(in Quaternion left, in Quaternion right)
+        public static float operator |(Quaternion left, Quaternion right)
         {
-            return DotProduct(left, right);
+            return left.DotProduct(right);
         }
 
         /// <summary>
@@ -676,7 +648,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator ==(in Quaternion left, in Quaternion right)
+        public static bool operator ==(Quaternion left, Quaternion right)
         {
             return left.X == right.X && left.Y == right.Y && left.Z == right.Z && left.W == right.W;
         }
@@ -687,7 +659,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <param name="left"> 첫 번째 사원수를 전달합니다. </param>
         /// <param name="right"> 두 번째 사원수를 전달합니다. </param>
         /// <returns> 비교 결과가 반환됩니다. </returns>
-        public static bool operator !=(in Quaternion left, in Quaternion right)
+        public static bool operator !=(Quaternion left, Quaternion right)
         {
             return left.X != right.X || left.Y != right.Y || left.Z != right.Z || left.W != right.W;
         }

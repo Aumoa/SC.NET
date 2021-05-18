@@ -13,6 +13,8 @@ namespace SC.Engine.Runtime.Core.Container
     /// </summary>
     /// <typeparam name="T"> 자료 형식을 전달합니다. </typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(IReadOnlyCollectionDebugView<>))]
+    [DebuggerDisplay("Count = {Count}")]
     public class TQueue<T> : IReadOnlyCollection<T>
     {
         private T[] _array;
@@ -205,7 +207,7 @@ namespace SC.Engine.Runtime.Core.Container
         /// 대기열의 마지막에 값을 추가합니다.
         /// </summary>
         /// <param name="item"> 값을 전달합니다. </param>
-        public void Enqueue(in T item)
+        public void Enqueue(T item)
         {
             if (_size == _array.Length)
             {
@@ -320,7 +322,7 @@ namespace SC.Engine.Runtime.Core.Container
         /// </summary>
         /// <param name="item"> 값을 전달합니다. </param>
         /// <returns> 결과가 반환됩니다. </returns>
-        public bool Contains(in T item)
+        public bool Contains(T item)
         {
             if (_size == 0)
             {

@@ -23,6 +23,16 @@ namespace SC.Engine.Runtime.RenderCore
             _device = deviceBundle.GetDevice();
         }
 
+        /// <summary>
+        /// 셰이더 리소스 뷰를 생성합니다.
+        /// </summary>
+        /// <param name="index"> 인덱스를 전달합니다. </param>
+        /// <param name="target"> 텍스처 타깃을 전달합니다. </param>
+        public void CreateShaderResourceView(int index, RHITexture2D target)
+        {
+            CreateShaderResourceView(index, target._resource, null);
+        }
+
         internal void CreateShaderResourceView(int index, ID3D12Resource target, D3D12ShaderResourceViewDesc? srvDesc)
         {
             if (index > DescriptorsCount)
