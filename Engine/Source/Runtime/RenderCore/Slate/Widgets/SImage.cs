@@ -18,13 +18,17 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
         }
 
         /// <inheritdoc/>
-        protected override void OnPaint(SlatePaintArgs paintArgs, Geometry allottedTransform)
+        protected override int OnPaint(SlatePaintArgs paintArgs, Geometry allottedGeometry, Rectangle myCullingRect, SlateWindowElementList drawElements, int layer, bool parentEnabled)
         {
-            SlateDrawElement sd = new();
-            sd.Brush = Brush;
-            sd.Transform = allottedTransform;
+            SlateDrawElement sd = new()
+            {
+                Brush = Brush,
+                Transform = allottedGeometry.ToPaintGeometry(),
+                Layer = layer,
+            };
 
-            paintArgs.AddElement(sd, 0);
+            drawElements.AddElement(sd);
+            return layer;
         }
 
         /// <inheritdoc/>

@@ -7,15 +7,8 @@ namespace SC.Engine.Runtime.RenderCore.Slate
     /// <summary>
     /// 슬레이트 렌더링 요소를 표현합니다.
     /// </summary>
-    public class SlateDrawElement
+    public record SlateDrawElement
     {
-        /// <summary>
-        /// 개체를 초기화합니다.
-        /// </summary>
-        public SlateDrawElement()
-        {
-        }
-
         /// <summary>
         /// 요소가 사용하는 브러시 정보를 나타냅니다.
         /// </summary>
@@ -24,6 +17,11 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         /// <summary>
         /// 요소의 트랜스폼을 나타냅니다.
         /// </summary>
-        public Geometry Transform;
+        public PaintGeometry Transform;
+
+        /// <summary>
+        /// 레이어 위치를 전달합니다.
+        /// </summary>
+        public int Layer;
     }
 }

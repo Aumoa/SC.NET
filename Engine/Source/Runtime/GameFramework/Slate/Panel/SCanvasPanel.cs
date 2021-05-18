@@ -37,16 +37,33 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
         }
 
         /// <inheritdoc/>
-        protected override void OnPaint(SlatePaintArgs paintArgs, Geometry allottedGeometry)
+        protected override int OnPaint(SlatePaintArgs paintArgs, Geometry allottedGeometry, Rectangle myCullingRect, SlateWindowElementList drawElements, int layer, bool parentEnabled)
         {
-            ArrangedChildren arranged = new();
-            ArrangeChildren(arranged, allottedGeometry);
+            ArrangedChildren arrangedChildren = new();
+            ArrangeChildren(arrangedChildren, allottedGeometry);
 
-            foreach (ArrangedWidget curWidget in arranged.GetWidgets())
-            {
-                curWidget.Widget?.Paint(paintArgs, curWidget.Geometry);
-            }
-        }
+			bool forwardedEnabled = ShouldBeEnabled(parentEnabled);
+			int maxLayer = layer;
+
+			SlatePaintArgs newArgs = paintArgs with { Parent = this };
+			foreach (ArrangedWidget curWidget in arrangedChildren.GetWidgets())
+			{
+				if (!IsChildWidgetCulled(myCullingRect, curWidget))
+				{
+					int curWidgetsMaxLayerId = curWidget.Widget.Paint(
+						newArgs,
+						curWidget.Geometry,
+						myCullingRect,
+						drawElements,
+						layer,
+						forwardedEnabled);
+
+					maxLayer = Math.Max(maxLayer, curWidgetsMaxLayerId);
+				}
+			}
+
+			return maxLayer;
+		}
 
 		struct ChildZOrder
         {
@@ -74,7 +91,7 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
 		TArray<SCanvasPanelSlot> _childrens = new();
 
 		/// <inheritdoc/>
-		public override void ArrangeChildren(ArrangedChildren arrangedChildren, Geometry allottedGeometry)
+		protected override void OnArrangeChildren(ArrangedChildren arrangedChildren, Geometry allottedGeometry)
         {            
 			if (_childrens.Count > 0)
 			{

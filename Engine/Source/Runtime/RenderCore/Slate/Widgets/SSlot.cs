@@ -47,5 +47,11 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         /// </summary>
         /// <param name="content"> 슬롯 컨텐츠가 전달됩니다. </param>
         protected abstract void ConstructSlot(SWidget content);
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $"{GetType().Name}: {Content}";
+        }
     }
 }

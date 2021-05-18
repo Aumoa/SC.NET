@@ -169,16 +169,15 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
         /// <summary>
         /// 슬레이트 요소를 렌더링합니다.
         /// </summary>
-        /// <param name="args"> 요소 매개변수를 전달합니다. </param>
-        public void RenderElements(SlatePaintArgs args)
+        /// <param name="deviceContext"> 디바이스 컨텍스트를 전달합니다. </param>
+        /// <param name="drawElements"> 렌더링 요소 목록 개체를 전달합니다. </param>
+        public void RenderElements(RHIDeviceContext deviceContext, SlateWindowElementList drawElements)
         {
             RHIDeviceBundle device = GetDevice();
-
-            RHIDeviceContext deviceContext = args.Context;
             ID3D12GraphicsCommandList commandList = deviceContext.GetCommandList();
 
             // Preparing the cached array.
-            int arraySize = args.GetElementsCount();
+            int arraySize = drawElements.NumElements();
             if (arraySize <= 0)
             {
                 // There is no render elements.
@@ -196,58 +195,52 @@ namespace SC.Engine.Runtime.RenderCore.RenderPass
                 _cachedArraySize = arraySize;
             }
 
+            // Sort by layer.
+            drawElements.SortByLayer();
+
             _instances.Clear(false);
             _instances.Capacity = Math.Max(_instances.Capacity, arraySize);
 
             // Write datas sequential
             var shaderElements = (SlateShaderElement*)_slateElementsBuf.Map().ToPointer();
-            var arrangedKeys = args.Elements.Keys.ToList();
-            arrangedKeys.Sort();
 
             int lastIndex = 0;
             _descriptorAllocator.BeginAllocate();
-            foreach (var key in arrangedKeys)
-            {
-                TArray<SlateDrawElement> elements = args.Elements[key];
 
-                int count = elements.Count;
-                float depthStep = 1.0f / count;
-                float depth = 0;
+            float depthStep = 1.0f / arraySize;
+            float depth = 0;
                 
-                foreach (var elem in elements)
+            foreach (var elem in drawElements)
+            {
+                if (elem.Transform.bHasRenderTransform)
                 {
-                    if (elem.Transform.bHasRenderTransform)
+                    // Push element.
+                    shaderElements[lastIndex] = new SlateShaderElement()
                     {
-                        // Push element.
-                        shaderElements[lastIndex] = new SlateShaderElement()
-                        {
-                            M = elem.Transform.AccumulatedRenderTransform.M,
-                            AbsolutePosition = elem.Transform.AccumulatedRenderTransform.Translation,
-                            AbsoluteSize = elem.Transform.Size,
-                            Depth = depth
-                        };
+                        M = elem.Transform.AccumulatedRenderTransform.M,
+                        AbsolutePosition = elem.Transform.AccumulatedRenderTransform.Translation,
+                        AbsoluteSize = elem.Transform.LocalSize,
+                        Depth = depth
+                    };
 
-                        int index = _descriptorAllocator.Issue(elem.Brush.ImageSource);
+                    int index = _descriptorAllocator.Issue(elem.Brush.ImageSource);
 
-                        _instances.Add(new SlateDrawInstance()
-                        {
-                            Brush = elem.Brush,
-                            DescriptorIndex = index,
-                        });
+                    _instances.Add(new SlateDrawInstance()
+                    {
+                        Brush = elem.Brush,
+                        DescriptorIndex = index,
+                    });
 
-                        depth += depthStep;
-                        lastIndex += 1;
-                    }
+                    depth += depthStep;
+                    lastIndex += 1;
                 }
             }
             _descriptorAllocator.EndAllocate();
 
             // Draw call for all elements.
-            fixed (float* screenSize = &args.ScreenSize.X)
-            {
-                commandList.SetGraphicsRoot32BitConstants(1, 2, new IntPtr(screenSize), 0);
-                _descriptorAllocator.SetDescriptorHeaps(commandList);
-            }
+            Vector2 desiredSize = drawElements.PaintWindow.GetDesiredSize();
+            commandList.SetGraphicsRoot32BitConstants(1, 2, new IntPtr(&desiredSize.X), 0);
+            _descriptorAllocator.SetDescriptorHeaps(commandList);
 
             for (int i = 0; i < arraySize; ++i)
             {

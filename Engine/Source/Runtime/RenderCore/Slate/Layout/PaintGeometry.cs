@@ -10,21 +10,6 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
     public struct PaintGeometry
     {
         /// <summary>
-        /// 렌더링 위치를 표현합니다.
-        /// </summary>
-        public Vector2 DrawPosition;
-
-        /// <summary>
-        /// 렌더링 비례를 표현합니다.
-        /// </summary>
-        public float DrawScale;
-
-        /// <summary>
-        /// 렌더링 크기를 표현합니다.
-        /// </summary>
-        public Vector2 DrawSize;
-
-        /// <summary>
         /// 로컬 공간 크기를 표현합니다.
         /// </summary>
         public Vector2 LocalSize;
@@ -44,9 +29,6 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
         /// </summary>
         public static readonly PaintGeometry Identity = new PaintGeometry
         {
-            DrawPosition = Vector2.Zero,
-            DrawScale = 1.0f,
-            DrawSize = Vector2.Zero,
             LocalSize = Vector2.Zero,
             AccumulatedRenderTransform = SlateRenderTransform.Identity,
             bHasRenderTransform = false
@@ -61,9 +43,6 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
         /// <param name="inHasRenderTransform"> 렌더 트랜스폼의 활성화 여부를 전달합니다. </param>
         public PaintGeometry(SlateLayoutTransform inAccumulatedLayoutTransform, SlateRenderTransform inAccumulatedRenderTransform, Vector2 inLocalSize, bool inHasRenderTransform)
         {
-            DrawPosition = inAccumulatedLayoutTransform.Translation;
-            DrawScale = inAccumulatedLayoutTransform.Scale;
-            DrawSize = Vector2.Zero;
             LocalSize = inLocalSize;
             AccumulatedRenderTransform = inAccumulatedRenderTransform;
             bHasRenderTransform = inHasRenderTransform;
@@ -76,8 +55,6 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
         public void AppendTransform(SlateLayoutTransform layoutTransform)
         {
             AccumulatedRenderTransform = AccumulatedRenderTransform.Concatenate(layoutTransform);
-            DrawPosition = layoutTransform.TransformPoint(DrawPosition);
-            DrawScale = layoutTransform.Scale * DrawScale;
         }
 
         /// <summary>
@@ -87,6 +64,12 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
         public void SetRenderTransform(SlateRenderTransform renderTransform)
         {
             AccumulatedRenderTransform = renderTransform;
+        }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $"DrawPosition: {AccumulatedRenderTransform.Translation}, DrawSize: {LocalSize}";
         }
     }
 }

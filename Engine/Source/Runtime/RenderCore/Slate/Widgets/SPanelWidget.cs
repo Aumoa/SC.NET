@@ -2,14 +2,12 @@
 
 using System;
 
-using SC.Engine.Runtime.RenderCore.Slate.Layout;
-
 namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
 {
     /// <summary>
     /// 패널 위젯을 표현합니다.
     /// </summary>
-    public abstract class SPanelWidget : SWidget
+    public abstract class SPanelWidget : SCompoundWidget
     {
         /// <summary>
         /// 개체를 초기화합니다.
@@ -63,26 +61,10 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
         protected abstract void OnRemoveSlot(Index index);
 
         /// <inheritdoc/>
-        protected override void OnPaint(SlatePaintArgs paintArgs, Geometry allottedGeometry)
+        public override sealed SlateVisibility Visibility
         {
-            ArrangedChildren arranged = new();
-            ArrangeChildren(arranged, allottedGeometry);
-            PaintArrangedChildren(paintArgs, allottedGeometry, arranged);
-        }
-
-        /// <summary>
-        /// 레이아웃 위젯을 재배치합니다.
-        /// </summary>
-        /// <param name="arrangedChildren"> 재배치 위젯 목록 개체를 전달합니다. </param>
-        /// <param name="allottedGeometry"> 이 위젯에 할당된 트랜스폼이 전달됩니다. </param>
-        public abstract void ArrangeChildren(ArrangedChildren arrangedChildren, Geometry allottedGeometry);
-
-        void PaintArrangedChildren(SlatePaintArgs paintArgs, Geometry allottedGeometry, ArrangedChildren arranged)
-        {
-            foreach (ArrangedWidget widget in arranged.GetWidgets())
-            {
-                widget.Widget.Paint(paintArgs, allottedGeometry);
-            }
+            get => base.Visibility;
+            set => base.Visibility = value;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace SC.Engine.Runtime.GameFramework
 
         RHIDeviceBundle _device;
         RHICommandQueue _queue;
-        SApplication _slateApp;
+        SWindow _slateApp;
 
         StepTimer _tickTimer = new();
         RHIGameViewport _gameViewport;
@@ -109,7 +109,7 @@ namespace SC.Engine.Runtime.GameFramework
         /// </summary>
         /// <param name="target"> 애플리케이션 타깃이 전달됩니다. </param>
         /// <returns> 개체를 반환합니다. </returns>
-        protected virtual SApplication CreateApplication(CoreWindow target)
+        protected virtual SWindow CreateApplication(CoreWindow target)
         {
             return new SGameApplication(target, _device);
         }

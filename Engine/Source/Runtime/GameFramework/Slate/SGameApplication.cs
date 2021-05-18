@@ -14,7 +14,7 @@ using SC.ThirdParty.WindowsCodecs;
 
 namespace SC.Engine.Runtime.GameFramework.Slate
 {
-    class SGameApplication : SApplication
+    class SGameApplication : SWindow
     {
         CoreWindow _target;
 
@@ -23,9 +23,8 @@ namespace SC.Engine.Runtime.GameFramework.Slate
         RHIShaderResourceView _srv;
 
         SImage _image;
-        SImage[] _corner = new SImage[4];
 
-        public SGameApplication(CoreWindow target, RHIDeviceBundle deviceBundle) : base(deviceBundle)
+        public SGameApplication(CoreWindow target, RHIDeviceBundle deviceBundle) : base()
         {
             _target = target;
 
@@ -49,7 +48,8 @@ namespace SC.Engine.Runtime.GameFramework.Slate
             [
                 new SImage()
                 {
-                    Brush = new SlateBrush(_srv, _texture.GetDesiredSize())
+                    Brush = new SlateBrush(_srv, _texture.GetDesiredSize()),
+                    Visibility = SlateVisibility.Collapsed
                 }
             ].Init
             (
@@ -119,9 +119,9 @@ namespace SC.Engine.Runtime.GameFramework.Slate
             return new Vector2(sz.Width, sz.Height);
         }
 
-        protected override SPanelWidget CreateApplicationPanel()
+        protected override void OnArrangeChildren(ArrangedChildren arrangedChildren, Geometry allottedGeometry)
         {
-            return _canvasPanel;
+            _canvasPanel.ArrangeChildren(arrangedChildren, allottedGeometry);
         }
     }
 }

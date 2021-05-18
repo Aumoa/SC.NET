@@ -29,5 +29,11 @@ namespace SC.Engine.Runtime.RenderCore.Slate
             ImageSource = imageSource;
             ImageSize = imageSize;
         }
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return $"DesiredSize: {ImageSize}";
+        }
     }
 }

@@ -18,11 +18,11 @@ namespace SC.Engine.Runtime.GameFramework.SceneRendering
 
         RHIDeferredContext _deviceContext;
 
-        SApplication _slateApp;
+        SWindow _slateApp;
         RHIGameViewport _gameViewport;
         RHICommandQueue _primaryQueue;
 
-        public RenderThread(RHIDeviceBundle deviceBundle, SApplication sApp, RHIGameViewport gameViewport)
+        public RenderThread(RHIDeviceBundle deviceBundle, SWindow sApp, RHIGameViewport gameViewport)
         {
             _geometryPass = new RHIGeometryRenderPass(deviceBundle);
             _slatePass = new RHISlateRenderPass(deviceBundle);
@@ -67,15 +67,11 @@ namespace SC.Engine.Runtime.GameFramework.SceneRendering
 
         void RenderSlate()
         {
-            SlatePaintArgs sArgs = new();
-            sArgs.CurrentTime = 0;
-            sArgs.DeltaTime = 0;
-            sArgs.SlateParent = null;
-            sArgs.Context = _deviceContext;
+            SlateWindowElementList elements = new(_slateApp);
 
             _slatePass.BeginPass(_deviceContext, _gameViewport.GetRenderTarget());
-            _slateApp.Paint(sArgs);
-            _slatePass.RenderElements(sArgs);
+            _slateApp.Paint(elements);
+            _slatePass.RenderElements(_deviceContext, elements);
             _slatePass.EndPass(_deviceContext);
         }
     }
