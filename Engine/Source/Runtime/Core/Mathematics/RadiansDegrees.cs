@@ -1,5 +1,7 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
+using System;
+
 namespace SC.Engine.Runtime.Core.Mathematics
 {
     /// <summary>
@@ -7,6 +9,8 @@ namespace SC.Engine.Runtime.Core.Mathematics
     /// </summary>
     public static class RadiansDegrees
     {
+        const float PIInv180 = (float)Math.PI / 180.0f;
+
         /// <summary>
         /// 각도 형식으로 변환합니다.
         /// </summary>
@@ -19,6 +23,6 @@ namespace SC.Engine.Runtime.Core.Mathematics
         /// </summary>
         /// <param name="this"> 값을 전달합니다. </param>
         /// <returns> 변환된 값이 반환됩니다.</returns>
-        public static float ToRadians(this float @this) => @this * MathEx.InvPI;
+        public static float ToRadians(this float @this) => @this * PIInv180;
     }
 }

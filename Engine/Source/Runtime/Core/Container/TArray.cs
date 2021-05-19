@@ -877,7 +877,12 @@ namespace SC.Engine.Runtime.Core.Container
 
                 startIndex = InStartIndex;
                 length = InLength;
-                reversed = Reversed;
+
+                if (Reversed)
+                {
+                    reversed = true;
+                    startIndex -= 1;
+                }
             }
 
             public virtual void Dispose()
