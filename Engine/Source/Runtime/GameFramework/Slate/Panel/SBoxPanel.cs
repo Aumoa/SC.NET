@@ -155,7 +155,7 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
         /// <inheritdoc/>
         public override Vector2 GetDesiredSize()
         {
-            return base.GetDesiredSize();
+            return ComputeDesiredSizeForBox(Orientation, _childrens);
         }
 
         /// <summary>
@@ -317,5 +317,56 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
         /// 자식 슬롯 목록을 가져옵니다.
         /// </summary>
         protected IList<SSlot> Childrens => _childrens;
+
+        static Vector2 ComputeDesiredSizeForBox(Orientation orientation, IList<SSlot> childrens)
+        {
+            // The desired size of this panel is the total size desired by its children plus any margins specified in this panel.
+            // The layout along the panel's axis is describe dy the SizeParam, while the perpendicular layout is described by the
+            // alignment property.
+            Vector2 myDesiredSize = Vector2.Zero;
+            foreach (SSlot curChild in childrens)
+            {
+                if (curChild.Content.Visibility != SlateVisibility.Collapsed)
+                {
+
+                    Vector2 curChildDesiredSize = curChild.Content.GetDesiredSize();
+
+                    if (orientation == Orientation.Vertical)
+                    {
+                        // For a vertical panel, we want to find the maximum desired width (including margin).
+                        // That will be the desired width of the whole panel.
+                        myDesiredSize.X = Math.Max(myDesiredSize.X, curChildDesiredSize.X + curChild.SlotPadding.GetTotalSpaceAlong(Orientation.Horizontal));
+
+                        // Clamp to the max size if it was specified
+                        float finalChildDesiredSize = curChildDesiredSize.Y;
+                        float maxSize = curChild.MaxSize;
+                        if (maxSize > 0)
+                        {
+                            finalChildDesiredSize = Math.Min(maxSize, finalChildDesiredSize);
+                        }
+
+                        myDesiredSize.Y += finalChildDesiredSize + curChild.SlotPadding.GetTotalSpaceAlong(Orientation.Vertical);
+                    }
+                    else
+                    {
+                        // A horizontal panel is just a sideways vertical panel: the axes are swapped.
+
+                        myDesiredSize.Y = Math.Max(myDesiredSize.Y, curChildDesiredSize.Y + curChild.SlotPadding.GetTotalSpaceAlong(Orientation.Vertical));
+
+                        // Clamp to the max size if it was specified
+                        float finalChildDesiredSize = curChildDesiredSize.X;
+                        float maxSize = curChild.MaxSize;
+                        if (maxSize > 0)
+                        {
+                            finalChildDesiredSize = Math.Min(maxSize, finalChildDesiredSize);
+                        }
+
+                        myDesiredSize.X += finalChildDesiredSize + curChild.SlotPadding.GetTotalSpaceAlong(Orientation.Horizontal);
+                    }
+                }
+            }
+
+            return myDesiredSize;
+        }
     }
 }

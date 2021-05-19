@@ -14,7 +14,7 @@ using SC.ThirdParty.WindowsCodecs;
 
 namespace SC.Engine.Runtime.GameFramework.Slate
 {
-    class SGameApplication : SWindow
+    class SGameWindow : SWindow
     {
         CoreWindow _target;
 
@@ -24,7 +24,7 @@ namespace SC.Engine.Runtime.GameFramework.Slate
 
         SImage _image;
 
-        public SGameApplication(CoreWindow target, RHIDeviceBundle deviceBundle) : base()
+        public SGameWindow(CoreWindow target, RHIDeviceBundle deviceBundle) : base()
         {
             _target = target;
 
@@ -95,12 +95,13 @@ namespace SC.Engine.Runtime.GameFramework.Slate
                 [
                     new SImage()
                     {
-                        Brush = brush
+                        Brush = brush,
                     }
                 ].Init
                 (
                     HAlignment: HorizontalAlignment.Left,
-                    SizeParam: new SizeParam(SizeRule.Auto, 1.0f)
+                    SizeParam: new SizeParam(SizeRule.Auto, 1.0f),
+                    SlotPadding: new Margin(10)
                 )
                 .AddSlot()
                 [
@@ -111,7 +112,8 @@ namespace SC.Engine.Runtime.GameFramework.Slate
                 ].Init
                 (
                     HAlignment: HorizontalAlignment.Fill,
-                    SizeParam: new SizeParam(SizeRule.Stretch, 1.0f)
+                    SizeParam: new SizeParam(SizeRule.Stretch, 1.0f),
+                    SlotPadding: new Margin(0, 10)
                 )
                 .AddSlot()
                 [
@@ -122,13 +124,15 @@ namespace SC.Engine.Runtime.GameFramework.Slate
                 ].Init
                 (
                     HAlignment: HorizontalAlignment.Right,
-                    SizeParam: new SizeParam(SizeRule.Auto, 1.0f)
+                    SizeParam: new SizeParam(SizeRule.Auto, 1.0f),
+                    SlotPadding: new Margin(10)
                 )
             ].Init
             (
                 Anchors: new Anchors(0, 0),
                 Offset: new Margin(0, 0, 1500, 100),
-                Alignment: new Vector2(0, 0)
+                Alignment: new Vector2(0, 0),
+                AutoSize: true
             )
             .AddSlot()
             [
@@ -140,7 +144,8 @@ namespace SC.Engine.Runtime.GameFramework.Slate
             .Init
             (
                 Offset: new Margin(100, 100, 100, 100),
-                Anchors: new Anchors(0, 0, 1, 1)
+                Anchors: new Anchors(0, 0, 1, 1),
+                AutoSize: true
             );
         }
 

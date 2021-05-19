@@ -94,23 +94,13 @@ namespace SC.Engine.Runtime.GameFramework.Slate.Panel
         {
 		}
 
-		int GetChildIndex(Index index)
-        {
-			if (index.IsFromEnd)
-            {
-				return _childrens.Count - index.Value;
-            }
-			else
-            {
-				return index.Value;
-            }
-        }
+		int GetChildIndex(Index index) => index.IsFromEnd ? _childrens.Count - index.Value : index.Value;
 
-		/// <summary>
-		/// 새 슬롯을 추가합니다.
-		/// </summary>
-		/// <returns> 생성된 슬롯이 반환됩니다. </returns>
-		public SSlot AddSlot()
+        /// <summary>
+        /// 새 슬롯을 추가합니다.
+        /// </summary>
+        /// <returns> 생성된 슬롯이 반환됩니다. </returns>
+        public SSlot AddSlot()
 		{
 			var slot = new SSlot(this);
 			_childrens.Add(slot);

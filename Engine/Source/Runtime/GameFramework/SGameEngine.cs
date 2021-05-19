@@ -111,7 +111,7 @@ namespace SC.Engine.Runtime.GameFramework
         /// <returns> 개체를 반환합니다. </returns>
         protected virtual SWindow CreateApplication(CoreWindow target)
         {
-            return new SGameApplication(target, _device);
+            return new SGameWindow(target, _device);
         }
     }
 }
