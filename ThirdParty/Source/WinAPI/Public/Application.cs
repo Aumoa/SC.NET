@@ -39,6 +39,10 @@ namespace SC.ThirdParty.WinAPI
             _handle = Kernel32.GetModuleHandle(null);
         }
 
+        private void Application_Initialize(CoreWindow target)
+        {
+        }
+
         /// <inheritdoc/>
         public virtual void Dispose()
         {

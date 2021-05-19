@@ -24,6 +24,13 @@ namespace SC.ThirdParty.WinAPI
         public delegate void DestroyDelegate();
 
         /// <summary>
+        /// 마우스에 대한 행동이 발생했을 때 호출되는 이벤트의 대리자입니다.
+        /// </summary>
+        /// <param name="x"> 마우스의 X 위치가 전달됩니다. </param>
+        /// <param name="y"> 마우스의 Y 위치가 전달됩니다. </param>
+        public delegate void MouseEventDelegate(int x, int y);
+
+        /// <summary>
         /// 창의 크기가 변경될 때 호출되는 이벤트의 대리자입니다.
         /// </summary>
         /// <param name="x"> X 크기가 전달됩니다. </param>
@@ -83,6 +90,31 @@ namespace SC.ThirdParty.WinAPI
         /// </summary>
         public event SizingDelegate Sizing;
 
+        /// <summary>
+        /// 마우스 왼쪽 버튼이 눌러졌을 때 호출되는 이벤트입니다.
+        /// </summary>
+        public event MouseEventDelegate LeftButtonDown;
+
+        /// <summary>
+        /// 마우스 오른쪽 버튼이 눌러졌을 때 호출되는 이벤트입니다.
+        /// </summary>
+        public event MouseEventDelegate RightButtonDown;
+
+        /// <summary>
+        /// 마우스 왼쪽 버튼이 놓였을 때 호출되는 이벤트입니다.
+        /// </summary>
+        public event MouseEventDelegate LeftButtonUp;
+
+        /// <summary>
+        /// 마우스 오른쪽 버튼이 놓였을 때 호출되는 이벤트입니다.
+        /// </summary>
+        public event MouseEventDelegate RightButtonUp;
+
+        /// <summary>
+        /// 마우스가 이동했을 때 호출되는 이벤트입니다.
+        /// </summary>
+        public event MouseEventDelegate MouseMove;
+
         IntPtr CreateCoreWindow()
         {
             WNDCLASSEX wcex = new();
@@ -129,6 +161,21 @@ namespace SC.ThirdParty.WinAPI
                     break;
                 case WM_SIZE:
                     Sizing?.Invoke(LOWORD((int)lParam), HIWORD((int)lParam));
+                    break;
+                case WM_LBUTTONDOWN:
+                    LeftButtonDown?.Invoke(LOWORD((int)lParam), HIWORD((int)lParam));
+                    break;
+                case WM_RBUTTONDOWN:
+                    RightButtonDown?.Invoke(LOWORD((int)lParam), HIWORD((int)lParam));
+                    break;
+                case WM_LBUTTONUP:
+                    LeftButtonUp?.Invoke(LOWORD((int)lParam), HIWORD((int)lParam));
+                    break;
+                case WM_RBUTTONUP:
+                    RightButtonUp?.Invoke(LOWORD((int)lParam), HIWORD((int)lParam));
+                    break;
+                case WM_MOUSEMOVE:
+                    MouseMove?.Invoke(LOWORD((int)lParam), HIWORD((int)lParam));
                     break;
             }
 
