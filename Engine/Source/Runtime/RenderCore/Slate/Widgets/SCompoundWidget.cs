@@ -4,6 +4,7 @@ using System;
 
 using SC.Engine.Runtime.Core.Numerics;
 using SC.Engine.Runtime.RenderCore.Slate.Layout;
+using SC.Engine.Runtime.RenderCore.Slate.WidgetEvents;
 
 namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
 {

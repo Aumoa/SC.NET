@@ -82,7 +82,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
         /// 배열된 위젯 목록을 가져옵니다.
         /// </summary>
         /// <returns> 위젯 목록을 가져옵니다. </returns>
-        public IReadOnlyList<ArrangedWidget> GetWidgets()
+        public TArray<ArrangedWidget> GetWidgets()
         {
             return _array;
         }

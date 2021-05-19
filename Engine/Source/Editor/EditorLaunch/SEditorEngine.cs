@@ -8,7 +8,6 @@ namespace SC.Engine.Editor.EditorLaunch
     {
         public SEditorEngine()
         {
-
         }
     }
 }

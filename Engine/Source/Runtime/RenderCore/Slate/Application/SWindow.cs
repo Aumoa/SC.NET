@@ -22,13 +22,19 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Application
         float _lastDeltaTime;
 
         /// <summary>
+        /// 루트 트랜스폼을 생성합니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        protected Geometry MakeRootGeometry() => Geometry.MakeRoot(GetDesiredSize(), SlateLayoutTransform.Identity, SlateRenderTransform.Identity);
+
+        /// <summary>
         /// 내부 값을 이용해 틱 시물레이션을 진행합니다.
         /// </summary>
         /// <param name="inCurrentTime"> 전체 흐른 시간을 전달합니다. </param>
         /// <param name="inDeltaTime"> 이전 프레임에서 이동한 시간을 전달합니다. </param>
         public void Tick(double inCurrentTime, float inDeltaTime) =>
             Tick(
-                Geometry.MakeRoot(GetDesiredSize(), SlateLayoutTransform.Identity, SlateRenderTransform.Identity),
+                MakeRootGeometry(),
                 _lastCurrentTime = inCurrentTime,
                 _lastDeltaTime = inDeltaTime
                 );
@@ -40,7 +46,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Application
         public void Paint(SlateWindowElementList drawElements) =>
             Paint(
                 new SlatePaintArgs { CurrentTime = _lastCurrentTime, DeltaTime = _lastDeltaTime, Parent = this },
-                Geometry.MakeRoot(GetDesiredSize(), SlateLayoutTransform.Identity, SlateRenderTransform.Identity),
+                MakeRootGeometry(),
                 new Rectangle(Vector2.Zero, GetDesiredSize()),
                 drawElements,
                 0,

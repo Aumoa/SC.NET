@@ -1,5 +1,7 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
+using System.Drawing;
+
 using SC.Engine.Runtime.Core.FileSystem;
 using SC.Engine.Runtime.Core.Mathematics;
 using SC.Engine.Runtime.Core.Numerics;
@@ -8,6 +10,7 @@ using SC.Engine.Runtime.RenderCore;
 using SC.Engine.Runtime.RenderCore.Slate;
 using SC.Engine.Runtime.RenderCore.Slate.Application;
 using SC.Engine.Runtime.RenderCore.Slate.Layout;
+using SC.Engine.Runtime.RenderCore.Slate.WidgetEvents;
 using SC.Engine.Runtime.RenderCore.Slate.Widgets;
 using SC.ThirdParty.WinAPI;
 using SC.ThirdParty.WindowsCodecs;
@@ -18,15 +21,26 @@ namespace SC.Engine.Runtime.GameFramework.Slate
     {
         CoreWindow _target;
 
-        SCanvasPanel _canvasPanel = new();
+        SCanvasPanel _canvasPanel = new()
+        {
+            Visibility = SlateVisibility.Visible
+        };
+
         RHITexture2D _texture;
         RHIShaderResourceView _srv;
 
-        SImage _image;
+        SHorizontalBoxPanel _box;
 
         public SGameWindow(CoreWindow target, RHIDeviceBundle deviceBundle) : base()
         {
             _target = target;
+
+            // Register slate event handlers.
+            target.LeftButtonDown += Target_LeftButtonDown;
+            target.RightButtonDown += Target_RightButtonDown;
+            target.LeftButtonUp += Target_LeftButtonUp;
+            target.RightButtonUp += Target_RightButtonUp;
+            target.MouseMove += Target_MouseMove;
 
             _texture = deviceBundle.CreateTexture2D(new FileReference("dtd.jpg"), ImagePixelFormat.R8G8B8A8_UNORM);
             _srv = new RHIShaderResourceView(deviceBundle, 1);
@@ -35,60 +49,58 @@ namespace SC.Engine.Runtime.GameFramework.Slate
             SlateBrush brush = new(_srv, new Vector2(100, 100));
 
             _canvasPanel
+            //.AddSlot()
+            //[
+            //    new SImage()
+            //    {
+            //        Brush = brush
+            //    }
+            //]
+            //.Init
+            //(
+            //    Anchors: new Anchors(0, 0),
+            //    Offset: new Margin(0, 0, 100, 100)
+            //)
+            //.AddSlot()
+            //[
+            //    new SImage()
+            //    {
+            //        Brush = brush
+            //    }
+            //]
+            //.Init
+            //(
+            //    Anchors: new Anchors(1, 0),
+            //    Offset: new Margin(0, 0, 100, 100),
+            //    Alignment: new Vector2(1, 0)
+            //)
+            //.AddSlot()
+            //[
+            //    new SImage()
+            //    {
+            //        Brush = brush
+            //    }
+            //].Init
+            //(
+            //    Anchors: new Anchors(1, 1),
+            //    Offset: new Margin(0, 0, 100, 100),
+            //    Alignment: new Vector2(1, 1)
+            //)
+            //.AddSlot()
+            //[
+            //    new SImage()
+            //    {
+            //        Brush = brush
+            //    }
+            //]
+            //.Init
+            //(
+            //    Offset: new Margin(-250, -250, 500, 500),
+            //    Anchors: new Anchors(0.5f)
+            //)
             .AddSlot()
             [
-                new SImage()
-                {
-                    Brush = brush,
-                    Visibility = SlateVisibility.Collapsed
-                }
-            ]
-            .Init
-            (
-                Anchors: new Anchors(0, 0),
-                Offset: new Margin(0, 0, 100, 100)
-            )
-            .AddSlot()
-            [
-                new SImage()
-                {
-                    Brush = brush
-                }
-            ]
-            .Init
-            (
-                Anchors: new Anchors(1, 0),
-                Offset: new Margin(0, 0, 100, 100),
-                Alignment: new Vector2(1, 0)
-            )
-            .AddSlot()
-            [
-                new SImage()
-                {
-                    Brush = brush
-                }
-            ].Init
-            (
-                Anchors: new Anchors(1, 1),
-                Offset: new Margin(0, 0, 100, 100),
-                Alignment: new Vector2(1, 1)
-            )
-            .AddSlot()
-            [
-                new SImage()
-                {
-                    Brush = brush
-                }
-            ]
-            .Init
-            (
-                Anchors: new Anchors(0, 1),
-                Offset: new Margin(0, 0, 100, 100),
-                Alignment: new Vector2(0, 1)
-            )
-            .AddSlot()
-            [
-                new SHorizontalBoxPanel()
+                _box = new SHorizontalBoxPanel()
                 {
                 }
                 .AddSlot()
@@ -129,32 +141,50 @@ namespace SC.Engine.Runtime.GameFramework.Slate
                 )
             ].Init
             (
-                Anchors: new Anchors(0, 0),
-                Offset: new Margin(0, 0, 1500, 100),
-                Alignment: new Vector2(0, 0),
-                AutoSize: true
-            )
-            .AddSlot()
-            [
-                _image = new SImage()
-                {
-                    Brush = brush
-                }
-            ]
-            .Init
-            (
-                Offset: new Margin(100, 100, 100, 100),
-                Anchors: new Anchors(0, 0, 1, 1),
-                AutoSize: true
+                Offset: new Margin(-250, -250, 500, 500),
+                Anchors: new Anchors(0.5f)
             );
         }
+
+        Vector2? _cursorPrevious;
+
+        WidgetPointerEventArgs UpdateMouseEvent(int x, int y, WidgetPointerEventArgs.ButtonType? buttonType)
+        {
+            Vector2 current = new(x, y);
+            Vector2 delta = current - (_cursorPrevious ?? current);
+            _cursorPrevious = current;
+
+            return new()
+            {
+                Parent = this,
+                CursorLocation = current,
+                CursorLocationDelta = delta,
+                Type = buttonType
+            };
+        }
+
+        private void Target_MouseMove(int x, int y) =>
+            MouseMove(MakeRootGeometry(), UpdateMouseEvent(x, y, null));
+
+        private void Target_LeftButtonDown(int x, int y) =>
+            MouseDown(MakeRootGeometry(), UpdateMouseEvent(x, y, WidgetPointerEventArgs.ButtonType.Left));
+
+        private void Target_RightButtonDown(int x, int y) =>
+            MouseDown(MakeRootGeometry(), UpdateMouseEvent(x, y, WidgetPointerEventArgs.ButtonType.Right));
+
+        private void Target_LeftButtonUp(int x, int y) =>
+            MouseUp(MakeRootGeometry(), UpdateMouseEvent(x, y, WidgetPointerEventArgs.ButtonType.Left));
+
+        private void Target_RightButtonUp(int x, int y) =>
+            MouseUp(MakeRootGeometry(), UpdateMouseEvent(x, y, WidgetPointerEventArgs.ButtonType.Right));
 
         public override void Tick(Geometry allottedGeometry, double inCurrentTime, float inDeltaTime)
         {
             base.Tick(allottedGeometry, inCurrentTime, inDeltaTime);
 
-            _image.RenderTransform = new SlateRenderTransform(Matrix2x2.Rotation(((float)inCurrentTime).ToRadians()));
-            _image.RenderTransformPivot = new Vector2(0.5f);
+            _box.RenderTransform ??= SlateRenderTransform.Identity;
+            _box.RenderTransform = _box.RenderTransform.Value.Concatenate(new SlateRenderTransform(Matrix2x2.Rotation(inDeltaTime.ToRadians())));
+            _box.RenderTransformPivot = new Vector2(0.5f);
         }
 
         public override void Dispose()

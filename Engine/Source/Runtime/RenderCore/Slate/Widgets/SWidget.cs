@@ -2,8 +2,11 @@
 
 using System;
 
+using SC.Engine.Runtime.Core.Container;
+using SC.Engine.Runtime.Core.Mathematics;
 using SC.Engine.Runtime.Core.Numerics;
 using SC.Engine.Runtime.RenderCore.Slate.Layout;
+using SC.Engine.Runtime.RenderCore.Slate.WidgetEvents;
 
 namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
 {
@@ -192,5 +195,158 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
         /// 위젯의 활성화 상태를 가져오거나 설정합니다.
         /// </summary>
         public bool IsEnabled { get; set; }
+
+        WidgetEventReply InvokeArrangedMouseEvent(Geometry myGeometry, WidgetPointerEventArgs eventArgs, Func<ArrangedWidget, WidgetPointerEventArgs, WidgetEventReply> body)
+        {
+            if (!eventArgs.Parent.Visibility.AreChildrenHitTestVisible())
+            {
+                return null;
+            }
+
+            ArrangedChildren arrangedChildren = new(SlateVisibility.Visible);
+            ArrangeChildren(arrangedChildren, myGeometry);
+
+            eventArgs = eventArgs with
+            {
+                Parent = this
+            };
+
+            TArray<ArrangedWidget> widgets = arrangedChildren.GetWidgets();
+            foreach (ArrangedWidget curWidget in widgets[^0..0])
+            {
+                // Mouse event can only receive that geometry is under the location.
+                if (curWidget.Geometry.IsUnderLocation(eventArgs.CursorLocation))
+                {
+                    WidgetEventReply myReply = body(curWidget, eventArgs);
+                    // If child widget consume this input event, we will return immediately.
+                    if (myReply.Consume)
+                    {
+                        return myReply;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 마우스 버튼이 눌러졌을 때에 대한 이벤트를 처리합니다.
+        /// </summary>
+        /// <param name="myGeometry"> 위젯의 기하 모형을 전달합니다. </param>
+        /// <param name="eventArgs"> 이벤트 매개 변수를 전달합니다. </param>
+        /// <returns> 이벤트 응답이 반환됩니다. </returns>
+        public WidgetEventReply MouseDown(Geometry myGeometry, WidgetPointerEventArgs eventArgs)
+        {
+            if (eventArgs.Parent.Visibility.AreChildrenHitTestVisible())
+            {
+                WidgetEventReply reply = InvokeArrangedMouseEvent(myGeometry, eventArgs, (widget, eventArgs) => widget.Widget.MouseDown(widget.Geometry, eventArgs));
+                // If child widget return reply with consume flag, return immediately with current reply.
+                if (reply?.Consume == true)
+                {
+                    return reply;
+                }
+            }
+
+            if (Visibility.IsHitTestVisible())
+            {
+                return OnMouseDown(myGeometry, eventArgs);
+            }
+
+            return new WidgetEventReply()
+            {
+                IsProcessed = false
+            };
+        }
+
+        /// <summary>
+        /// 마우스 버튼이 놓였을 때에 대한 이벤트를 처리합니다.
+        /// </summary>
+        /// <param name="myGeometry"> 위젯의 기하 모형을 전달합니다. </param>
+        /// <param name="eventArgs"> 이벤트 매개 변수를 전달합니다. </param>
+        /// <returns> 이벤트 응답이 반환됩니다. </returns>
+        public WidgetEventReply MouseUp(Geometry myGeometry, WidgetPointerEventArgs eventArgs)
+        {
+            if (eventArgs.Parent.Visibility.AreChildrenHitTestVisible())
+            {
+                WidgetEventReply reply = InvokeArrangedMouseEvent(myGeometry, eventArgs, (widget, eventArgs) => widget.Widget.MouseUp(widget.Geometry, eventArgs));
+                // If child widget return reply with consume flag, return immediately with current reply.
+                if (reply?.Consume == true)
+                {
+                    return reply;
+                }
+            }
+
+            if (Visibility.IsHitTestVisible())
+            {
+                return OnMouseUp(myGeometry, eventArgs);
+            }
+
+            return new WidgetEventReply()
+            {
+                IsProcessed = false
+            };
+        }
+
+        /// <summary>
+        /// 마우스 위치가 이동되었을 때에 대한 이벤트를 처리합니다.
+        /// </summary>
+        /// <param name="myGeometry"> 위젯의 기하 모형을 전달합니다. </param>
+        /// <param name="eventArgs"> 이벤트 매개 변수를 전달합니다. </param>
+        /// <returns> 이벤트 응답이 반환됩니다. </returns>
+        public WidgetEventReply MouseMove(Geometry myGeometry, WidgetPointerEventArgs eventArgs)
+        {
+            if (eventArgs.Parent.Visibility.AreChildrenHitTestVisible())
+            {
+                WidgetEventReply reply = InvokeArrangedMouseEvent(myGeometry, eventArgs, (widget, eventArgs) => widget.Widget.MouseMove(widget.Geometry, eventArgs));
+                // If child widget return reply with consume flag, return immediately with current reply.
+                if (reply?.Consume == true)
+                {
+                    return reply;
+                }
+            }
+
+            if (Visibility.IsHitTestVisible())
+            {
+                return OnMouseMove(myGeometry, eventArgs);
+            }
+
+            return new WidgetEventReply()
+            {
+                IsProcessed = false
+            };
+        }
+
+        /// <summary>
+        /// 마우스 버튼이 눌러졌을 때 호출되는 처리기입니다.
+        /// </summary>
+        /// <param name="myGeometry"> 위젯의 기하 모형이 전달됩니다. </param>
+        /// <param name="eventArgs"> 이벤트 매개 변수가 전달됩니다. </param>
+        /// <returns> 이벤트 응답을 반환합니다. </returns>
+        protected virtual WidgetEventReply OnMouseDown(Geometry myGeometry, WidgetPointerEventArgs eventArgs)
+        {
+            RenderTransform ??= SlateRenderTransform.Identity;
+            RenderTransform = RenderTransform.Value.Concatenate(new SlateRenderTransform(Matrix2x2.Rotation(1.0f.ToRadians())));
+            RenderTransformPivot = new Vector2(0.5f);
+            return new WidgetEventReply()
+            {
+                Consume = true
+            };
+        }
+
+        /// <summary>
+        /// 마우스 버튼이 놓였을 때 호출되는 처리기입니다.
+        /// </summary>
+        /// <param name="myGeometry"> 위젯의 기하 모형이 전달됩니다. </param>
+        /// <param name="eventArgs"> 이벤트 매개 변수가 전달됩니다. </param>
+        /// <returns> 이벤트 응답을 반환합니다. </returns>
+        protected virtual WidgetEventReply OnMouseUp(Geometry myGeometry, WidgetPointerEventArgs eventArgs) => new WidgetEventReply();
+
+        /// <summary>
+        /// 마우스 위치가 이동되었을 때 호출되는 처리기입니다.
+        /// </summary>
+        /// <param name="myGeometry"> 위젯의 기하 모형이 전달됩니다. </param>
+        /// <param name="eventArgs"> 이벤트 매개 변수가 전달됩니다. </param>
+        /// <returns> 이벤트 응답을 반환합니다. </returns>
+        protected virtual WidgetEventReply OnMouseMove(Geometry myGeometry, WidgetPointerEventArgs eventArgs) => new WidgetEventReply();
     }
 }

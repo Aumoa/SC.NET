@@ -134,7 +134,8 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Layout
         /// <returns> 값이 반환됩니다. </returns>
         public readonly SlateRenderTransform Concatenate(SlateRenderTransform rhs)
         {
-            return new SlateRenderTransform(Matrix2x2.Multiply(Matrix2x2.Scale(new Vector2(Scale)), rhs.M), TransformPoint(rhs.Translation));
+            return new SlateRenderTransform(Matrix2x2.Scale(new Vector2(Scale)), Translation)
+                .Concatenate(rhs);
         }
 
         /// <summary>
