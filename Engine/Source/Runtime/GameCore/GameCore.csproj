@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\RenderCore\RenderCore.csproj" />
   </ItemGroup>
 
 </Project>

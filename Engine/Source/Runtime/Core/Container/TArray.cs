@@ -1035,5 +1035,17 @@ namespace SC.Engine.Runtime.Core.Container
                 }
             }
         }
+
+        /// <summary>
+        /// 컬렉션을 <see cref="ReadOnlySpan{T}"/> 형식으로 가져옵니다.
+        /// </summary>
+        /// <returns> 형식 변경된 개체가 반환됩니다. </returns>
+        /// <remarks>
+        /// 변환된 <see cref="ReadOnlySpan{T}"/> 형식은 내부 컨테이너에 민감하게 접근하며, 내부 데이터가 변경되는 것을 감지하지 못할 수도 있습니다. 고정 영역 내에서 단숨에 사용하세요.
+        /// </remarks>
+        public ReadOnlySpan<T> AsReadOnlySpan()
+        {
+            return new ReadOnlySpan<T>(_items);
+        }
     }
 }

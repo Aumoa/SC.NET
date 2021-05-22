@@ -281,7 +281,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// </summary>
         /// <param name="vertices"> 정점 목록을 전달합니다. </param>
         /// <returns> GPU 리소스 개체가 반환됩니다. </returns>
-        public RHIResource CreateVertexBuffer(Span<RHIVertex> vertices)
+        public RHIResource CreateVertexBuffer(ReadOnlySpan<RHIVertex> vertices)
         {
             fixed (RHIVertex* vptr = &vertices[0])
             {
@@ -299,7 +299,7 @@ namespace SC.Engine.Runtime.RenderCore
         /// </summary>
         /// <param name="indices"> 인덱스 목록을 전달합니다. </param>
         /// <returns> GPU 리소스 개체가 반환됩니다. </returns>
-        public RHIResource CreateIndexBuffer(Span<uint> indices)
+        public RHIResource CreateIndexBuffer(ReadOnlySpan<uint> indices)
         {
             fixed (uint* iptr = &indices[0])
             {
