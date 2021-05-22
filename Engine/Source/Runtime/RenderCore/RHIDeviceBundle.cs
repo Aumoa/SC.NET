@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using SC.Engine.Runtime.Core.FileSystem;
+using SC.Engine.Runtime.RenderCore.PrimitiveTypes;
 using SC.ThirdParty.DirectX;
 using SC.ThirdParty.WindowsCodecs;
 
@@ -226,6 +227,88 @@ namespace SC.Engine.Runtime.RenderCore
             }
             catch (COMException)
             {
+            }
+        }
+
+        ID3D12Resource CreateImmutableBuffer(D3D12ResourceStates initialState, void* initialBuffer, ulong length, D3D12ResourceFlags flags)
+        {
+            D3D12ResourceDesc bufferDesc = new();
+            bufferDesc.Dimension = D3D12ResourceDimension.Buffer;
+            bufferDesc.Width = length;
+            bufferDesc.Height = 1;
+            bufferDesc.DepthOrArraySize = 1;
+            bufferDesc.MipLevels = 1;
+            bufferDesc.Format = DXGIFormat.Unknown;
+            bufferDesc.SampleDesc = DXGISampleDesc.One;
+            bufferDesc.Layout = D3D12TextureLayout.RowMajor;
+            bufferDesc.Flags = flags;
+
+            D3D12HeapProperties heap = new();
+            heap.Type = D3D12HeapType.Default;
+
+            // Create immutable buffer as commit target.
+            ID3D12Resource resource = _device.CreateCommittedResource(heap, D3D12HeapFlags.None, bufferDesc, D3D12ResourceStates.CopyDest, null);
+
+            // Create upload buffer.
+            heap.Type = D3D12HeapType.Upload;
+            ID3D12Resource uploadHeap = _device.CreateCommittedResource(heap, D3D12HeapFlags.None, bufferDesc, D3D12ResourceStates.GenericRead, null);
+
+            // Copy buffer datas to upload heap.
+            void* data = uploadHeap.Map().ToPointer();
+            Buffer.MemoryCopy(initialBuffer, data, length, length);
+            uploadHeap.Unmap();
+
+            using var deviceContext = new RHIDeviceContext(this, false);
+            deviceContext.BeginDraw();
+            ID3D12GraphicsCommandList cmdList = deviceContext.GetCommandList();
+
+            // Copy and transition state.
+            cmdList.CopyResource(resource, uploadHeap);
+            cmdList.ResourceBarrier(D3D12ResourceBarrier.TransitionBarrier(resource, D3D12ResourceStates.CopyDest, initialState));
+
+            deviceContext.EndDraw();
+            _primaryQueue.ExecuteCommandLists(deviceContext);
+
+            // Pending commands resources.
+            _primaryQueue.AddPendingReference(cmdList);
+            _primaryQueue.AddPendingReference(uploadHeap);
+
+            return resource;
+        }
+
+        /// <summary>
+        /// 정점 버퍼를 생성합니다.
+        /// </summary>
+        /// <param name="vertices"> 정점 목록을 전달합니다. </param>
+        /// <returns> GPU 리소스 개체가 반환됩니다. </returns>
+        public RHIResource CreateVertexBuffer(Span<RHIVertex> vertices)
+        {
+            fixed (RHIVertex* vptr = &vertices[0])
+            {
+                return new RHIResource(this, CreateImmutableBuffer(
+                    D3D12ResourceStates.VertexAndConstantBuffer,
+                    vptr,
+                    (ulong)(vertices.Length * sizeof(RHIVertex)),
+                    D3D12ResourceFlags.None
+                    ));
+            }
+        }
+
+        /// <summary>
+        /// 인덱스 버퍼를 생성합니다.
+        /// </summary>
+        /// <param name="indices"> 인덱스 목록을 전달합니다. </param>
+        /// <returns> GPU 리소스 개체가 반환됩니다. </returns>
+        public RHIResource CreateIndexBuffer(Span<uint> indices)
+        {
+            fixed (uint* iptr = &indices[0])
+            {
+                return new RHIResource(this, CreateImmutableBuffer(
+                    D3D12ResourceStates.IndexBuffer,
+                    iptr,
+                    (ulong)(indices.Length * sizeof(uint)),
+                    D3D12ResourceFlags.None
+                    ));
             }
         }
     }

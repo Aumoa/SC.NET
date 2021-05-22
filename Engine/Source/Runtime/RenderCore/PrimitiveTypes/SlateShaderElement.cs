@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 using SC.Engine.Runtime.Core.Numerics;
 
-namespace SC.Engine.Runtime.RenderCore.Slate
+namespace SC.Engine.Runtime.RenderCore.PrimitiveTypes
 {
     [StructLayout(LayoutKind.Explicit, Size = 48)]
     struct SlateShaderElement

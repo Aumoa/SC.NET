@@ -29,6 +29,7 @@ namespace SC.Engine.Runtime.RenderCore
         public override void Dispose()
         {
             _descriptorHeap?.Dispose();
+            base.Dispose();
         }
 
         /// <inheritdoc/>

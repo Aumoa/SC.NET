@@ -1,10 +1,10 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using System;
-using System.Linq;
 
 using SC.Engine.Runtime.Core.Container;
 using SC.Engine.Runtime.Core.Numerics;
+using SC.Engine.Runtime.RenderCore.PrimitiveTypes;
 using SC.Engine.Runtime.RenderCore.Slate;
 using SC.Engine.Runtime.RenderShader.Shaders;
 using SC.ThirdParty.DirectX;

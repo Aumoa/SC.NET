@@ -120,27 +120,26 @@ namespace SC.Engine.Runtime.RenderCore
                 PendingReference pr = _pendingReferences.Peek();
                 if (pr._fenceValue <= completed)
                 {
-                    if (pr._reference is IUnknown unknown)
+                    switch (pr._reference)
                     {
-                        unknown.Release();
-                    }
-                    else if (pr._reference is IDisposable disposable)
-                    {
-                        disposable.Dispose();
-                    }
-                    else if (pr._reference is IList<IUnknown> unknowns)
-                    {
-                        foreach (IUnknown unk in unknowns)
-                        {
-                            unk?.Release();
-                        }
-                    }
-                    else if (pr._reference is IList<IDisposable> disps)
-                    {
-                        foreach (IDisposable disp in disps)
-                        {
-                            disp?.Dispose();
-                        }
+                        case IUnknown unknown:
+                            unknown.Release();
+                            break;
+                        case IDisposable disposable:
+                            disposable.Dispose();
+                            break;
+                        case IList<IUnknown> unknowns:
+                            foreach (IUnknown unk in unknowns)
+                            {
+                                unk?.Release();
+                            }
+                            break;
+                        case IList<IDisposable> disps:
+                            foreach (IDisposable disp in disps)
+                            {
+                                disp?.Dispose();
+                            }
+                            break;
                     }
 
                     _pendingReferences.Dequeue();
