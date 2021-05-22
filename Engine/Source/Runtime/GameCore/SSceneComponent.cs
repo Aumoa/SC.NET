@@ -27,7 +27,7 @@ namespace SC.Engine.Runtime.GameCore
                 SocketName = null;
             }
 
-            public Transform GetAttachmentTransform(EComponentTransformSpace space = EComponentTransformSpace.World)
+            public Transform GetAttachmentTransform(ComponentTransformSpace space = ComponentTransformSpace.World)
             {
                 if (AttachParent is null)
                 {
@@ -36,7 +36,7 @@ namespace SC.Engine.Runtime.GameCore
 
                 if (SocketName is null)
                 {
-                    if (space == EComponentTransformSpace.World)
+                    if (space == ComponentTransformSpace.World)
                     {
                         return AttachParent.ComponentTransform;
                     }
@@ -55,8 +55,8 @@ namespace SC.Engine.Runtime.GameCore
         Transform _transform = Transform.Identity;
         Transform _worldTransform = Transform.Identity;
         Transform _localToWorld = Transform.Identity;
-        EComponentMobility _mobility = EComponentMobility.Static;
-        EComponentDirtyFlags _dirtyMask = EComponentDirtyFlags.None;
+        ComponentMobility _mobility = ComponentMobility.Static;
+        ComponentDirtyFlags _dirtyMask = ComponentDirtyFlags.None;
 
         SceneAttachment _componentAttachment;
         TArray<SSceneComponent> _childComponents = new();
@@ -111,7 +111,7 @@ namespace SC.Engine.Runtime.GameCore
         /// <param name="socketName"> 소켓 이름을 전달합니다. </param>
         /// <param name="space"> 트랜스폼 공간을 전달합니다. </param>
         /// <returns> 소켓의 트랜스폼이 반환됩니다. </returns>
-        public virtual Transform GetSocketTransform(string socketName, EComponentTransformSpace space = EComponentTransformSpace.World)
+        public virtual Transform GetSocketTransform(string socketName, ComponentTransformSpace space = ComponentTransformSpace.World)
         {
             Log(Error, "SceneComponent", $"대상 컴포넌트에서 {socketName} 소켓을 찾을 수 없습니다.");
             return Transform.Identity;
@@ -124,9 +124,9 @@ namespace SC.Engine.Runtime.GameCore
         /// <param name="inNewRotation"> 변경할 회전값을 전달합니다. </param>
         /// <param name="inSpace"> 컴포넌트 트랜스폼 공간을 전달합니다. </param>
         /// <returns> 이동 결과가 반환됩니다. </returns>
-        public virtual bool MoveComponent(Vector3 inMoveDelta, Quaternion inNewRotation, EComponentTransformSpace inSpace = EComponentTransformSpace.World)
+        public virtual bool MoveComponent(Vector3 inMoveDelta, Quaternion inNewRotation, ComponentTransformSpace inSpace = ComponentTransformSpace.World)
         {
-            Quaternion oldRotation = inSpace == EComponentTransformSpace.World ? ComponentRotation : Rotation;
+            Quaternion oldRotation = inSpace == ComponentTransformSpace.World ? ComponentRotation : Rotation;
             if (inMoveDelta.NearlyEquals(Vector3.Zero, 0.001f) && oldRotation.NearlyEquals(inNewRotation, 0.001f))
             {
                 // inMoveDelta 및 inNewRotation으로 변경한 결과가 이전 트랜스폼과 매우 유사합니다.
@@ -137,7 +137,7 @@ namespace SC.Engine.Runtime.GameCore
             Vector3 relativeLocation;
             Quaternion relativeRotation;
 
-            if (inSpace == EComponentTransformSpace.World && GetAttachParent() is not null)
+            if (inSpace == ComponentTransformSpace.World && GetAttachParent() is not null)
             {
                 // 트랜스폼 단위는 오직 로컬 공간에서 계산됩니다.
                 // 따라서 월드 공간 좌표를 로컬 공간 좌표로 변경한 후 적용합니다.
@@ -225,7 +225,7 @@ namespace SC.Engine.Runtime.GameCore
         /// 컴포넌트의 더티 상태를 설정합니다.
         /// </summary>
         /// <param name="inFlags"> 더티 플래그를 전달합니다. </param>
-        public void SetMarkDirty(EComponentDirtyFlags inFlags)
+        public void SetMarkDirty(ComponentDirtyFlags inFlags)
         {
             _dirtyMask |= inFlags;
         }
@@ -235,7 +235,7 @@ namespace SC.Engine.Runtime.GameCore
         /// </summary>
         /// <param name="inFlags"> 검사할 더티 플래그를 전달합니다. </param>
         /// <returns> 검사 결과가 반환됩니다. </returns>
-        public bool HasAnyDirtyMark(EComponentDirtyFlags inFlags)
+        public bool HasAnyDirtyMark(ComponentDirtyFlags inFlags)
         {
             return (_dirtyMask & inFlags) != 0;
         }
@@ -245,7 +245,7 @@ namespace SC.Engine.Runtime.GameCore
         /// </summary>
         public virtual void ResolveDirtyState()
         {
-            _dirtyMask = EComponentDirtyFlags.None;
+            _dirtyMask = ComponentDirtyFlags.None;
         }
 
         /// <summary>
@@ -349,7 +349,7 @@ namespace SC.Engine.Runtime.GameCore
 
         void UpdateWorldTransform()
         {
-            if (ComponentHasBegunPlay && _mobility != EComponentMobility.Movable)
+            if (ComponentHasBegunPlay && _mobility != ComponentMobility.Movable)
             {
                 Log(Error, "SceneComponent", "컴포넌트가 이동 가능하지 않은데 월드 트랜스폼이 변경되려합니다.");
                 return;
@@ -364,7 +364,7 @@ namespace SC.Engine.Runtime.GameCore
                 _worldTransform = _transform;
             }
 
-            SetMarkDirty(EComponentDirtyFlags.TransformUpdated);
+            SetMarkDirty(ComponentDirtyFlags.TransformUpdated);
             UpdateChildTransforms();
         }
 
@@ -386,7 +386,7 @@ namespace SC.Engine.Runtime.GameCore
         /// <summary>
         /// 컴포넌트의 모빌리티를 설정하거나 가져옵니다.
         /// </summary>
-        public EComponentMobility Mobility
+        public ComponentMobility Mobility
         {
             get => _mobility;
             set

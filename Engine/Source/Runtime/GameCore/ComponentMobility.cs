@@ -5,7 +5,7 @@ namespace SC.Engine.Runtime.GameCore
     /// <summary>
     /// 컴포넌트의 모빌리티를 표현합니다.
     /// </summary>
-    public enum EComponentMobility
+    public enum ComponentMobility
     {
         /// <summary>
         /// 완전 정적인 모빌리티를 나타냅니다.

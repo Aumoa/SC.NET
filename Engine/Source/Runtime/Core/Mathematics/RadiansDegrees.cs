@@ -24,5 +24,19 @@ namespace SC.Engine.Runtime.Core.Mathematics
         /// <param name="this"> 값을 전달합니다. </param>
         /// <returns> 변환된 값이 반환됩니다.</returns>
         public static float ToRadians(this float @this) => @this * PIInv180;
+
+        /// <summary>
+        /// 각도 형식으로 변환합니다.
+        /// </summary>
+        /// <param name="this"> 값을 전달합니다. </param>
+        /// <returns> 변환된 값이 반환됩니다.</returns>
+        public static float ToDegrees(this double @this) => (float)(@this * MathEx.Inv180);
+
+        /// <summary>
+        /// 라디안 형식으로 변환합니다.
+        /// </summary>
+        /// <param name="this"> 값을 전달합니다. </param>
+        /// <returns> 변환된 값이 반환됩니다.</returns>
+        public static float ToRadians(this double @this) => (float)(@this * PIInv180);
     }
 }

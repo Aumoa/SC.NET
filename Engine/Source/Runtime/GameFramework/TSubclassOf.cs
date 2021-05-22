@@ -50,5 +50,14 @@ namespace SC.Engine.Runtime.GameFramework
         /// 타입 인스턴스를 가져옵니다.
         /// </summary>
         public Type Class => _class;
+
+        /// <summary>
+        /// 서브클래스 형식을 대입합니다.
+        /// </summary>
+        /// <typeparam name="TSub"> 서브클래스 형식을 전달합니다. </typeparam>
+        public void Assign<TSub>() where TSub : T
+        {
+            this = Get<TSub>();
+        }
     }
 }

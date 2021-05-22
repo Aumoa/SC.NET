@@ -10,7 +10,7 @@ namespace SC.Engine.Runtime.GameCore
     public abstract class SGameObject
     {
         SWorld _worldPrivate;
-        EGameObjectFlags _flags = EGameObjectFlags.None;
+        GameObjectFlags _flags = GameObjectFlags.None;
         string _name;
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace SC.Engine.Runtime.GameCore
         /// </summary>
         /// <param name="flags"> 플래그를 전달합니다. </param>
         /// <returns> 활성되어 있는지 나타내는 값이 반환됩니다. </returns>
-        public virtual bool HasAnyFlags(EGameObjectFlags flags)
+        public virtual bool HasAnyFlags(GameObjectFlags flags)
         {
             return (_flags & flags) != 0;
         }

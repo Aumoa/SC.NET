@@ -8,7 +8,7 @@ namespace SC.Engine.Runtime.GameCore
     /// 게임 오브젝트의 상태 플래그 목록을 나타냅니다.
     /// </summary>
     [Flags]
-    public enum EGameObjectFlags
+    public enum GameObjectFlags
     {
         /// <summary>
         /// 정상 상태를 나타냅니다.

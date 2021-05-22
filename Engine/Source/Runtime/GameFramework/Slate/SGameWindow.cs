@@ -178,7 +178,7 @@ namespace SC.Engine.Runtime.GameFramework.Slate
         private void Target_RightButtonUp(int x, int y) =>
             MouseUp(MakeRootGeometry(), UpdateMouseEvent(x, y, WidgetPointerEventArgs.ButtonType.Right));
 
-        public override void Tick(Geometry allottedGeometry, double inCurrentTime, float inDeltaTime)
+        public override void Tick(Geometry allottedGeometry, double inCurrentTime, double inDeltaTime)
         {
             base.Tick(allottedGeometry, inCurrentTime, inDeltaTime);
 

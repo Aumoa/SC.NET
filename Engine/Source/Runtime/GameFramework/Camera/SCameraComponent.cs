@@ -18,7 +18,7 @@ namespace SC.Engine.Runtime.GameFramework.Camera
         /// </summary>
         public SCameraComponent() : base()
         {
-            Mobility = EComponentMobility.Movable;
+            Mobility = ComponentMobility.Movable;
         }
 
         /// <summary>

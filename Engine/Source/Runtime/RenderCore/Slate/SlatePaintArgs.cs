@@ -17,7 +17,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate
         /// <summary>
         /// 이전 프레임에서 경과한 시간을 나타냅니다.
         /// </summary>
-        public float DeltaTime;
+        public double DeltaTime;
 
         /// <summary>
         /// 부모 슬레이트를 나타냅니다.

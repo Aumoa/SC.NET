@@ -212,13 +212,13 @@ namespace SC.Engine.Runtime.GameCore
         /// 액터의 모빌리티를 가져옵니다.
         /// </summary>
         /// <returns> 값이 반환됩니다. </returns>
-        public EComponentMobility GetMobility() => _rootComponent.Mobility;
+        public ComponentMobility GetMobility() => _rootComponent.Mobility;
 
         /// <summary>
         /// 액터의 모빌리티를 설정합니다.
         /// </summary>
         /// <param name="value"> 값을 전달합니다. </param>
-        public void SetMobility(EComponentMobility value) => _rootComponent.Mobility = value;
+        public void SetMobility(ComponentMobility value) => _rootComponent.Mobility = value;
 
         /// <summary>
         /// 액터가 소유한 루트 컴포넌트를 가져옵니다.

@@ -28,7 +28,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Widgets
         /// <param name="allottedGeometry"> 이 위젯에 할당된 트랜스폼이 전달됩니다. </param>
         /// <param name="inCurrentTime"> 현재를 나타내는 절대 시간값이 전달됩니다. </param>
         /// <param name="inDeltaTime"> 이전 프레임에서 이동한 시간이 전달됩니다. </param>
-        public virtual void Tick(Geometry allottedGeometry, double inCurrentTime, float inDeltaTime)
+        public virtual void Tick(Geometry allottedGeometry, double inCurrentTime, double inDeltaTime)
         {
         }
 

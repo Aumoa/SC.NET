@@ -19,7 +19,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Application
         }
 
         double _lastCurrentTime;
-        float _lastDeltaTime;
+        double _lastDeltaTime;
 
         /// <summary>
         /// 루트 트랜스폼을 생성합니다.
@@ -32,7 +32,7 @@ namespace SC.Engine.Runtime.RenderCore.Slate.Application
         /// </summary>
         /// <param name="inCurrentTime"> 전체 흐른 시간을 전달합니다. </param>
         /// <param name="inDeltaTime"> 이전 프레임에서 이동한 시간을 전달합니다. </param>
-        public void Tick(double inCurrentTime, float inDeltaTime) =>
+        public void Tick(double inCurrentTime, double inDeltaTime) =>
             Tick(
                 MakeRootGeometry(),
                 _lastCurrentTime = inCurrentTime,

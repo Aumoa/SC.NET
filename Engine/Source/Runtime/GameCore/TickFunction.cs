@@ -136,7 +136,7 @@ namespace SC.Engine.Runtime.GameCore
             for (int i = 0; i < _prerequisites.Count;)
             {
                 ITickFunctionObject obj = _prerequisites[i];
-                if (obj is SGameObject gobj && gobj.HasAnyFlags(EGameObjectFlags.PendingKill))
+                if (obj is SGameObject gobj && gobj.HasAnyFlags(GameObjectFlags.PendingKill))
                 {
                     _prerequisites.RemoveAt(i);
                     continue;

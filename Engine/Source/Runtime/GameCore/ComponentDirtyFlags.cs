@@ -8,7 +8,7 @@ namespace SC.Engine.Runtime.GameCore
     /// 컴포넌트의 더티 마스크를 표현합니다.
     /// </summary>
     [Flags]
-    public enum EComponentDirtyFlags
+    public enum ComponentDirtyFlags
     {
         /// <summary>
         /// 상태가 없습니다.

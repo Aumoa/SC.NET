@@ -5,7 +5,7 @@ namespace SC.Engine.Runtime.GameCore
     /// <summary>
     /// 컴포넌트 트랜스폼 공간을 표현합니다.
     /// </summary>
-    public enum EComponentTransformSpace
+    public enum ComponentTransformSpace
     {
         /// <summary>
         /// 월드 단위 공간을 사용합니다.
