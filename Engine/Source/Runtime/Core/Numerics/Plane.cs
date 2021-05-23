@@ -2,6 +2,8 @@
 
 using System;
 
+using SC.Engine.Runtime.Core.Mathematics;
+
 namespace SC.Engine.Runtime.Core.Numerics
 {
     /// <summary>
@@ -134,6 +136,29 @@ namespace SC.Engine.Runtime.Core.Numerics
             return
                 left.Normal != right.Normal ||
                 left.Distance != right.Distance;
+        }
+
+        /// <summary>
+        /// 정규화된 평면 값을 계산합니다.
+        /// </summary>
+        /// <returns> 값이 반환됩니다. </returns>
+        public Plane GetNormal()
+        {
+            float sq = Normal.GetLengthSq();
+            float rt = MathEx.InvSqrt(sq);
+
+            return new Plane(Normal * rt, Distance * rt);
+        }
+
+        /// <summary>
+        /// 위치 내적한 결과를 계산합니다.
+        /// </summary>
+        /// <param name="inPlane"> 평면 값을 전달합니다. </param>
+        /// <param name="inVector"> 벡터 값을 전달합니다. </param>
+        /// <returns> 결과가 반환됩니다. </returns>
+        public static float DotCoord(Plane inPlane, Vector3 inVector)
+        {
+            return inPlane.Normal.X * inVector[0] + inPlane.Normal.Y * inVector[1] + inPlane.Normal.Z * inVector[2] + inPlane.Distance * 1.0f;
         }
     }
 }

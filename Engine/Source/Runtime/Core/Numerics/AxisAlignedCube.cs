@@ -10,67 +10,68 @@ namespace SC.Engine.Runtime.Core.Numerics
     public struct AxisAlignedCube : INearlyEquatable<AxisAlignedCube, float>, IFormattable, IVectorType
     {
         /// <summary>
-        /// 왼쪽 위치(-X)를 나타냅니다.
+        /// 왼쪽 위치(-X)를 설정하거나 가져옵니다.
         /// </summary>
-        public float Left;
+        public float Left
+        {
+            get => Min.X;
+            set => Min.X = value;
+        }
 
         /// <summary>
-        /// 상단 위치(+Y)를 나타냅니다.
+        /// 상단 위치(+Y)를 설정하거나 가져옵니다.
         /// </summary>
-        public float Top;
+        public float Top
+        {
+            get => Max.Y;
+            set => Max.Y = value;
+        }
 
         /// <summary>
-        /// 오른쪽 위치(+X)를 나타냅니다.
+        /// 오른쪽 위치(+X)를 설정하거나 가져옵니다.
         /// </summary>
-        public float Right;
+        public float Right
+        {
+            get => Max.X;
+            set => Max.X = value;
+        }
 
         /// <summary>
-        /// 하단 위치(-Y)를 나타냅니다.
+        /// 하단 위치(-Y)를 설정하거나 가져옵니다.
         /// </summary>
-        public float Bottom;
+        public float Bottom
+        {
+            get => Min.Y;
+            set => Min.Y = value;
+        }
 
         /// <summary>
-        /// 화면과 가까운(-Z) 위치를 나타냅니다.
+        /// 화면과 가까운(-Z) 위치를 설정하거나 가져옵니다.
         /// </summary>
-        public float Near;
+        public float Near
+        {
+            get => Min.Z;
+            set => Min.Z = value;
+        }
 
         /// <summary>
-        /// 화면과 먼(+Z) 위치를 나타냅니다.
+        /// 화면과 먼(+Z) 위치를 설정하거나 가져옵니다.
         /// </summary>
-        public float Far;
+        public float Far
+        {
+            get => Max.Z;
+            set => Max.Z = value;
+        }
 
         /// <summary>
         /// 모든 값을 지정하여 <see cref="AxisAlignedCube"/> 구조체의 새 인스턴스를 초기화합니다.
         /// </summary>
-        /// <param name="left"> 왼쪽 위치를 전달합니다. </param>
-        /// <param name="top"> 상단 위치를 전달합니다. </param>
-        /// <param name="right"> 오른쪽 위치를 전달합니다. </param>
-        /// <param name="bottom"> 하단 위치를 전달합니다. </param>
-        /// <param name="near"> 화면과 가까운 위치를 전달합니다. </param>
-        /// <param name="far"> 화면과 먼 위치를 전달합니다. </param>
-        public AxisAlignedCube(float left, float top, float right, float bottom, float near, float far)
+        /// <param name="min"> 최소 위치를 전달합니다. </param>
+        /// <param name="max"> 최대 위치를 전달합니다. </param>
+        public AxisAlignedCube(Vector3 min, Vector3 max)
         {
-            Left = left;
-            Top = top;
-            Right = right;
-            Bottom = bottom;
-            Near = near;
-            Far = far;
-        }
-
-        /// <summary>
-        /// 가운데 위치와 범위를 지정하여 <see cref="AxisAlignedCube"/> 구조체의 새 인스턴스를 초기화합니다.
-        /// </summary>
-        /// <param name="center"> 가운데 위치를 전달합니다. </param>
-        /// <param name="extent"> 범위를 전달합니다. </param>
-        public AxisAlignedCube(Vector3 center, Vector3 extent)
-        {
-            Left = center.X - extent.X;
-            Top = center.Y + extent.Y;
-            Right = center.X + extent.X;
-            Bottom = center.Y - extent.Y;
-            Near = center.Z - extent.Z;
-            Far = center.Z + extent.Z;
+            Min = min;
+            Max = max;
         }
 
         /// <summary>
@@ -96,7 +97,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <returns> 해시 코드가 반환됩니다. </returns>
         public override int GetHashCode()
         {
-            return Left.GetHashCode() ^ Top.GetHashCode() ^ Right.GetHashCode() ^ Bottom.GetHashCode() ^ Near.GetHashCode() ^ Far.GetHashCode();
+            return Min.GetHashCode() ^ Max.GetHashCode();
         }
 
         /// <summary>
@@ -126,12 +127,8 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <inheritdoc/>
         public bool NearlyEquals(AxisAlignedCube cube, float epsilon)
         {
-            return Math.Abs(Left - cube.Left) < epsilon
-                && Math.Abs(Top - cube.Top) < epsilon
-                && Math.Abs(Right - cube.Right) < epsilon
-                && Math.Abs(Bottom - cube.Bottom) < epsilon
-                && Math.Abs(Near - cube.Near) < epsilon
-                && Math.Abs(Far - cube.Far) < epsilon;
+            return Min.NearlyEquals(cube.Min, epsilon)
+                && Max.NearlyEquals(cube.Max, epsilon);
         }
 
         /// <summary>
@@ -154,7 +151,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <inheritdoc/>
         public unsafe float GetComponentOrDefault(int index)
         {
-            fixed (float* ptr = &Left)
+            fixed (float* ptr = &Min.X)
             {
                 if (index < Count)
                 {
@@ -210,7 +207,7 @@ namespace SC.Engine.Runtime.Core.Numerics
             get => GetComponentOrDefault(index);
             set
             {
-                fixed (float* ptr = &Left)
+                fixed (float* ptr = &Min.X)
                 {
                     if (index < Count)
                     {
@@ -282,7 +279,9 @@ namespace SC.Engine.Runtime.Core.Numerics
 
             if (right >= left && top >= bottom && far >= near)
             {
-                return new AxisAlignedCube(left, top, right, bottom, near, far);
+                Vector3 min = new(left, bottom, near);
+                Vector3 max = new(right, top, far);
+                return new AxisAlignedCube(min, max);
             }
             else
             {
@@ -331,13 +330,8 @@ namespace SC.Engine.Runtime.Core.Numerics
             set
             {
                 Vector3 extent = Extent;
-
-                Left = value.X - extent.X;
-                Top = value.Y + extent.Y;
-                Right = value.X + extent.X;
-                Bottom = value.Y - extent.Y;
-                Near = value.Z - extent.Z;
-                Far = value.Z + extent.Z;
+                Min = value - extent;
+                Max = value + extent;
             }
         }
 
@@ -350,13 +344,8 @@ namespace SC.Engine.Runtime.Core.Numerics
             set
             {
                 Vector3 center = Center;
-
-                Left = center.X - value.X;
-                Top = center.Y + value.Y;
-                Right = center.X + value.X;
-                Bottom = center.Y - value.Y;
-                Near = center.Z - value.Z;
-                Far = center.Z + value.Z;
+                Min = center - value;
+                Max = center + value;
             }
         }
 
@@ -416,13 +405,7 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <returns> 비교 결과가 반환됩니다. </returns>
         public static bool operator ==(in AxisAlignedCube left, in AxisAlignedCube right)
         {
-            return
-                left.Left == right.Left &&
-                left.Top == right.Top &&
-                left.Right == right.Right &&
-                left.Bottom == right.Bottom &&
-                left.Near == right.Near &&
-                left.Far == right.Far;
+            return left.Min == right.Min && left.Max == right.Max;
         }
 
         /// <summary>
@@ -433,13 +416,17 @@ namespace SC.Engine.Runtime.Core.Numerics
         /// <returns> 비교 결과가 반환됩니다. </returns>
         public static bool operator !=(in AxisAlignedCube left, in AxisAlignedCube right)
         {
-            return
-                left.Left != right.Left ||
-                left.Top != right.Top ||
-                left.Right != right.Right ||
-                left.Bottom != right.Bottom ||
-                left.Near != right.Near ||
-                left.Far != right.Far;
+            return left.Min != right.Min || left.Max != right.Max;
         }
+
+        /// <summary>
+        /// 최소 위치 벡터를 나타냅니다.
+        /// </summary>
+        public Vector3 Min;
+
+        /// <summary>
+        /// 최대 위치 벡터를 나타냅니다.
+        /// </summary>
+        public Vector3 Max;
     }
 }
