@@ -3,7 +3,7 @@
 using SampleGame.Controller;
 using SampleGame.Levels;
 
-using SC.Engine.Runtime.GameFramework;
+using SC.Engine.Runtime.GameFramework.Info;
 
 namespace SampleGame.Properties
 {

@@ -1,7 +1,7 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using SC.Engine.Runtime.Core.Numerics;
-using SC.Engine.Runtime.GameCore;
+using SC.Engine.Runtime.GameFramework.Components;
 
 namespace SC.Engine.Runtime.GameFramework.Camera
 {
@@ -23,7 +23,7 @@ namespace SC.Engine.Runtime.GameFramework.Camera
         public SSpringArmComponent()
         {
             PrimaryComponentTick.CanEverTick = true;
-            PrimaryComponentTick.TickGroup = ETickingGroup.PostPhysics;
+            PrimaryComponentTick.TickGroup = Ticking.TickingGroup.PostPhysics;
         }
 
         /// <inheritdoc/>

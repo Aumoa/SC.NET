@@ -1,6 +1,5 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using SC.Engine.Runtime.GameCore;
 using SC.ThirdParty.WinAPI;
 
 namespace SC.Engine.Runtime.GameFramework.Components
@@ -15,7 +14,7 @@ namespace SC.Engine.Runtime.GameFramework.Components
         /// </summary>
         public enum Key
         {
-#pragma warning disable CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
+#pragma warning disable CS1591
             None = 0,
 
             Back = 0x8,
@@ -192,7 +191,7 @@ namespace SC.Engine.Runtime.GameFramework.Components
 
             Pa1 = 0xfd,
             OemClear = 0xfe,
-#pragma warning restore CS1591 // 공개된 형식 또는 멤버에 대한 XML 주석이 없습니다.
+#pragma warning restore CS1591
         };
 
         /// <summary>

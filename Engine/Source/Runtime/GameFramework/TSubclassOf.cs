@@ -2,8 +2,6 @@
 
 using System;
 
-using SC.Engine.Runtime.GameCore;
-
 namespace SC.Engine.Runtime.GameFramework
 {
     /// <summary>

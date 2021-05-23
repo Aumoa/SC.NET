@@ -1,15 +1,14 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
 using SC.Engine.Runtime.Core.Diagnostics;
-using SC.Engine.Runtime.GameCore;
+using SC.Engine.Runtime.GameFramework.Diagnostics;
 using SC.Engine.Runtime.GameFramework.SceneRendering;
 using SC.Engine.Runtime.GameFramework.Slate;
 using SC.Engine.Runtime.RenderCore;
 using SC.Engine.Runtime.RenderCore.Slate.Application;
 using SC.ThirdParty.WinAPI;
 
-using static SC.Engine.Runtime.GameCore.Diagnostics.LoggingSystem;
-using static SC.Engine.Runtime.GameCore.Diagnostics.LogVerbosity;
+using static SC.Engine.Runtime.GameFramework.Diagnostics.LogVerbosity;
 
 namespace SC.Engine.Runtime.GameFramework
 {
@@ -36,7 +35,7 @@ namespace SC.Engine.Runtime.GameFramework
         {
             if (_engine is not null)
             {
-                Log(Fatal, "Engine", "엔진 개체가 두 번 초기화되었습니다.");
+                this.Log(Fatal, $"Duplicated '{nameof(SGameEngine)}' initialization detected.");
             }
 
             _engine = this;

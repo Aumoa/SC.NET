@@ -1,7 +1,6 @@
 ﻿// Copyright 2020-2021 Aumoa.lib. All right reserved.
 
-using SC.Engine.Runtime.GameCore;
-using SC.Engine.Runtime.GameCore.SceneRendering;
+using SC.Engine.Runtime.GameFramework.Components;
 
 namespace SC.Engine.Runtime.GameFramework.Camera
 {

@@ -2,7 +2,8 @@
 
 using System;
 
-using SC.Engine.Runtime.GameCore;
+using SC.Engine.Runtime.GameFramework.Controllers;
+using SC.Engine.Runtime.GameFramework.Info;
 
 namespace SC.Engine.Runtime.GameFramework
 {
