@@ -3,6 +3,7 @@
 using System;
 
 using SC.Engine.Runtime.GameFramework.Components;
+using SC.Engine.Runtime.GameFramework.Controllers;
 
 namespace SC.Engine.Runtime.GameFramework
 {
@@ -18,11 +19,12 @@ namespace SC.Engine.Runtime.GameFramework
         {
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="inComponent"></param>
         public void RegisterComponent(SActorComponent inComponent)
+        {
+            throw new NotImplementedException();
+        }
+
+        public APlayerController GetLocalPlayer()
         {
             throw new NotImplementedException();
         }

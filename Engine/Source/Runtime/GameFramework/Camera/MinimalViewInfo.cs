@@ -132,7 +132,10 @@ namespace SC.Engine.Runtime.GameFramework.Camera
             }
         }
 
-        void Apply()
+        /// <summary>
+        /// 현재 뷰 상태를 적용합니다. 값이 미리 계산됩니다.
+        /// </summary>
+        public void Apply()
         {
             Vector3 forward = Rotation.RotateVector(Vector3.Forward);
             Vector3 up = Rotation.RotateVector(Vector3.Up);

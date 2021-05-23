@@ -13,7 +13,7 @@ namespace SC.Engine.Runtime.GameFramework.Camera
     /// <summary>
     /// 로컬 플레이어의 카메라를 관리하는 컴포넌트입니다.
     /// </summary>
-    public class SPlayerCameraManagerComponent : SActorComponent
+    public class SPlayerCameraManager : SActorComponent
     {
         const float DefaultFOV = 0.25f * 3.14f;
 
@@ -24,7 +24,7 @@ namespace SC.Engine.Runtime.GameFramework.Camera
         /// <summary>
         /// 개체를 초기화합니다.
         /// </summary>
-        public SPlayerCameraManagerComponent()
+        public SPlayerCameraManager()
         {
 
         }
@@ -53,7 +53,7 @@ namespace SC.Engine.Runtime.GameFramework.Camera
                 APlayerController playerController = GetOwner<APlayerController>();
                 if (playerController is null)
                 {
-                    this.Log(Error, $"{nameof(SPlayerCameraManagerComponent)} component must be attached to {nameof(APlayerController)} instance. Abort.");
+                    this.Log(Error, $"{nameof(SPlayerCameraManager)} component must be attached to {nameof(APlayerController)} instance. Abort.");
                     outViewInfo = new();
                     return;
                 }

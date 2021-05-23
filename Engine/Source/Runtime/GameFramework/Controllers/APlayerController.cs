@@ -12,7 +12,7 @@ namespace SC.Engine.Runtime.GameFramework.Controllers
     /// </summary>
     public class APlayerController : AController
     {
-        SPlayerCameraManagerComponent _cameraMgr;
+        SPlayerCameraManager _cameraMgr;
         SInputComponent _inputComp;
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace SC.Engine.Runtime.GameFramework.Controllers
         public APlayerController()
         {
             SetRootComponent(new SSceneComponent());
-            _cameraMgr = AddOwnedComponent(new SPlayerCameraManagerComponent());
+            _cameraMgr = AddOwnedComponent(new SPlayerCameraManager());
             _inputComp = AddOwnedComponent(new SInputComponent());
 
             _inputComp.KeyPressed += KeyPressed;
@@ -79,5 +79,10 @@ namespace SC.Engine.Runtime.GameFramework.Controllers
         {
             _cameraMgr.UpdateCameraComponent();
         }
+
+        /// <summary>
+        /// 플레이어 카메라 매니저 개체를 가져옵니다.
+        /// </summary>
+        public SPlayerCameraManager CameraManager => _cameraMgr;
     }
 }
